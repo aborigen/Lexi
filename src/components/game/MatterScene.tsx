@@ -29,9 +29,7 @@ export function MatterScene({
   onBodiesUpdate
 }: MatterSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const engineRef = useRef(Matter.Engine.create());
-  const renderRef = useRef<Matter.Render | null>(null);
-  const runnerRef = useRef<Matter.Runner | null>(null);
+  const engineRef = useRef<Matter.Engine | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [mousePos, setMousePos] = useState({ x: ARENA_WIDTH / 2 });
@@ -40,9 +38,12 @@ export function MatterScene({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const engine = engineRef.current;
+    // 1. Setup Engine & World
+    const engine = Matter.Engine.create();
+    engineRef.current = engine;
     engine.gravity.y = 1.2;
 
+    // 2. Setup Renderer
     const render = Matter.Render.create({
       element: containerRef.current,
       engine: engine,
@@ -53,20 +54,34 @@ export function MatterScene({
         background: 'transparent',
       }
     });
-    renderRef.current = render;
 
-    const ground = Matter.Bodies.rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT + 25, ARENA_WIDTH, 50, { isStatic: true, render: { visible: false } });
-    const leftWall = Matter.Bodies.rectangle(-25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { isStatic: true, render: { visible: false } });
-    const rightWall = Matter.Bodies.rectangle(ARENA_WIDTH + 25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { isStatic: true, render: { visible: false } });
+    // 3. Create Boundaries
+    const ground = Matter.Bodies.rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT + 25, ARENA_WIDTH, 50, { 
+      isStatic: true, 
+      label: 'boundary',
+      render: { visible: false } 
+    });
+    const leftWall = Matter.Bodies.rectangle(-25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { 
+      isStatic: true, 
+      label: 'boundary',
+      render: { visible: false } 
+    });
+    const rightWall = Matter.Bodies.rectangle(ARENA_WIDTH + 25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { 
+      isStatic: true, 
+      label: 'boundary',
+      render: { visible: false } 
+    });
     
     Matter.Composite.add(engine.world, [ground, leftWall, rightWall]);
 
+    // 4. Collision Event (Merging Logic)
     Matter.Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const bodyA = pair.bodyA;
         const bodyB = pair.bodyB;
 
-        if (bodyA.label === bodyB.label && bodyA.label !== 'Rectangle Body') {
+        // Ensure we are comparing two fruits of the same type
+        if (bodyA.label === bodyB.label && bodyA.label !== 'boundary' && bodyA.label !== 'Circle Body') {
           const tierIdx = FRUIT_TIERS.findIndex(f => f.type === bodyA.label);
           if (tierIdx !== -1 && tierIdx < FRUIT_TIERS.length - 1) {
             const nextTier = FRUIT_TIERS[tierIdx + 1];
@@ -85,7 +100,8 @@ export function MatterScene({
                 lineWidth: 2,
               },
               restitution: 0.3,
-              friction: 0.1
+              friction: 0.1,
+              plugin: { createdAt: Date.now() } // Mark creation time
             });
             Matter.Composite.add(engine.world, newFruit);
           }
@@ -93,15 +109,12 @@ export function MatterScene({
       });
     });
 
-    const runner = Matter.Runner.create();
-    runnerRef.current = runner;
-    Matter.Runner.run(runner, engine);
-    Matter.Render.run(render);
-
-    const updateLoop = () => {
+    // 5. State Sync & Game Over Check
+    Matter.Events.on(engine, 'afterUpdate', () => {
       if (isGameOver) return;
+
       const allBodies = Matter.Composite.allBodies(engine.world);
-      const fruitBodies = allBodies.filter(b => b.label !== 'Rectangle Body');
+      const fruitBodies = allBodies.filter(b => b.label !== 'boundary');
       
       const bodiesData = fruitBodies.map(b => ({
         id: b.id.toString(),
@@ -113,11 +126,17 @@ export function MatterScene({
       
       onBodiesUpdate(bodiesData);
       
+      const now = Date.now();
       const overflowing = fruitBodies.some(b => {
         const radius = (b as any).circleRadius || 0;
         const isAboveLine = b.position.y - radius < GAME_OVER_LINE_Y;
-        const isSettled = Math.abs(b.velocity.y) < 0.2;
-        return isAboveLine && isSettled;
+        const isSettled = Math.abs(b.velocity.y) < 0.1 && Math.abs(b.velocity.x) < 0.1;
+        
+        // Ignore very recently created fruits (like the one just dropped)
+        const createdAt = (b.plugin as any)?.createdAt || 0;
+        const isOldEnough = now - createdAt > 1000;
+
+        return isAboveLine && isSettled && isOldEnough;
       });
 
       if (overflowing) {
@@ -125,7 +144,7 @@ export function MatterScene({
           gameOverTimerRef.current = setTimeout(() => {
             setIsGameOver(true);
             onGameOver();
-          }, 3000);
+          }, 2000);
         }
       } else {
         if (gameOverTimerRef.current) {
@@ -133,17 +152,19 @@ export function MatterScene({
           gameOverTimerRef.current = null;
         }
       }
+    });
 
-      requestAnimationFrame(updateLoop);
-    };
-    const animId = requestAnimationFrame(updateLoop);
+    // 6. Start Runner & Renderer
+    const runner = Matter.Runner.create();
+    Matter.Runner.run(runner, engine);
+    Matter.Render.run(render);
 
+    // Cleanup
     return () => {
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
       render.canvas.remove();
-      cancelAnimationFrame(animId);
       if (gameOverTimerRef.current) clearTimeout(gameOverTimerRef.current);
     };
   }, [onGameOver, onBodiesUpdate, isGameOver, onScoreUpdate]);
@@ -170,7 +191,7 @@ export function MatterScene({
   };
 
   const handleClick = useCallback(() => {
-    if (isGameOver || isDropping) return;
+    if (isGameOver || isDropping || !engineRef.current) return;
 
     setIsDropping(true);
     const fruitDef = FRUIT_TIERS[nextFruitIndex];
@@ -184,16 +205,18 @@ export function MatterScene({
         lineWidth: 2,
       },
       restitution: 0.2,
-      friction: 0.1
+      friction: 0.1,
+      plugin: { createdAt: Date.now() } // Mark creation time
     });
 
     Matter.Composite.add(engineRef.current.world, fruit);
     onFruitDropped();
 
+    // Drop Cooldown
     setTimeout(() => {
       setIsDropping(false);
-    }, 600);
-  }, [nextFruitIndex, mousePos, isGameOver, isDropping, onFruitDropped]);
+    }, 500);
+  }, [nextFruitIndex, mousePos.x, isGameOver, isDropping, onFruitDropped]);
 
   return (
     <div 
@@ -230,7 +253,7 @@ export function MatterScene({
 
       {!isGameOver && (
         <div 
-          className={`absolute top-[${DROP_STAGING_HEIGHT}px] pointer-events-none z-20 flex items-center justify-center transition-opacity duration-200 ${isDropping ? 'opacity-20' : 'opacity-100'}`}
+          className={`absolute pointer-events-none z-20 flex items-center justify-center transition-opacity duration-200 ${isDropping ? 'opacity-20' : 'opacity-100'}`}
           style={{ 
             left: mousePos.x, 
             top: DROP_STAGING_HEIGHT,
