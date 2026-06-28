@@ -4,7 +4,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES, TICK_RATE_INITIAL, TICK_RATE_MIN, TICK_RATE_DECREMENT } from '@/lib/game-constants';
 import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
 
 interface ColumnsGameProps {
   onScoreUpdate: (score: number) => void;
@@ -27,10 +26,15 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   const gridRef = useRef(grid);
   const clearingRef = useRef(false);
 
-  // Sync ref with state for the game loop to use without triggering interval restarts
+  // Update ref to avoid stale closure in game loop
   useEffect(() => {
     gridRef.current = grid;
   }, [grid]);
+
+  // Notify parent of state changes safely
+  useEffect(() => {
+    onStateUpdate(grid, currentStack);
+  }, [grid, currentStack, onStateUpdate]);
 
   const generateStack = useCallback(() => [
     GEM_TYPES[Math.floor(Math.random() * GEM_TYPES.length)].id,
@@ -65,7 +69,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     if (clearingRef.current) return;
     setStackPos(prev => {
       const newCol = Math.max(0, prev.col - 1);
-      // Check if blocked by static gems
       const isBlocked = [0, 1, 2].some(i => {
         const r = prev.row + i;
         return r >= 0 && r < GRID_HEIGHT && gridRef.current[r][newCol] !== null;
@@ -122,24 +125,24 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   const processBoard = useCallback(async (startingGrid: (number | null)[][]) => {
     setIsClearing(true);
     clearingRef.current = true;
-    let currentGrid = [...startingGrid.map(row => [...row])];
+    let currentGrid = startingGrid.map(row => [...row]);
     
     while (true) {
       const matches = findMatches(currentGrid);
       if (matches.size === 0) break;
 
-      onScoreUpdate(matches.size * 50);
+      // Defer parent state updates to avoid "update during render" errors
+      const scoreToAdd = matches.size * 50;
+      setTimeout(() => onScoreUpdate(scoreToAdd), 0);
 
-      // Mark for clearing
       matches.forEach(m => {
         const [r, c] = m.split(',').map(Number);
         currentGrid[r][c] = null;
       });
 
-      setGrid([...currentGrid]);
+      setGrid([...currentGrid.map(r => [...r])]);
       await new Promise(r => setTimeout(r, 200));
 
-      // Gravity
       for (let c = 0; c < GRID_WIDTH; c++) {
         let emptyRow = GRID_HEIGHT - 1;
         for (let r = GRID_HEIGHT - 1; r >= 0; r--) {
@@ -151,17 +154,15 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           }
         }
       }
-      setGrid([...currentGrid]);
+      setGrid([...currentGrid.map(r => [...r])]);
       await new Promise(r => setTimeout(r, 150));
     }
 
-    // Check game over
     if (currentGrid[0].some(cell => cell !== null)) {
-      onGameOver();
+      setTimeout(() => onGameOver(), 0);
       return;
     }
 
-    // Spawn new stack
     setCurrentStack(nextStack);
     setNextStack(generateStack());
     setStackPos({ row: -2, col: Math.floor(GRID_WIDTH / 2) });
@@ -177,8 +178,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       const canMove = nextRow + 2 < GRID_HEIGHT && gridRef.current[nextRow + 2][prev.col] === null;
 
       if (!canMove) {
-        // Handle Landing
-        const finalGrid = [...gridRef.current.map(row => [...row])];
+        const finalGrid = gridRef.current.map(row => [...row]);
         let hasLandedInBounds = false;
         
         for (let i = 0; i < 3; i++) {
@@ -193,8 +193,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           setGrid(finalGrid);
           processBoard(finalGrid);
         } else {
-          // If the piece couldn't even partially land in bounds, it's game over
-          onGameOver();
+          setTimeout(() => onGameOver(), 0);
         }
         
         return prev;
@@ -208,7 +207,10 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       if (isPaused || clearingRef.current) return;
       if (e.key === 'ArrowLeft') moveLeft();
       if (e.key === 'ArrowRight') moveRight();
-      if (e.key === 'ArrowUp' || e.key === ' ') cycleGems();
+      if (e.key === 'ArrowUp' || e.key === ' ') {
+        e.preventDefault();
+        cycleGems();
+      }
       if (e.key === 'ArrowDown') tick();
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -223,10 +225,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     };
   }, [tick]);
 
-  useEffect(() => {
-    onStateUpdate(grid, currentStack);
-  }, [grid, currentStack, onStateUpdate]);
-
   return (
     <div className="relative flex flex-col md:flex-row gap-8 items-center md:items-start">
       <div 
@@ -239,7 +237,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           gridTemplateRows: `repeat(${GRID_HEIGHT}, 1fr)`
         }}
       >
-        {/* Static Grid */}
         {grid.map((row, r) => row.map((gemId, c) => (
           <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-white/5 flex items-center justify-center">
             {gemId && (
@@ -250,7 +247,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           </div>
         )))}
 
-        {/* Falling Stack */}
         {!isClearing && currentStack.length > 0 && [0, 1, 2].map(i => {
           const r = stackPos.row + i;
           if (r < 0 || r >= GRID_HEIGHT) return null;
@@ -271,7 +267,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           );
         })}
 
-        {/* AI Suggested Column Highlight */}
         {suggestedMove && !isClearing && (
           <div 
             className="absolute h-full w-[40px] bg-primary/10 border-x border-primary/20 pointer-events-none transition-all duration-300"

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -55,6 +56,10 @@ export default function ColumnsPage() {
 
   const handleStateUpdate = useCallback((grid: (number|null)[][], stack: number[]) => {
     setCurrentGameState({ grid, stack });
+  }, []);
+
+  const handleScoreUpdate = useCallback((newScore: number) => {
+    setScore(prev => prev + newScore);
   }, []);
 
   const handleSuggestionReceived = useCallback((col: number, cycle: number) => {
@@ -144,7 +149,7 @@ export default function ColumnsPage() {
           <main className="flex justify-center">
             <ColumnsGame 
               key={gameKey}
-              onScoreUpdate={setScore}
+              onScoreUpdate={handleScoreUpdate}
               onGameOver={handleGameOver}
               onStateUpdate={handleStateUpdate}
               suggestedMove={suggestedMove}
