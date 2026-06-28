@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -8,10 +7,10 @@ import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES } from '@/lib/game-constants';
 import { Trophy, RefreshCcw, LayoutDashboard, BrainCircuit, HelpCircle, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
+import { toast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -43,6 +42,23 @@ export default function ColumnsPage() {
     setScore(0);
     setSuggestedMove(null);
     setGameKey(prev => prev + 1);
+  }, []);
+
+  const handleGameOver = useCallback(() => {
+    toast({ 
+      title: "Grid Overflow!", 
+      description: "The columns have reached the ceiling.", 
+      variant: "destructive" 
+    });
+    handleReset();
+  }, [handleReset]);
+
+  const handleStateUpdate = useCallback((grid: (number|null)[][], stack: number[]) => {
+    setCurrentGameState({ grid, stack });
+  }, []);
+
+  const handleSuggestionReceived = useCallback((col: number, cycle: number) => {
+    setSuggestedMove({ col, cycle });
   }, []);
 
   return (
@@ -129,18 +145,15 @@ export default function ColumnsPage() {
             <ColumnsGame 
               key={gameKey}
               onScoreUpdate={setScore}
-              onGameOver={() => {
-                toast({ title: "Grid Overflow!", description: "The columns have reached the ceiling.", variant: "destructive" });
-                handleReset();
-              }}
-              onStateUpdate={(grid, stack) => setCurrentGameState({ grid, stack })}
+              onGameOver={handleGameOver}
+              onStateUpdate={handleStateUpdate}
               suggestedMove={suggestedMove}
             />
           </main>
 
           <aside className="flex flex-col space-y-6 w-full max-w-sm">
             <AIAdvisor 
-              onSuggestionReceived={(col, cycle) => setSuggestedMove({ col, cycle })}
+              onSuggestionReceived={handleSuggestionReceived}
               gameState={{
                 grid: currentGameState.grid,
                 currentStack: currentGameState.stack,
