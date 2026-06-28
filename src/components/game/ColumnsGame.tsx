@@ -4,6 +4,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES, TICK_RATE_INITIAL, TICK_RATE_MIN, TICK_RATE_DECREMENT } from '@/lib/game-constants';
 import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, ChevronDown, RotateCcw, MoveDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ColumnsGameProps {
   onScoreUpdate: (score: number) => void;
@@ -26,14 +28,16 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   const gridRef = useRef(grid);
   const clearingRef = useRef(false);
 
-  // Update ref to avoid stale closure in game loop
   useEffect(() => {
     gridRef.current = grid;
   }, [grid]);
 
-  // Notify parent of state changes safely
   useEffect(() => {
-    onStateUpdate(grid, currentStack);
+    // Defer state update to next tick to avoid render-phase updates
+    const timer = setTimeout(() => {
+      onStateUpdate(grid, currentStack);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [grid, currentStack, onStateUpdate]);
 
   const generateStack = useCallback(() => [
@@ -131,7 +135,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       const matches = findMatches(currentGrid);
       if (matches.size === 0) break;
 
-      // Defer parent state updates to avoid "update during render" errors
       const scoreToAdd = matches.size * 50;
       setTimeout(() => onScoreUpdate(scoreToAdd), 0);
 
@@ -226,79 +229,130 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   }, [tick]);
 
   return (
-    <div className="relative flex flex-col md:flex-row gap-8 items-center md:items-start">
-      <div 
-        className="relative bg-black/40 border-4 border-white/10 rounded-2xl overflow-hidden shadow-2xl"
-        style={{ 
-          width: GRID_WIDTH * 40, 
-          height: GRID_HEIGHT * 40,
-          display: 'grid',
-          gridTemplateColumns: `repeat(${GRID_WIDTH}, 1fr)`,
-          gridTemplateRows: `repeat(${GRID_HEIGHT}, 1fr)`
-        }}
-      >
-        {grid.map((row, r) => row.map((gemId, c) => (
-          <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-white/5 flex items-center justify-center">
-            {gemId && (
-              <Gem 
-                type={GEM_TYPES.find(g => g.id === gemId)!} 
-              />
-            )}
-          </div>
-        )))}
-
-        {!isClearing && currentStack.length > 0 && [0, 1, 2].map(i => {
-          const r = stackPos.row + i;
-          if (r < 0 || r >= GRID_HEIGHT) return null;
-          return (
-            <div 
-              key={`falling-${i}`}
-              className="absolute w-[40px] h-[40px] flex items-center justify-center transition-all duration-75"
-              style={{ 
-                top: r * 40, 
-                left: stackPos.col * 40 
-              }}
-            >
-              <Gem 
-                type={GEM_TYPES.find(g => g.id === currentStack[i])!} 
-                isFalling
-              />
+    <div className="flex flex-col items-center w-full gap-6">
+      <div className="flex flex-col md:flex-row gap-8 items-center md:items-start w-full justify-center">
+        {/* Game Board */}
+        <div 
+          className="relative bg-black/40 border-4 border-white/10 rounded-2xl overflow-hidden shadow-2xl shrink-0"
+          style={{ 
+            width: GRID_WIDTH * 32, 
+            height: GRID_HEIGHT * 32,
+            display: 'grid',
+            gridTemplateColumns: `repeat(${GRID_WIDTH}, 1fr)`,
+            gridTemplateRows: `repeat(${GRID_HEIGHT}, 1fr)`
+          }}
+        >
+          {grid.map((row, r) => row.map((gemId, c) => (
+            <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-white/5 flex items-center justify-center">
+              {gemId && (
+                <Gem 
+                  type={GEM_TYPES.find(g => g.id === gemId)!} 
+                  size={26}
+                />
+              )}
             </div>
-          );
-        })}
+          )))}
 
-        {suggestedMove && !isClearing && (
-          <div 
-            className="absolute h-full w-[40px] bg-primary/10 border-x border-primary/20 pointer-events-none transition-all duration-300"
-            style={{ left: suggestedMove.col * 40 }}
-          />
-        )}
+          {!isClearing && currentStack.length > 0 && [0, 1, 2].map(i => {
+            const r = stackPos.row + i;
+            if (r < 0 || r >= GRID_HEIGHT) return null;
+            return (
+              <div 
+                key={`falling-${i}`}
+                className="absolute flex items-center justify-center transition-all duration-75"
+                style={{ 
+                  top: r * 32, 
+                  left: stackPos.col * 32,
+                  width: 32,
+                  height: 32
+                }}
+              >
+                <Gem 
+                  type={GEM_TYPES.find(g => g.id === currentStack[i])!} 
+                  isFalling
+                  size={26}
+                />
+              </div>
+            );
+          })}
+
+          {suggestedMove && !isClearing && (
+            <div 
+              className="absolute h-full w-[32px] bg-primary/10 border-x border-primary/20 pointer-events-none transition-all duration-300"
+              style={{ left: suggestedMove.col * 32 }}
+            />
+          )}
+        </div>
+
+        {/* Sidebar (Desktop) / Info Panel */}
+        <div className="flex flex-row md:flex-col gap-4 w-full md:w-auto justify-center">
+          <div className="glass p-3 md:p-4 rounded-2xl border-white/10 flex flex-col items-center">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 md:mb-3">Next</p>
+            <div className="flex flex-row md:flex-col gap-1">
+              {nextStack.map((id, i) => (
+                <div key={i} className="w-8 h-8 md:w-10 md:h-10 glass rounded-lg flex items-center justify-center text-lg md:text-xl shadow-inner border border-white/5">
+                  {GEM_TYPES.find(g => g.id === id)?.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-6 w-full md:w-auto">
-        <div className="glass p-4 rounded-2xl border-white/10 flex flex-col items-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Next Stack</p>
-          <div className="flex flex-col gap-1">
-            {nextStack.map((id, i) => (
-              <div key={i} className="w-10 h-10 glass rounded-lg flex items-center justify-center text-xl shadow-inner border border-white/5">
-                {GEM_TYPES.find(g => g.id === id)?.label}
-              </div>
-            ))}
+      {/* Mobile Controls */}
+      <div className="flex flex-col gap-4 w-full max-w-[320px] lg:hidden mb-8">
+        <div className="grid grid-cols-3 gap-3">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+            onPointerDown={(e) => { e.preventDefault(); moveLeft(); }}
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </Button>
+          <div className="flex flex-col gap-2">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="h-16 glass rounded-2xl border-primary/20 bg-primary/10 active:scale-95 transition-transform"
+              onPointerDown={(e) => { e.preventDefault(); cycleGems(); }}
+            >
+              <RotateCcw className="w-7 h-7" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+              onPointerDown={(e) => { e.preventDefault(); tick(); }}
+            >
+              <ChevronDown className="w-8 h-8" />
+            </Button>
           </div>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+            onPointerDown={(e) => { e.preventDefault(); moveRight(); }}
+          >
+            <ChevronRight className="w-8 h-8" />
+          </Button>
         </div>
       </div>
     </div>
   );
 }
 
-function Gem({ type, isFalling }: { type: any, isFalling?: boolean }) {
+function Gem({ type, isFalling, size = 32 }: { type: any, isFalling?: boolean, size?: number }) {
   return (
     <div 
       className={cn(
-        "w-8 h-8 rounded-lg flex items-center justify-center text-xl transition-all",
+        "rounded-lg flex items-center justify-center transition-all",
         isFalling ? "scale-105" : "scale-100"
       )}
       style={{ 
+        width: size,
+        height: size,
+        fontSize: size * 0.6,
         backgroundColor: type.color,
         boxShadow: `0 4px 12px ${type.shadow}, inset 0 2px 4px rgba(255,255,255,0.3)`,
         border: '2px solid rgba(255,255,255,0.4)'

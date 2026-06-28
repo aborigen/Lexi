@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ColumnsGame } from '@/components/game/ColumnsGame';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES } from '@/lib/game-constants';
-import { Trophy, RefreshCcw, LayoutDashboard, BrainCircuit, HelpCircle, Gamepad2 } from 'lucide-react';
+import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -68,23 +68,23 @@ export default function ColumnsPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
-        <header className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-6 md:space-y-0">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-primary/20 rounded-2xl border border-primary/30">
-              <Gamepad2 className="w-8 h-8 text-primary" />
+      <div className="max-w-7xl mx-auto px-4 py-4 lg:py-12">
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8 md:mb-12 space-y-4 md:space-y-0">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="p-2 md:p-3 bg-primary/20 rounded-xl md:rounded-2xl border border-primary/30">
+              <Gamepad2 className="w-6 h-6 md:w-8 md:h-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-4xl font-black tracking-tighter italic uppercase">COLUMNS<span className="text-primary">.AI</span></h1>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Match-3 Tactical Grid</p>
+              <h1 className="text-2xl md:text-4xl font-black tracking-tighter italic uppercase leading-none">COLUMNS<span className="text-primary">.AI</span></h1>
+              <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Match-3 Tactical Grid</p>
             </div>
           </div>
 
-          <div className="flex space-x-4 items-center">
+          <div className="flex space-x-2 md:space-x-4 items-center">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10">
-                  <HelpCircle className="w-6 h-6 text-muted-foreground" />
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10 h-10 w-10">
+                  <HelpCircle className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="glass sm:max-w-[425px]">
@@ -94,11 +94,11 @@ export default function ColumnsPage() {
                 <div className="flex flex-col space-y-4 py-4">
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">←→</div>
-                    <p className="text-sm">Use <span className="text-foreground font-bold">Arrow Keys</span> to move the falling stack.</p>
+                    <p className="text-sm">Use <span className="text-foreground font-bold">Arrow Keys</span> or On-Screen buttons to move.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">↑</div>
-                    <p className="text-sm">Press <span className="text-foreground font-bold">Up or Space</span> to cycle the order of gems.</p>
+                    <p className="text-sm">Press <span className="text-foreground font-bold">Up or Space</span> (or the Center button) to cycle gems.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">3x</div>
@@ -108,45 +108,49 @@ export default function ColumnsPage() {
               </DialogContent>
             </Dialog>
 
-            <div className="glass px-6 py-3 rounded-2xl flex items-center space-x-3">
-              <Trophy className="w-5 h-5 text-secondary" />
+            <div className="glass px-3 py-1.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl flex items-center space-x-2 md:space-x-3">
+              <Trophy className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-none mb-1">High Score</p>
-                <p className="text-xl font-black">{highScore.toLocaleString()}</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-none mb-0.5 md:mb-1">High</p>
+                <p className="text-sm md:text-xl font-black">{highScore.toLocaleString()}</p>
               </div>
             </div>
-            <div className="glass px-6 py-3 rounded-2xl bg-primary/5 border-primary/20 flex items-center space-x-3">
+            
+            <div className="glass px-3 py-1.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl bg-primary/5 border-primary/20 flex items-center">
               <div>
-                <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Current</p>
-                <p className="text-2xl font-black">{score.toLocaleString()}</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-0.5 md:mb-1">Score</p>
+                <p className="text-lg md:text-2xl font-black">{score.toLocaleString()}</p>
               </div>
             </div>
-            <Button variant="outline" size="icon" onClick={handleReset} className="rounded-2xl h-14 w-14 border-white/10 hover:bg-white/5">
-              <RefreshCcw className="w-6 h-6" />
+            
+            <Button variant="outline" size="icon" onClick={handleReset} className="rounded-xl md:rounded-2xl h-10 w-10 md:h-14 md:w-14 border-white/10 hover:bg-white/5">
+              <RefreshCcw className="w-5 h-5 md:w-6 md:h-6" />
             </Button>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-12 items-start justify-center">
-          <aside className="hidden lg:flex flex-col space-y-6">
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_auto_1fr] gap-6 md:gap-12 items-center lg:items-start justify-center">
+          {/* Legend - Hidden on small mobile, visible on tablet/desktop */}
+          <aside className="hidden md:flex flex-col space-y-6 w-full lg:w-auto">
             <div className="glass p-6 rounded-3xl">
                <h3 className="text-sm font-bold text-muted-foreground mb-6 uppercase tracking-widest">
                  Gem Rarity
                </h3>
-               <div className="flex flex-col gap-4">
+               <div className="grid grid-cols-3 md:flex md:flex-col gap-4">
                  {GEM_TYPES.map(gem => (
                    <div key={gem.id} className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-lg border-2 border-white/10" style={{ backgroundColor: gem.color }}>
+                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center text-lg md:text-xl shadow-lg border-2 border-white/10" style={{ backgroundColor: gem.color }}>
                        {gem.label}
                      </div>
-                     <span className="text-xs font-bold uppercase tracking-tighter opacity-70">{gem.score} pts</span>
+                     <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">{gem.score} pts</span>
                    </div>
                  ))}
                </div>
             </div>
           </aside>
 
-          <main className="flex justify-center">
+          {/* Game Canvas */}
+          <main className="flex justify-center w-full">
             <ColumnsGame 
               key={gameKey}
               onScoreUpdate={handleScoreUpdate}
@@ -156,6 +160,7 @@ export default function ColumnsPage() {
             />
           </main>
 
+          {/* AI Advisor Panel */}
           <aside className="flex flex-col space-y-6 w-full max-w-sm">
             <AIAdvisor 
               onSuggestionReceived={handleSuggestionReceived}
@@ -167,7 +172,7 @@ export default function ColumnsPage() {
               }}
             />
 
-            <div className="glass p-6 rounded-3xl bg-secondary/5 border-secondary/10">
+            <div className="glass p-5 md:p-6 rounded-3xl bg-secondary/5 border-secondary/10 hidden sm:block">
               <div className="flex items-center space-x-2 mb-3">
                 <BrainCircuit className="w-4 h-4 text-secondary" />
                 <span className="text-xs font-bold text-secondary uppercase tracking-widest">Strategy Pro-Tip</span>

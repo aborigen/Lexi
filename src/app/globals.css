@@ -30,23 +30,23 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-none;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground font-body antialiased overflow-x-hidden;
     background-image: radial-gradient(circle at 50% -20%, hsl(var(--primary) / 0.15), transparent 70%);
     background-attachment: fixed;
+    touch-action: manipulation;
   }
 }
 
 .glass {
-  /* Fallback for browsers that don't support backdrop-filter */
   background-color: rgba(28, 11, 13, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* Apply backdrop-filter where supported */
 @supports ((-webkit-backdrop-filter: blur(24px)) or (backdrop-filter: blur(24px))) {
   .glass {
     background-color: rgba(28, 11, 13, 0.4);
@@ -73,4 +73,10 @@
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* Prevent text selection during gameplay on mobile */
+.select-none {
+  user-select: none;
+  -webkit-user-select: none;
 }
