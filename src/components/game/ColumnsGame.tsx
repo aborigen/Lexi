@@ -1,10 +1,9 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES, TICK_RATE_INITIAL, TICK_RATE_MIN, TICK_RATE_DECREMENT } from '@/lib/game-constants';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, ChevronDown, RotateCcw, MoveDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface ColumnsGameProps {
@@ -14,13 +13,6 @@ interface ColumnsGameProps {
   suggestedMove: { col: number; cycle: number } | null;
 }
 
-/**
- * The primary game component for the Columns match-3 puzzle.
- * Manages the game grid, falling stacks, input handling, and the core game loop.
- * 
- * @param {ColumnsGameProps} props - The component props.
- * @returns {JSX.Element} The rendered game board and mobile controls.
- */
 export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggestedMove }: ColumnsGameProps) {
   const [grid, setGrid] = useState<(number | null)[][]>(
     Array.from({ length: GRID_HEIGHT }, () => Array(GRID_WIDTH).fill(null))
@@ -35,12 +27,10 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   const gridRef = useRef(grid);
   const clearingRef = useRef(false);
 
-  // Sync ref with state for use in callbacks that access the grid between renders
   useEffect(() => {
     gridRef.current = grid;
   }, [grid]);
 
-  // Notify parent of state changes (e.g., for AI Advisor)
   useEffect(() => {
     const timer = setTimeout(() => {
       onStateUpdate(grid, currentStack);
@@ -48,19 +38,12 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     return () => clearTimeout(timer);
   }, [grid, currentStack, onStateUpdate]);
 
-  /**
-   * Randomly selects three gem IDs to form a new vertical stack.
-   * @returns {number[]} An array of 3 gem IDs.
-   */
   const generateStack = useCallback(() => [
     GEM_TYPES[Math.floor(Math.random() * GEM_TYPES.length)].id,
     GEM_TYPES[Math.floor(Math.random() * GEM_TYPES.length)].id,
     GEM_TYPES[Math.floor(Math.random() * GEM_TYPES.length)].id,
   ], []);
 
-  /**
-   * Resets the game to its initial state with a fresh grid and two stacks.
-   */
   const initGame = useCallback(() => {
     const emptyGrid = Array.from({ length: GRID_HEIGHT }, () => Array(GRID_WIDTH).fill(null));
     setGrid(emptyGrid);
@@ -75,23 +58,15 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     clearingRef.current = false;
   }, [generateStack]);
 
-  // Initialize game on component mount
   useEffect(() => {
     initGame();
   }, [initGame]);
 
-  /**
-   * Shifts the gem order in the current falling stack (rotates the three gems).
-   */
   const cycleGems = useCallback(() => {
     if (clearingRef.current) return;
     setCurrentStack(prev => [prev[2], prev[0], prev[1]]);
   }, []);
 
-  /**
-   * Attempts to move the current falling stack one column to the left.
-   * Checks for grid boundaries and gem collisions.
-   */
   const moveLeft = useCallback(() => {
     if (clearingRef.current) return;
     setStackPos(prev => {
@@ -104,10 +79,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     });
   }, []);
 
-  /**
-   * Attempts to move the current falling stack one column to the right.
-   * Checks for grid boundaries and gem collisions.
-   */
   const moveRight = useCallback(() => {
     if (clearingRef.current) return;
     setStackPos(prev => {
@@ -120,13 +91,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     });
   }, []);
 
-  /**
-   * Scans a grid state for matching sets of 3+ identical gems.
-   * Checks horizontal, vertical, and both diagonal directions.
-   * 
-   * @param {(number | null)[][]} currentGrid - The current state of the board.
-   * @returns {Set<string>} A set of coordinate strings "row,col" identifying matched gems.
-   */
   const findMatches = (currentGrid: (number | null)[][]) => {
     const matches = new Set<string>();
     const directions = [
@@ -160,12 +124,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     return matches;
   };
 
-  /**
-   * Orchestrates the process of clearing matches and applying gravity.
-   * Loops until no further matches are found (cascades).
-   * 
-   * @param {(number | null)[][]} startingGrid - The grid state after a piece has landed.
-   */
   const processBoard = useCallback(async (startingGrid: (number | null)[][]) => {
     setIsClearing(true);
     clearingRef.current = true;
@@ -178,7 +136,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       const scoreToAdd = matches.size * 50;
       setTimeout(() => onScoreUpdate(scoreToAdd), 0);
 
-      // Clear the matches
       matches.forEach(m => {
         const [r, c] = m.split(',').map(Number);
         currentGrid[r][c] = null;
@@ -187,7 +144,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       setGrid([...currentGrid.map(r => [...r])]);
       await new Promise(r => setTimeout(r, 200));
 
-      // Apply gravity to settle gems
       for (let c = 0; c < GRID_WIDTH; c++) {
         let emptyRow = GRID_HEIGHT - 1;
         for (let r = GRID_HEIGHT - 1; r >= 0; r--) {
@@ -203,13 +159,11 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
       await new Promise(r => setTimeout(r, 150));
     }
 
-    // Check for game over condition
     if (currentGrid[0].some(cell => cell !== null)) {
       setTimeout(() => onGameOver(), 0);
       return;
     }
 
-    // Prep for next falling piece
     setCurrentStack(nextStack);
     setNextStack(generateStack());
     setStackPos({ row: -2, col: Math.floor(GRID_WIDTH / 2) });
@@ -217,10 +171,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     clearingRef.current = false;
   }, [nextStack, onScoreUpdate, onGameOver, generateStack]);
 
-  /**
-   * The main "heartbeat" of the game loop.
-   * Advances the falling stack by one row and checks for collision/landing.
-   */
   const tick = useCallback(() => {
     if (isPaused || clearingRef.current) return;
 
@@ -253,7 +203,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     });
   }, [isPaused, currentStack, processBoard, onGameOver]);
 
-  // Handle keyboard inputs
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isPaused || clearingRef.current) return;
@@ -269,7 +218,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPaused, moveLeft, moveRight, cycleGems, tick]);
 
-  // Manage game timer
   useEffect(() => {
     const rate = Math.max(TICK_RATE_MIN, TICK_RATE_INITIAL);
     gameLoopRef.current = setInterval(tick, rate);
@@ -281,7 +229,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   return (
     <div className="flex flex-col items-center w-full gap-6">
       <div className="flex flex-col md:flex-row gap-8 items-center md:items-start w-full justify-center">
-        {/* Game Board container */}
         <div 
           className="relative bg-black/40 border-4 border-white/10 rounded-2xl overflow-hidden shadow-2xl shrink-0"
           style={{ 
@@ -292,7 +239,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
             gridTemplateRows: `repeat(${GRID_HEIGHT}, 1fr)`
           }}
         >
-          {/* Static Gems in the grid */}
           {grid.map((row, r) => row.map((gemId, c) => (
             <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-white/5 flex items-center justify-center">
               {gemId && (
@@ -304,7 +250,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
             </div>
           )))}
 
-          {/* Current Falling Piece */}
           {!isClearing && currentStack.length > 0 && [0, 1, 2].map(i => {
             const r = stackPos.row + i;
             if (r < 0 || r >= GRID_HEIGHT) return null;
@@ -328,7 +273,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
             );
           })}
 
-          {/* AI Hint Visualization */}
           {suggestedMove && !isClearing && (
             <div 
               className="absolute h-full w-[32px] bg-primary/10 border-x border-primary/20 pointer-events-none transition-all duration-300"
@@ -337,7 +281,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           )}
         </div>
 
-        {/* Info Panel with "Next Piece" preview */}
         <div className="flex flex-row md:flex-col gap-4 w-full md:w-auto justify-center">
           <div className="glass p-3 md:p-4 rounded-2xl border-white/10 flex flex-col items-center">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 md:mb-3">Next</p>
@@ -352,7 +295,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
         </div>
       </div>
 
-      {/* Touch Controls for Smartphones */}
       <div className="flex flex-col gap-4 w-full max-w-[320px] lg:hidden mb-8">
         <div className="grid grid-cols-3 gap-3">
           <Button 
@@ -395,15 +337,6 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
   );
 }
 
-/**
- * A UI component representing a single colored gem.
- * 
- * @param {Object} props - The component props.
- * @param {GemType} props.type - The metadata for the gem type (label, color, shadow).
- * @param {boolean} [props.isFalling] - Whether the gem is currently part of a falling stack.
- * @param {number} [props.size=32] - The pixel dimension of the gem.
- * @returns {JSX.Element} The rendered gem element.
- */
 function Gem({ type, isFalling, size = 32 }: { type: any, isFalling?: boolean, size?: number }) {
   return (
     <div 
