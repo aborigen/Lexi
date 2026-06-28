@@ -6,31 +6,32 @@ import { MatterScene } from '@/components/game/MatterScene';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { EvolutionGuide } from '@/components/game/EvolutionGuide';
 import { FRUIT_TIERS, ARENA_WIDTH, ARENA_HEIGHT } from '@/lib/game-constants';
-import { Trophy, RefreshCcw, TrendingUp } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { Trophy, RefreshCcw, LayoutDashboard, BrainCircuit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/toaster';
 
-export default function PulpDropPage() {
+export default function PulpDropGame() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [nextFruitIndex, setNextFruitIndex] = useState(0);
   const [currentBodies, setCurrentBodies] = useState<any[]>([]);
   const [suggestedX, setSuggestedX] = useState<number | null>(null);
+  const [gameKey, setGameKey] = useState(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem('pulpdrop_highscore');
+    const saved = localStorage.getItem('pulpdrop_high_score');
     if (saved) setHighScore(parseInt(saved));
-    setNextFruitIndex(Math.floor(Math.random() * 5)); // Initial small fruits
+    setNextFruitIndex(Math.floor(Math.random() * 4)); // Start with small fruits
   }, []);
 
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
-      localStorage.setItem('pulpdrop_highscore', score.toString());
+      localStorage.setItem('pulpdrop_high_score', score.toString());
     }
   }, [score, highScore]);
 
   const handleFruitDropped = useCallback(() => {
-    // New next fruit is always within the first 5 tiers for gameplay balance
     setNextFruitIndex(Math.floor(Math.random() * 5));
     setSuggestedX(null);
   }, []);
@@ -39,144 +40,134 @@ export default function PulpDropPage() {
     setScore(prev => prev + points);
   }, []);
 
-  const handleGameOver = useCallback(() => {
-    // Game over logic handled inside MatterScene via state, 
-    // but this callback is here for potential analytics or global state
+  const handleReset = useCallback(() => {
+    setScore(0);
+    setSuggestedX(null);
+    setGameKey(prev => prev + 1);
   }, []);
 
-  const handleBodiesUpdate = useCallback((bodies: any[]) => {
-    setCurrentBodies(bodies);
-  }, []);
-
-  const arenaDropRange = useMemo(() => ({
-    min: FRUIT_TIERS[nextFruitIndex].radius,
-    max: ARENA_WIDTH - FRUIT_TIERS[nextFruitIndex].radius
-  }), [nextFruitIndex]);
+  const arenaDropRange = useMemo(() => {
+    const radius = FRUIT_TIERS[nextFruitIndex].radius;
+    return {
+      min: radius + 10,
+      max: ARENA_WIDTH - radius - 10
+    };
+  }, [nextFruitIndex]);
 
   return (
-    <div className="min-h-svh bg-background flex items-center justify-center p-4 lg:p-8">
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1fr_400px_1fr] gap-8 items-start">
-        
-        {/* Left Sidebar: Score & Evolution */}
-        <aside className="hidden lg:flex flex-col gap-6 h-full">
-          <div className="p-6 glass rounded-2xl flex flex-col gap-4 border-primary/10">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-primary/20 rounded-xl">
-                <Trophy className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Global Record</p>
-                <p className="text-2xl font-black text-foreground">{highScore.toLocaleString()}</p>
-              </div>
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/20 rounded-2xl border border-primary/30">
+              <LayoutDashboard className="w-8 h-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black tracking-tighter italic">PULP<span className="text-primary">DROP</span></h1>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Physics Strategy Merging</p>
             </div>
           </div>
 
-          <EvolutionGuide />
-        </aside>
-
-        {/* Center: Game Container */}
-        <main className="flex flex-col items-center gap-4">
-          <div className="w-full flex justify-between items-end lg:hidden mb-2">
-             <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Score</span>
-                <span className="text-3xl font-black">{score.toLocaleString()}</span>
-             </div>
-             <div className="p-2 glass rounded-lg flex gap-2 items-center">
-                <span className="text-xs font-bold text-muted-foreground uppercase">Next:</span>
-                <span className="text-2xl">{FRUIT_TIERS[nextFruitIndex].label}</span>
-             </div>
+          <div className="flex gap-4">
+            <div className="glass px-6 py-3 rounded-2xl border-white/5 flex items-center gap-3">
+              <Trophy className="w-5 h-5 text-secondary" />
+              <div>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-none mb-1">Record</p>
+                <p className="text-xl font-black">{highScore.toLocaleString()}</p>
+              </div>
+            </div>
+            <div className="glass px-6 py-3 rounded-2xl border-primary/20 bg-primary/5 flex items-center gap-3">
+              <div className="flex flex-col">
+                <p className="text-[10px] font-bold text-primary uppercase tracking-wider leading-none mb-1">Score</p>
+                <p className="text-2xl font-black">{score.toLocaleString()}</p>
+              </div>
+            </div>
+            <Button variant="outline" size="icon" onClick={handleReset} className="rounded-2xl h-14 w-14 border-white/10 hover:bg-white/5">
+              <RefreshCcw className="w-6 h-6" />
+            </Button>
           </div>
+        </header>
 
-          <div 
-            className="relative shadow-[0_0_100px_rgba(242,68,114,0.1)] rounded-b-3xl border-x-4 border-b-4 border-white/5 overflow-hidden"
-            style={{ width: ARENA_WIDTH, height: ARENA_HEIGHT }}
-          >
-            <MatterScene 
-              nextFruitIndex={nextFruitIndex}
-              onFruitDropped={handleFruitDropped}
-              onScoreUpdate={handleScoreUpdate}
-              onGameOver={handleGameOver}
-              suggestedX={suggestedX}
-              onBodiesUpdate={handleBodiesUpdate}
-            />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 items-start">
+          {/* Left Panel: Evolution */}
+          <aside className="hidden lg:flex flex-col gap-6">
+            <div className="glass p-6 rounded-3xl border-white/5">
+               <h3 className="text-sm font-bold text-muted-foreground mb-6 uppercase tracking-widest flex items-center gap-2">
+                 <RefreshCcw className="w-4 h-4" />
+                 Evolution Cycle
+               </h3>
+               <EvolutionGuide />
+            </div>
+          </aside>
 
-          <div className="w-full h-2 bg-muted rounded-full overflow-hidden lg:hidden">
-             <Progress value={(score / Math.max(highScore, 1000)) * 100} className="h-full bg-primary" />
-          </div>
-        </main>
+          {/* Center: The Game Arena */}
+          <main className="flex flex-col items-center gap-6">
+            <div 
+              className="relative glass rounded-[2rem] border-4 border-white/5 shadow-[0_0_100px_rgba(var(--primary),0.1)] overflow-hidden"
+              style={{ width: ARENA_WIDTH, height: ARENA_HEIGHT }}
+            >
+              <MatterScene 
+                key={gameKey}
+                nextFruitIndex={nextFruitIndex}
+                onFruitDropped={handleFruitDropped}
+                onScoreUpdate={handleScoreUpdate}
+                onBodiesUpdate={setCurrentBodies}
+                suggestedX={suggestedX}
+                onGameOver={handleReset}
+              />
+            </div>
+          </main>
 
-        {/* Right Sidebar: HUD & AI */}
-        <aside className="flex flex-col gap-6 h-full">
-          {/* Main HUD */}
-          <div className="hidden lg:flex p-6 glass rounded-2xl flex-col gap-6 border-white/5">
-            <div className="flex justify-between items-start">
-               <div>
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Current Score</p>
-                  <h1 className="text-5xl font-black text-foreground tracking-tighter">{score.toLocaleString()}</h1>
+          {/* Right Panel: AI & Next Fruit */}
+          <aside className="flex flex-col gap-6 w-full max-w-sm mx-auto">
+            <div className="glass p-6 rounded-3xl border-white/5 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10" />
+               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4">Up Next</p>
+               <div className="flex items-center gap-6">
+                  <div 
+                    className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl shadow-inner border-2 border-white/10 animate-float"
+                    style={{ 
+                      backgroundColor: FRUIT_TIERS[nextFruitIndex].color + '20',
+                      borderColor: FRUIT_TIERS[nextFruitIndex].color + '40'
+                    }}
+                  >
+                    {FRUIT_TIERS[nextFruitIndex].label}
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-black capitalize">{FRUIT_TIERS[nextFruitIndex].type}</h4>
+                    <p className="text-sm text-muted-foreground">Tier {FRUIT_TIERS[nextFruitIndex].tier + 1}</p>
+                    <div className="mt-2 flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className={`w-3 h-1.5 rounded-full ${i < FRUIT_TIERS[nextFruitIndex].tier ? 'bg-primary' : 'bg-white/10'}`} />
+                      ))}
+                    </div>
+                  </div>
                </div>
-               <button onClick={() => window.location.reload()} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-                  <RefreshCcw className="w-5 h-5 text-muted-foreground" />
-               </button>
             </div>
 
-            <div className="h-px bg-white/10 w-full" />
+            <AIAdvisor 
+              onSuggestionReceived={setSuggestedX}
+              gameState={{
+                currentFruits: currentBodies,
+                nextFruitType: FRUIT_TIERS[nextFruitIndex].type,
+                arenaWidth: ARENA_WIDTH,
+                availableDropXRange: arenaDropRange
+              }}
+            />
 
-            <div className="flex items-center justify-between">
-              <div>
-                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Next Up</p>
-                 <div className="flex items-center gap-3">
-                    <div 
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl shadow-inner border-2 border-white/5 bg-white/5 animate-squish"
-                      style={{ color: FRUIT_TIERS[nextFruitIndex].color }}
-                    >
-                      {FRUIT_TIERS[nextFruitIndex].label}
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-sm font-bold text-foreground capitalize">{FRUIT_TIERS[nextFruitIndex].type}</span>
-                       <span className="text-xs text-muted-foreground">Level {FRUIT_TIERS[nextFruitIndex].tier + 1}</span>
-                    </div>
-                 </div>
+            <div className="glass p-6 rounded-3xl border-white/5 bg-secondary/5">
+              <div className="flex items-center gap-2 mb-3">
+                <BrainCircuit className="w-4 h-4 text-secondary" />
+                <span className="text-xs font-bold text-secondary uppercase tracking-widest">Tactical Tip</span>
               </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Dropping fruits near the walls can sometimes prevent them from rolling too fast. Use the AI Strategic Lens to find potential merge chains that you might have missed.
+              </p>
             </div>
-          </div>
-
-          {/* AI Advisor */}
-          <AIAdvisor 
-            onSuggestionReceived={(x) => setSuggestedX(x)}
-            gameState={{
-              currentFruits: currentBodies,
-              nextFruitType: FRUIT_TIERS[nextFruitIndex].type,
-              arenaWidth: ARENA_WIDTH,
-              availableDropXRange: arenaDropRange
-            }}
-          />
-
-          {/* Tips / Stats */}
-          <div className="p-4 glass rounded-xl border-white/5">
-             <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-secondary" />
-                <span className="text-xs font-bold text-secondary uppercase tracking-widest">Pro Tip</span>
-             </div>
-             <p className="text-xs text-muted-foreground leading-relaxed">
-               Dropping smaller fruits at the bottom helps stabilize the heap. Larger fruits like Pineapple should stay centered to maximize merge opportunities.
-             </p>
-          </div>
-        </aside>
-
+          </aside>
+        </div>
       </div>
-
-      {/* Footer Mobile Stats */}
-      <footer className="fixed bottom-0 left-0 w-full lg:hidden bg-background/80 backdrop-blur-md p-4 border-t border-white/5 flex justify-around">
-         <div className="text-center">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase">High Score</p>
-            <p className="font-bold">{highScore.toLocaleString()}</p>
-         </div>
-         <div className="text-center">
-            <p className="text-[10px] font-bold text-primary uppercase">Current</p>
-            <p className="font-bold">{score.toLocaleString()}</p>
-         </div>
-      </footer>
+      <Toaster />
     </div>
   );
 }

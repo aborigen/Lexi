@@ -33,22 +33,30 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body antialiased;
     background-image: radial-gradient(circle at 50% -20%, hsl(var(--primary) / 0.15), transparent 70%);
   }
 }
 
 .glass {
-  @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  @apply bg-card/40 backdrop-blur-xl border border-white/10 shadow-2xl;
 }
 
-@keyframes squish {
-  0% { transform: scale(1, 1); }
-  30% { transform: scale(1.1, 0.9); }
-  60% { transform: scale(0.9, 1.1); }
-  100% { transform: scale(1, 1); }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
 }
 
-.animate-squish {
-  animation: squish 0.5s ease-out;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

@@ -33,21 +33,20 @@ export function MatterScene({
   const [isGameOver, setIsGameOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [mousePos, setMousePos] = useState({ x: ARENA_WIDTH / 2 });
-  const gameOverTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Use refs for callbacks to prevent the main engine useEffect from re-running
-  const callbacksRef = useRef({ onScoreUpdate, onGameOver, onBodiesUpdate, onFruitDropped });
+  
+  // Ref for callbacks to avoid re-running effect on state changes
+  const callbacks = useRef({ onScoreUpdate, onGameOver, onBodiesUpdate, onFruitDropped });
   useEffect(() => {
-    callbacksRef.current = { onScoreUpdate, onGameOver, onBodiesUpdate, onFruitDropped };
+    callbacks.current = { onScoreUpdate, onGameOver, onBodiesUpdate, onFruitDropped };
   });
 
   useEffect(() => {
-    if (!containerRef.current || isGameOver) return;
+    if (!containerRef.current) return;
 
     // 1. Setup Engine & World
     const engine = Matter.Engine.create();
     engineRef.current = engine;
-    engine.gravity.y = 1.2;
+    engine.gravity.y = 1.0;
 
     // 2. Setup Renderer
     const render = Matter.Render.create({
@@ -62,17 +61,17 @@ export function MatterScene({
     });
 
     // 3. Create Boundaries
-    const ground = Matter.Bodies.rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT + 25, ARENA_WIDTH, 50, { 
+    const ground = Matter.Bodies.rectangle(ARENA_WIDTH / 2, ARENA_HEIGHT + 30, ARENA_WIDTH, 60, { 
       isStatic: true, 
       label: 'boundary',
       render: { visible: false } 
     });
-    const leftWall = Matter.Bodies.rectangle(-25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { 
+    const leftWall = Matter.Bodies.rectangle(-30, ARENA_HEIGHT / 2, 60, ARENA_HEIGHT, { 
       isStatic: true, 
       label: 'boundary',
       render: { visible: false } 
     });
-    const rightWall = Matter.Bodies.rectangle(ARENA_WIDTH + 25, ARENA_HEIGHT / 2, 50, ARENA_HEIGHT, { 
+    const rightWall = Matter.Bodies.rectangle(ARENA_WIDTH + 30, ARENA_HEIGHT / 2, 60, ARENA_HEIGHT, { 
       isStatic: true, 
       label: 'boundary',
       render: { visible: false } 
@@ -80,20 +79,20 @@ export function MatterScene({
     
     Matter.Composite.add(engine.world, [ground, leftWall, rightWall]);
 
-    // 4. Collision Event (Merging Logic)
+    // 4. Collision Merging Logic
     Matter.Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const bodyA = pair.bodyA;
         const bodyB = pair.bodyB;
 
-        if (bodyA.label === bodyB.label && bodyA.label !== 'boundary' && bodyA.label !== 'Circle Body') {
+        if (bodyA.label === bodyB.label && bodyA.label !== 'boundary') {
           const tierIdx = FRUIT_TIERS.findIndex(f => f.type === bodyA.label);
           if (tierIdx !== -1 && tierIdx < FRUIT_TIERS.length - 1) {
             const nextTier = FRUIT_TIERS[tierIdx + 1];
             const midX = (bodyA.position.x + bodyB.position.x) / 2;
             const midY = (bodyA.position.y + bodyB.position.y) / 2;
 
-            callbacksRef.current.onScoreUpdate(nextTier.score);
+            callbacks.current.onScoreUpdate(nextTier.score);
             
             Matter.Composite.remove(engine.world, [bodyA, bodyB]);
             
@@ -101,7 +100,7 @@ export function MatterScene({
               label: nextTier.type,
               render: {
                 fillStyle: nextTier.color,
-                strokeStyle: 'rgba(255,255,255,0.3)',
+                strokeStyle: 'rgba(255,255,255,0.4)',
                 lineWidth: 2,
               },
               restitution: 0.3,
@@ -114,12 +113,12 @@ export function MatterScene({
       });
     });
 
-    // 5. State Sync & Game Over Check
+    // 5. Game Update / Sync
     Matter.Events.on(engine, 'afterUpdate', () => {
       const allBodies = Matter.Composite.allBodies(engine.world);
-      const fruitBodies = allBodies.filter(b => b.label !== 'boundary');
+      const fruits = allBodies.filter(b => b.label !== 'boundary');
       
-      const bodiesData = fruitBodies.map(b => ({
+      const bodiesData = fruits.map(b => ({
         id: b.id.toString(),
         type: b.label,
         x: b.position.x,
@@ -127,47 +126,34 @@ export function MatterScene({
         radius: (b as any).circleRadius
       }));
       
-      callbacksRef.current.onBodiesUpdate(bodiesData);
+      callbacks.current.onBodiesUpdate(bodiesData);
       
       const now = Date.now();
-      const overflowing = fruitBodies.some(b => {
+      const isFull = fruits.some(b => {
         const radius = (b as any).circleRadius || 0;
-        const isAboveLine = b.position.y - radius < GAME_OVER_LINE_Y;
-        const isSettled = Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2;
-        
         const createdAt = (b.plugin as any)?.createdAt || 0;
-        const isOldEnough = now - createdAt > 1200;
-
-        return isAboveLine && isSettled && isOldEnough;
+        // Only check old enough fruits that have settled
+        return (now - createdAt > 2000) && 
+               (b.position.y - radius < GAME_OVER_LINE_Y) &&
+               (Math.abs(b.velocity.y) < 0.2);
       });
 
-      if (overflowing) {
-        if (!gameOverTimerRef.current) {
-          gameOverTimerRef.current = setTimeout(() => {
-            setIsGameOver(true);
-            callbacksRef.current.onGameOver();
-          }, 1500);
-        }
-      } else if (gameOverTimerRef.current) {
-        clearTimeout(gameOverTimerRef.current);
-        gameOverTimerRef.current = null;
+      if (isFull) {
+        setIsGameOver(true);
       }
     });
 
-    // 6. Start Runner & Renderer
     const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
-    // Cleanup
     return () => {
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
       if (render.canvas) render.canvas.remove();
-      if (gameOverTimerRef.current) clearTimeout(gameOverTimerRef.current);
     };
-  }, [isGameOver]);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (isGameOver) return;
@@ -175,33 +161,28 @@ export function MatterScene({
     if (!rect) return;
     
     let clientX;
-    if ('touches' in e && e.touches.length > 0) {
+    if ('touches' in e) {
       clientX = e.touches[0].clientX;
-    } else if ('clientX' in e) {
-      clientX = (e as React.MouseEvent).clientX;
     } else {
-      return;
+      clientX = (e as React.MouseEvent).clientX;
     }
 
-    const x = Math.max(
-      FRUIT_TIERS[nextFruitIndex].radius, 
-      Math.min(ARENA_WIDTH - FRUIT_TIERS[nextFruitIndex].radius, clientX - rect.left)
-    );
+    const radius = FRUIT_TIERS[nextFruitIndex].radius;
+    const x = Math.max(radius + 10, Math.min(ARENA_WIDTH - radius - 10, clientX - rect.left));
     setMousePos({ x });
   };
 
-  const handleClick = useCallback(() => {
+  const handleDrop = useCallback(() => {
     if (isGameOver || isDropping || !engineRef.current) return;
 
     setIsDropping(true);
     const fruitDef = FRUIT_TIERS[nextFruitIndex];
-    const dropX = mousePos.x;
     
-    const fruit = Matter.Bodies.circle(dropX, DROP_STAGING_HEIGHT, fruitDef.radius, {
+    const fruit = Matter.Bodies.circle(mousePos.x, DROP_STAGING_HEIGHT, fruitDef.radius, {
       label: fruitDef.type,
       render: {
         fillStyle: fruitDef.color,
-        strokeStyle: 'rgba(255,255,255,0.3)',
+        strokeStyle: 'rgba(255,255,255,0.4)',
         lineWidth: 2,
       },
       restitution: 0.2,
@@ -210,49 +191,52 @@ export function MatterScene({
     });
 
     Matter.Composite.add(engineRef.current.world, fruit);
-    callbacksRef.current.onFruitDropped();
+    callbacks.current.onFruitDropped();
 
     setTimeout(() => {
       setIsDropping(false);
-    }, 600);
+    }, 600); // Cooldown to prevent spam
   }, [nextFruitIndex, mousePos.x, isGameOver, isDropping]);
 
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full h-full cursor-none overflow-hidden touch-none"
+      className="relative w-full h-full cursor-none overflow-hidden touch-none select-none"
       onMouseMove={handleMouseMove}
       onTouchMove={handleMouseMove}
-      onClick={handleClick}
+      onClick={handleDrop}
     >
-      <div className="absolute inset-0 bg-[#1A0C0E] overflow-hidden">
-         <div className="absolute inset-0 opacity-10" style={{ 
+      <div className="absolute inset-0 bg-[#120809]">
+         <div className="absolute inset-0 opacity-5" style={{ 
             backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '30px 30px'
+            backgroundSize: '40px 40px'
          }} />
       </div>
 
+      {/* Danger Line */}
       <div 
-        className="absolute w-full border-t-2 border-dashed border-primary/40 z-10 pointer-events-none" 
+        className="absolute w-full border-t-2 border-dashed border-primary/30 z-10 pointer-events-none" 
         style={{ top: GAME_OVER_LINE_Y }}
       >
-        <div className="absolute right-2 -top-6 text-[10px] font-bold text-primary tracking-widest bg-background/80 px-2 py-0.5 rounded">
-          DANGER ZONE
+        <div className="absolute right-4 -top-6 text-[10px] font-bold text-primary tracking-widest bg-background/80 px-2 py-0.5 rounded border border-primary/20">
+          STABILITY THRESHOLD
         </div>
       </div>
 
+      {/* Suggested Drop Indicator */}
       {suggestedX !== null && !isGameOver && (
         <div 
-          className="absolute h-full w-[2px] bg-secondary/30 z-0 pointer-events-none"
-          style={{ left: suggestedX }}
+          className="absolute h-full w-1 bg-secondary/20 z-0 pointer-events-none transition-all duration-300"
+          style={{ left: suggestedX - 2 }}
         >
-          <div className="absolute bottom-0 w-4 h-4 -left-[7px] border-2 border-secondary/50 rounded-full animate-ping" />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-4 h-4 border-2 border-secondary/50 rounded-full animate-ping" />
         </div>
       )}
 
+      {/* Preview Fruit */}
       {!isGameOver && (
         <div 
-          className={`absolute pointer-events-none z-20 flex items-center justify-center transition-opacity duration-200 ${isDropping ? 'opacity-20' : 'opacity-100'}`}
+          className={`absolute pointer-events-none z-20 flex items-center justify-center transition-all duration-75 ${isDropping ? 'opacity-20 scale-90' : 'opacity-100'}`}
           style={{ 
             left: mousePos.x, 
             top: DROP_STAGING_HEIGHT,
@@ -261,24 +245,29 @@ export function MatterScene({
             height: FRUIT_TIERS[nextFruitIndex].radius * 2,
             borderRadius: '50%',
             backgroundColor: FRUIT_TIERS[nextFruitIndex].color,
-            boxShadow: `0 0 20px ${FRUIT_TIERS[nextFruitIndex].color}80`,
-            border: '2px solid rgba(255,255,255,0.4)'
+            boxShadow: `0 0 30px ${FRUIT_TIERS[nextFruitIndex].color}60`,
+            border: '2px solid rgba(255,255,255,0.6)'
           }}
         >
-           <span className="text-xl select-none">{FRUIT_TIERS[nextFruitIndex].label}</span>
-           <div className="absolute -top-12 h-12 w-[1px] bg-gradient-to-b from-transparent to-primary/50" />
+           <span className="text-2xl drop-shadow-md">{FRUIT_TIERS[nextFruitIndex].label}</span>
+           <div className="absolute -top-16 h-16 w-[1px] bg-gradient-to-b from-transparent to-white/40" />
         </div>
       )}
 
+      {/* Game Over Screen */}
       {isGameOver && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-md z-50 flex flex-col items-center justify-center text-center p-6 animate-in fade-in duration-500">
-          <h2 className="text-4xl font-black text-primary mb-2 italic">ARENA FULL!</h2>
-          <p className="text-muted-foreground mb-8 max-w-[200px]">The fruits have reached the danger threshold.</p>
+        <div className="absolute inset-0 bg-background/90 backdrop-blur-xl z-50 flex flex-col items-center justify-center text-center p-8 animate-in fade-in zoom-in duration-500">
+          <div className="mb-6 p-6 bg-primary/10 rounded-full border-2 border-primary/30 animate-pulse">
+            <LayoutDashboard className="w-16 h-16 text-primary" />
+          </div>
+          <h2 className="text-5xl font-black text-foreground mb-4 italic tracking-tighter">ARENA OVERFLOW</h2>
+          <p className="text-muted-foreground mb-10 max-w-xs text-sm leading-relaxed">The heap has exceeded the stability threshold. Your strategy reached its limit.</p>
           <button 
-            onClick={() => window.location.reload()}
-            className="px-8 py-3 bg-primary text-white font-bold rounded-full hover:scale-105 transition-transform shadow-lg shadow-primary/40"
+            onClick={() => callbacks.current.onGameOver()}
+            className="group relative px-12 py-4 bg-primary text-white font-black rounded-full hover:scale-105 transition-all shadow-[0_0_30px_rgba(var(--primary),0.4)]"
           >
-            PLAY AGAIN
+            <span className="relative z-10 flex items-center gap-2">REBOOT SESSION <RefreshCcw className="w-4 h-4" /></span>
+            <div className="absolute inset-0 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform" />
           </button>
         </div>
       )}
