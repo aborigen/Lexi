@@ -4,12 +4,12 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2, Target, BrainCircuit } from 'lucide-react';
-import { strategicDropSuggestion, type StrategicDropSuggestionInput } from '@/ai/flows/strategic-drop-suggestion';
+import { strategicColumnSuggestion, type StrategicColumnSuggestionInput } from '@/ai/flows/strategic-column-suggestion';
 import { useToast } from '@/hooks/use-toast';
 
 interface AIAdvisorProps {
-  gameState: StrategicDropSuggestionInput;
-  onSuggestionReceived: (x: number) => void;
+  gameState: StrategicColumnSuggestionInput;
+  onSuggestionReceived: (col: number, cycle: number) => void;
 }
 
 export function AIAdvisor({ gameState, onSuggestionReceived }: AIAdvisorProps) {
@@ -18,19 +18,19 @@ export function AIAdvisor({ gameState, onSuggestionReceived }: AIAdvisorProps) {
   const { toast } = useToast();
 
   const handleGetSuggestion = async () => {
-    if (isAnalyzing || gameState.currentFruits.length === 0) return;
+    if (isAnalyzing || gameState.currentStack.length === 0) return;
     
     setIsAnalyzing(true);
     setSuggestion(null);
 
     try {
-      const result = await strategicDropSuggestion(gameState);
+      const result = await strategicColumnSuggestion(gameState);
       setSuggestion(result.reasoning);
-      onSuggestionReceived(result.suggestedDropX);
+      onSuggestionReceived(result.suggestedColumn, result.cycleCount);
     } catch (error) {
       toast({
         title: "Strategic Uplink Failed",
-        description: "The AI strategist is currently unavailable.",
+        description: "The AI strategist is currently recalibrating.",
         variant: "destructive"
       });
     } finally {
@@ -54,10 +54,10 @@ export function AIAdvisor({ gameState, onSuggestionReceived }: AIAdvisorProps) {
           variant="secondary" 
           className="h-9 px-4 font-bold bg-primary hover:bg-primary/80 text-white rounded-xl shadow-lg shadow-primary/20"
           onClick={handleGetSuggestion}
-          disabled={isAnalyzing || gameState.currentFruits.length === 0}
+          disabled={isAnalyzing || gameState.currentStack.length === 0}
         >
           {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
-          {isAnalyzing ? "CALCULATING" : "ANALYZE"}
+          {isAnalyzing ? "ANALYZING" : "GET HINT"}
         </Button>
       </div>
       
@@ -72,9 +72,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived }: AIAdvisorProps) {
           </div>
         ) : (
           <p className="text-xs text-muted-foreground italic">
-            {gameState.currentFruits.length === 0 
-              ? "Drop some fruit first to enable tactical analysis."
-              : "Engage the Strategic Lens for real-time trajectory optimization."}
+            Wait for a tricky pattern to engage the Strategic Lens.
           </p>
         )}
       </div>
