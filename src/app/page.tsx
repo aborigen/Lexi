@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ColumnsGame } from '@/components/game/ColumnsGame';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES } from '@/lib/game-constants';
-import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2 } from 'lucide-react';
+import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -41,7 +41,8 @@ export default function ColumnsPage() {
       const sdk = await initYandexSDK();
       if (sdk) {
         setIsYandexReady(true);
-        setLang(getEnvironmentLanguage());
+        const envLang = getEnvironmentLanguage();
+        setLang(envLang);
         const yandexHigh = await fetchHighScoreFromYandex();
         if (yandexHigh !== null && yandexHigh > (parseInt(saved || '0'))) {
           setHighScore(yandexHigh);
@@ -98,6 +99,10 @@ export default function ColumnsPage() {
     setSuggestedMove({ col, cycle });
   }, []);
 
+  const toggleLang = () => {
+    setLang(prev => prev === 'en' ? 'ru' : 'en');
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
       <div className="max-w-7xl mx-auto px-4 py-4 lg:py-12">
@@ -113,6 +118,16 @@ export default function ColumnsPage() {
           </div>
 
           <div className="flex space-x-2 md:space-x-4 items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleLang} 
+              className="rounded-full hover:bg-white/10 h-10 w-10 flex flex-col items-center justify-center"
+            >
+              <Languages className="w-5 h-5 text-muted-foreground" />
+              <span className="text-[8px] font-bold opacity-70 uppercase">{lang}</span>
+            </Button>
+
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10 h-10 w-10">
