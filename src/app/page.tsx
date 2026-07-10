@@ -167,7 +167,7 @@ export default function ColumnsPage() {
                <h3 className="text-sm font-bold text-muted-foreground mb-6 uppercase tracking-widest">
                  {t('gem_rarity', lang)}
                </h3>
-               <div className="grid grid-cols-3 md:flex md:flex-col gap-4">
+               <div className="flex flex-wrap gap-x-6 gap-y-4">
                  {GEM_TYPES.map(gem => (
                    <div key={gem.id} className="flex items-center gap-3">
                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center text-lg md:text-xl shadow-lg border-2 border-white/10" style={{ backgroundColor: gem.color }}>
