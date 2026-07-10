@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2024-05-26
+### Added
+- **Blue Sky Theme**: Redesigned the UI with a sunny day aesthetic, featuring a CSS-animated sun, clouds, and sky gradients.
+- **UI Localization**: Full support for English and Russian, automatically detecting Yandex Games environment settings.
+- **Language Switcher**: Added a manual toggle in the header to switch between supported languages.
+- **Technical Documentation**: Created `docs/CODE_DOCUMENTATION.md` detailing the match-3 logic and game loop architecture.
+- **Yandex Game Ready**: Implemented `LoadingAPI.ready()` signal to comply with Yandex Games SDK requirements.
+
+### Changed
+- **UI Layout**: Optimized the "Gem Rarity" widget to display items in a row for better space utilization.
+- **Glassmorphism**: Refined glass effects to work with the new light-themed sky background.
+
 ## [1.3.0] - 2024-05-25
 ### Added
 - **Yandex Games SDK**: Integrated Yandex Games SDK for high-score synchronization with cloud storage.
