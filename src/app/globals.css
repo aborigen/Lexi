@@ -5,25 +5,25 @@
 
 @layer base {
   :root {
-    --background: 351 37% 7%;
-    --foreground: 0 0% 98%;
-    --card: 351 37% 10%;
-    --card-foreground: 0 0% 98%;
-    --popover: 351 37% 7%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 344 88% 61%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 25 88% 61%;
-    --secondary-foreground: 351 37% 7%;
-    --muted: 351 20% 15%;
-    --muted-foreground: 351 10% 65%;
-    --accent: 25 88% 61%;
-    --accent-foreground: 0 0% 100%;
+    --background: 195 100% 95%;
+    --foreground: 200 50% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 200 50% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 50% 10%;
+    --primary: 45 100% 50%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 195 50% 85%;
+    --secondary-foreground: 200 50% 10%;
+    --muted: 195 20% 90%;
+    --muted-foreground: 200 30% 40%;
+    --accent: 45 100% 50%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 351 20% 20%;
-    --input: 351 20% 20%;
-    --ring: 344 88% 61%;
+    --border: 195 30% 85%;
+    --input: 195 30% 85%;
+    --ring: 45 100% 50%;
     --radius: 1rem;
   }
 }
@@ -35,21 +35,66 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased overflow-x-hidden;
-    background-image: radial-gradient(circle at 50% -20%, hsl(var(--primary) / 0.15), transparent 70%);
+    /* Sky Gradient */
+    background: linear-gradient(to bottom, #87CEEB 0%, #B0E2FF 40%, #E0F7FA 100%);
     background-attachment: fixed;
     touch-action: manipulation;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* The Sun */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #fff700 0%, #ffcc00 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 60px #ffcc00, 0 0 120px rgba(255, 204, 0, 0.4);
+    z-index: -1;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Clouds using multiple gradients */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 10%),
+      radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
+      radial-gradient(circle at 15% 35%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
+      
+      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 15%),
+      radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.8) 0%, transparent 18%),
+      radial-gradient(circle at 65% 25%, rgba(255, 255, 255, 0.8) 0%, transparent 18%),
+
+      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 20%),
+      radial-gradient(circle at 45% 65%, rgba(255, 255, 255, 0.6) 0%, transparent 25%),
+      radial-gradient(circle at 35% 65%, rgba(255, 255, 255, 0.6) 0%, transparent 25%);
+    pointer-events: none;
+    background-repeat: no-repeat;
+    opacity: 0.8;
   }
 }
 
 .glass {
-  background-color: rgba(28, 11, 13, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
 
 @supports ((-webkit-backdrop-filter: blur(24px)) or (backdrop-filter: blur(24px))) {
   .glass {
-    background-color: rgba(28, 11, 13, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
     -webkit-backdrop-filter: blur(24px);
     backdrop-filter: blur(24px);
   }
@@ -62,20 +107,19 @@
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.05); }
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Prevent text selection during gameplay on mobile */
 .select-none {
   user-select: none;
   -webkit-user-select: none;

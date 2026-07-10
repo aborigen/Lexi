@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -232,7 +233,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
     <div className="flex flex-col items-center w-full gap-6">
       <div className="flex flex-col md:flex-row gap-8 items-center md:items-start w-full justify-center">
         <div 
-          className="relative bg-black/40 border-4 border-white/10 rounded-2xl overflow-hidden shadow-2xl shrink-0"
+          className="relative bg-white/20 backdrop-blur-sm border-4 border-white/40 rounded-2xl overflow-hidden shadow-2xl shrink-0"
           style={{ 
             width: GRID_WIDTH * 32, 
             height: GRID_HEIGHT * 32,
@@ -242,7 +243,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           }}
         >
           {grid.map((row, r) => row.map((gemId, c) => (
-            <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-white/5 flex items-center justify-center">
+            <div key={`${r}-${c}`} className="w-full h-full border-[0.5px] border-black/5 flex items-center justify-center">
               {gemId && (
                 <Gem 
                   type={GEM_TYPES.find(g => g.id === gemId)!} 
@@ -277,18 +278,18 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
 
           {suggestedMove && !isClearing && (
             <div 
-              className="absolute h-full w-[32px] bg-primary/10 border-x border-primary/20 pointer-events-none transition-all duration-300"
+              className="absolute h-full w-[32px] bg-primary/20 border-x border-primary/40 pointer-events-none transition-all duration-300"
               style={{ left: suggestedMove.col * 32 }}
             />
           )}
         </div>
 
         <div className="flex flex-row md:flex-col gap-4 w-full md:w-auto justify-center">
-          <div className="glass p-3 md:p-4 rounded-2xl border-white/10 flex flex-col items-center">
+          <div className="glass p-3 md:p-4 rounded-2xl border-white/60 flex flex-col items-center">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 md:mb-3">{t('next', lang)}</p>
             <div className="flex flex-row md:flex-col gap-1">
               {nextStack.map((id, i) => (
-                <div key={i} className="w-8 h-8 md:w-10 md:h-10 glass rounded-lg flex items-center justify-center text-lg md:text-xl shadow-inner border border-white/5">
+                <div key={i} className="w-8 h-8 md:w-10 md:h-10 bg-white/40 rounded-lg flex items-center justify-center text-lg md:text-xl shadow-inner border border-white/60">
                   {GEM_TYPES.find(g => g.id === id)?.label}
                 </div>
               ))}
@@ -302,7 +303,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           <Button 
             variant="outline" 
             size="lg" 
-            className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+            className="h-16 glass rounded-2xl border-white/60 active:scale-95 transition-transform"
             onPointerDown={(e) => { e.preventDefault(); moveLeft(); }}
           >
             <ChevronLeft className="w-8 h-8" />
@@ -311,7 +312,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
             <Button 
               variant="outline" 
               size="lg" 
-              className="h-16 glass rounded-2xl border-primary/20 bg-primary/10 active:scale-95 transition-transform"
+              className="h-16 glass rounded-2xl border-primary/40 bg-primary/10 active:scale-95 transition-transform"
               onPointerDown={(e) => { e.preventDefault(); cycleGems(); }}
             >
               <RotateCcw className="w-7 h-7" />
@@ -319,7 +320,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
             <Button 
               variant="outline" 
               size="lg" 
-              className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+              className="h-16 glass rounded-2xl border-white/60 active:scale-95 transition-transform"
               onPointerDown={(e) => { e.preventDefault(); tick(); }}
             >
               <ChevronDown className="w-8 h-8" />
@@ -328,7 +329,7 @@ export function ColumnsGame({ onScoreUpdate, onGameOver, onStateUpdate, suggeste
           <Button 
             variant="outline" 
             size="lg" 
-            className="h-16 glass rounded-2xl border-white/10 active:scale-95 transition-transform"
+            className="h-16 glass rounded-2xl border-white/60 active:scale-95 transition-transform"
             onPointerDown={(e) => { e.preventDefault(); moveRight(); }}
           >
             <ChevronRight className="w-8 h-8" />
