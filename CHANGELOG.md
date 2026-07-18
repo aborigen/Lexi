@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.1.2] - 2024-05-30
+### Fixed
+- **Build Compatibility**: Removed explicit `esbuild` pins to allow the package manager to resolve compatible binaries for macOS 10.15 (Catalina).
+- **Tooling**: Added explicit `tsx` to `devDependencies` to ensure Genkit development scripts have a reliable runner.
+
 ## [2.1.1] - 2024-05-29
 ### Fixed
 - **esbuild Fix**: Added `@esbuild/darwin-x64` to `optionalDependencies` to resolve native binary installation failures on macOS 10.15 Catalina.
