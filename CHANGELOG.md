@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.1.1] - 2024-05-29
+### Fixed
+- **esbuild Fix**: Added `@esbuild/darwin-x64` to `optionalDependencies` to resolve native binary installation failures on macOS 10.15 Catalina.
+
 ## [2.1.0] - 2024-05-28
 ### Added
 - **OS Compatibility**: Explicitly pinned `esbuild` version and updated `browserslist` to ensure builds work on macOS 10.15 (Catalina) and Safari 13.
@@ -17,4 +21,3 @@
 ## [1.4.0] - 2024-05-26
 ### Added
 - **Blue Sky Theme**: Redesigned the UI with a sunny day aesthetic.
-...
