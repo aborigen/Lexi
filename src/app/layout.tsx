@@ -4,8 +4,8 @@ import Script from 'next/script';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Columns.AI - Tactical Match-3 Puzzle',
-  description: 'A classic grid-based puzzle game with AI strategy recommendations.',
+  title: 'Lexi.AI - Word Connect Puzzle',
+  description: 'An engaging circular word-linking game with AI-powered hints and Yandex SDK integration.',
 };
 
 export default function RootLayout({
