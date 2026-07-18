@@ -1,7 +1,7 @@
 
 {
   "name": "lexi-ai",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -15,6 +15,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
+  },
+  "overrides": {
+    "esbuild": "0.19.12"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.28.0",

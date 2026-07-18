@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.1.3] - 2024-05-31
+### Fixed
+- **Legacy macOS Support**: Added `npm overrides` to force `esbuild@0.19.12`. This resolves `dyld` symbol errors on macOS 10.15 (Catalina) where newer esbuild binaries fail due to missing system APIs.
+
 ## [2.1.2] - 2024-05-30
 ### Fixed
 - **Build Compatibility**: Removed explicit `esbuild` pins to allow the package manager to resolve compatible binaries for macOS 10.15 (Catalina).
