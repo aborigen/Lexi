@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.1.0] - 2024-05-28
+### Added
+- **OS Compatibility**: Explicitly pinned `esbuild` version and updated `browserslist` to ensure builds work on macOS 10.15 (Catalina) and Safari 13.
+- **Static Export**: Enabled `output: 'export'` in `next.config.ts` for standalone deployment.
+
 ## [2.0.0] - 2024-05-27
 ### Added
 - **Total Pivot**: Refactored from Columns.AI (match-3) to Lexi.AI (Word Connect).
