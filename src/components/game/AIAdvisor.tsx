@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2, Target, BrainCircuit } from 'lucide-react';
-import { strategicColumnSuggestion, type StrategicColumnSuggestionInput } from '@/ai/flows/strategic-column-suggestion';
+import { getWordHint, type WordHintInput } from '@/ai/flows/strategic-column-suggestion';
 import { useToast } from '@/hooks/use-toast';
 import { t } from '@/lib/translations';
 
 interface AIAdvisorProps {
-  gameState: StrategicColumnSuggestionInput;
-  onSuggestionReceived: (col: number, cycle: number) => void;
+  gameState: WordHintInput;
+  onSuggestionReceived: (hint: string) => void;
   lang?: string;
 }
 
@@ -19,15 +19,15 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
   const { toast } = useToast();
 
   const handleGetSuggestion = async () => {
-    if (isAnalyzing || gameState.currentStack.length === 0) return;
+    if (isAnalyzing || !gameState.letters || gameState.letters.length === 0) return;
     
     setIsAnalyzing(true);
     setSuggestion(null);
 
     try {
-      const result = await strategicColumnSuggestion(gameState);
+      const result = await getWordHint(gameState);
       setSuggestion(result.reasoning);
-      onSuggestionReceived(result.suggestedColumn, result.cycleCount);
+      onSuggestionReceived(result.hintWord);
     } catch (error) {
       toast({
         title: t('ai_failed_title', lang),
@@ -38,6 +38,8 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
       setIsAnalyzing(false);
     }
   };
+
+  const isButtonDisabled = isAnalyzing || !gameState.letters || gameState.letters.length === 0;
 
   return (
     <div className="flex flex-col gap-5 p-6 glass rounded-3xl border-primary/20 bg-primary/5">
@@ -55,7 +57,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
           variant="secondary" 
           className="h-9 px-4 font-bold bg-primary hover:bg-primary/80 text-white rounded-xl shadow-lg shadow-primary/20"
           onClick={handleGetSuggestion}
-          disabled={isAnalyzing || gameState.currentStack.length === 0}
+          disabled={isButtonDisabled}
         >
           {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
           {isAnalyzing ? t('analyzing', lang) : t('get_hint', lang)}

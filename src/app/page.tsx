@@ -1,10 +1,11 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ColumnsGame } from '@/components/game/ColumnsGame';
+import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { GRID_WIDTH, GRID_HEIGHT, GEM_TYPES } from '@/lib/game-constants';
-import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2, Languages } from 'lucide-react';
+import { LEVELS } from '@/lib/game-constants';
+import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2, Languages, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -18,26 +19,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export default function ColumnsPage() {
+export default function WordConnectPage() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [gameKey, setGameKey] = useState(0);
+  const [levelIndex, setLevelIndex] = useState(0);
   const [isYandexReady, setIsYandexReady] = useState(false);
   const [lang, setLang] = useState('en');
-  const [currentGameState, setCurrentGameState] = useState<{grid: (number|null)[][], stack: number[]}>({
-    grid: [],
-    stack: []
+  const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
+    letters: [],
+    foundWords: [],
+    allValidWords: []
   });
-  const [suggestedMove, setSuggestedMove] = useState<{col: number, cycle: number} | null>(null);
 
-  // Initialize High Score and Yandex SDK
   useEffect(() => {
     const init = async () => {
-      // Local fallback
-      const saved = typeof window !== 'undefined' ? localStorage.getItem('columns_high_score') : null;
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
       if (saved) setHighScore(parseInt(saved));
 
-      // Yandex SDK Init
       const sdk = await initYandexSDK();
       if (sdk) {
         setIsYandexReady(true);
@@ -47,61 +45,42 @@ export default function ColumnsPage() {
         if (yandexHigh !== null && yandexHigh > (parseInt(saved || '0'))) {
           setHighScore(yandexHigh);
         }
-
-        // Call LoadingAPI.ready() when the user can start playing
-        if (sdk.features.LoadingAPI) {
-          sdk.features.LoadingAPI.ready();
-        }
+        if (sdk.features.LoadingAPI) sdk.features.LoadingAPI.ready();
       }
     };
     init();
   }, []);
 
-  // Update high score locally and in cloud
   useEffect(() => {
     if (score > highScore) {
-      const newHigh = score;
-      setHighScore(newHigh);
-      localStorage.setItem('columns_high_score', newHigh.toString());
-      
-      if (isYandexReady) {
-        syncHighScoreToYandex(newHigh);
-      }
+      setHighScore(score);
+      localStorage.setItem('word_high_score', score.toString());
+      if (isYandexReady) syncHighScoreToYandex(score);
     }
   }, [score, highScore, isYandexReady]);
 
   const handleReset = useCallback(() => {
     setScore(0);
-    setSuggestedMove(null);
-    setGameKey(prev => prev + 1);
+    setLevelIndex(0);
   }, []);
 
-  const handleGameOver = useCallback(() => {
+  const handleLevelComplete = useCallback(() => {
     toast({ 
       title: t('game_over_title', lang), 
-      description: t('game_over_desc', lang), 
-      variant: "destructive" 
+      description: t('game_over_desc', lang),
     });
-    
-    // Defer reset to avoid render-phase state updates
-    setTimeout(() => handleReset(), 0);
-  }, [handleReset, lang]);
+    setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
+  }, [lang]);
 
-  const handleStateUpdate = useCallback((grid: (number|null)[][], stack: number[]) => {
-    setCurrentGameState({ grid, stack });
+  const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
+    setGameState({ letters, foundWords, allValidWords });
   }, []);
 
   const handleScoreUpdate = useCallback((newScore: number) => {
     setScore(prev => prev + newScore);
   }, []);
 
-  const handleSuggestionReceived = useCallback((col: number, cycle: number) => {
-    setSuggestedMove({ col, cycle });
-  }, []);
-
-  const toggleLang = () => {
-    setLang(prev => prev === 'en' ? 'ru' : 'en');
-  };
+  const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
@@ -112,20 +91,14 @@ export default function ColumnsPage() {
               <Gamepad2 className="w-6 h-6 md:w-8 md:h-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-4xl font-black tracking-tighter italic uppercase leading-none">COLUMNS<span className="text-primary">.AI</span></h1>
-              <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Match-3 Tactical Grid</p>
+              <h1 className="text-2xl md:text-4xl font-black tracking-tighter italic uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
+              <p className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Word Connect Puzzle</p>
             </div>
           </div>
 
           <div className="flex space-x-2 md:space-x-4 items-center">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleLang} 
-              className="rounded-full hover:bg-white/10 h-10 w-10 flex flex-col items-center justify-center"
-            >
+            <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full hover:bg-white/10 h-10 w-10">
               <Languages className="w-5 h-5 text-muted-foreground" />
-              <span className="text-[8px] font-bold opacity-70 uppercase">{lang}</span>
             </Button>
 
             <Dialog>
@@ -139,18 +112,9 @@ export default function ColumnsPage() {
                   <DialogTitle className="text-2xl font-black italic">{t('tactical_guide', lang)}</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col space-y-4 py-4">
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">←→</div>
-                    <p className="text-sm">{t('guide_move', lang)}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">↑</div>
-                    <p className="text-sm">{t('guide_cycle', lang)}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0">3x</div>
-                    <p className="text-sm">{t('guide_match', lang)}</p>
-                  </div>
+                  <p className="text-sm">{t('guide_draw', lang)}</p>
+                  <p className="text-sm">{t('guide_find', lang)}</p>
+                  <p className="text-sm">{t('guide_clear', lang)}</p>
                 </div>
               </DialogContent>
             </Dialog>
@@ -170,62 +134,45 @@ export default function ColumnsPage() {
               </div>
             </div>
             
-            <Button variant="outline" size="icon" onClick={handleReset} className="rounded-xl md:rounded-2xl h-10 w-10 md:h-14 md:w-14 border-white/10 hover:bg-white/5">
-              <RefreshCcw className="w-5 h-5 md:w-6 md:h-6" />
+            <Button variant="outline" size="icon" onClick={handleReset} className="rounded-xl h-10 w-10 border-white/10 hover:bg-white/5">
+              <RefreshCcw className="w-5 h-5" />
             </Button>
           </div>
         </header>
 
-        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_auto_1fr] gap-6 md:gap-12 items-center lg:items-start justify-center">
-          <aside className="hidden md:flex flex-col space-y-6 w-full lg:w-auto">
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_2fr_1fr] gap-6 items-center lg:items-start">
+          <aside className="w-full">
             <div className="glass p-6 rounded-3xl">
-               <h3 className="text-sm font-bold text-muted-foreground mb-6 uppercase tracking-widest">
-                 {t('gem_rarity', lang)}
-               </h3>
-               <div className="flex flex-wrap gap-x-6 gap-y-4">
-                 {GEM_TYPES.map(gem => (
-                   <div key={gem.id} className="flex items-center gap-3">
-                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center text-lg md:text-xl shadow-lg border-2 border-white/10" style={{ backgroundColor: gem.color }}>
-                       {gem.label}
-                     </div>
-                     <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">{gem.score} pts</span>
+               <h3 className="text-sm font-bold text-muted-foreground mb-4 uppercase tracking-widest">{t('found_words', lang)}</h3>
+               <div className="flex flex-wrap gap-2">
+                 {gameState.foundWords.map(word => (
+                   <div key={word} className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-primary/30">
+                     {word}
                    </div>
                  ))}
                </div>
             </div>
           </aside>
 
-          <main className="flex justify-center w-full">
-            <ColumnsGame 
-              key={gameKey}
+          <main className="w-full flex justify-center">
+            <WordConnect 
+              levelIndex={levelIndex}
               onScoreUpdate={handleScoreUpdate}
-              onGameOver={handleGameOver}
+              onLevelComplete={handleLevelComplete}
               onStateUpdate={handleStateUpdate}
-              suggestedMove={suggestedMove}
               lang={lang}
             />
           </main>
 
-          <aside className="flex flex-col space-y-6 w-full max-w-sm">
+          <aside className="w-full space-y-6">
             <AIAdvisor 
-              onSuggestionReceived={handleSuggestionReceived}
-              gameState={{
-                grid: currentGameState.grid,
-                currentStack: currentGameState.stack,
-                gridWidth: GRID_WIDTH,
-                gridHeight: GRID_HEIGHT
-              }}
+              onSuggestionReceived={() => {}}
+              gameState={gameState}
               lang={lang}
             />
-
-            <div className="glass p-5 md:p-6 rounded-3xl bg-secondary/5 border-secondary/10 hidden sm:block">
-              <div className="flex items-center space-x-2 mb-3">
-                <BrainCircuit className="w-4 h-4 text-secondary" />
-                <span className="text-xs font-bold text-secondary uppercase tracking-widest">{t('strategy_pro_tip', lang)}</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {t('pro_tip_content', lang)}
-              </p>
+            <div className="glass p-6 rounded-3xl">
+              <h3 className="text-xs font-bold text-secondary uppercase tracking-widest mb-2">PRO TIP</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">Longer words yield significantly more points and help you finish levels faster!</p>
             </div>
           </aside>
         </div>

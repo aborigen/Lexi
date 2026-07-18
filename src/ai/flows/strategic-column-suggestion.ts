@@ -1,60 +1,55 @@
-
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for providing strategic column suggestions in the Columns game.
+ * @fileOverview This file defines a Genkit flow for providing word hints in the Word Connect game.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const GridCellSchema = z.number().nullable();
-const GridSchema = z.array(z.array(GridCellSchema));
-
-const StrategicColumnSuggestionInputSchema = z.object({
-  grid: GridSchema.describe('The current game grid where null is empty and numbers represent gem IDs.'),
-  currentStack: z.array(z.number()).describe('The colors (IDs) of the three gems currently falling, from top to bottom.'),
-  gridWidth: z.number(),
-  gridHeight: z.number(),
+const WordHintInputSchema = z.object({
+  letters: z.array(z.string()).describe('The 5 letters available on the board.'),
+  foundWords: z.array(z.string()).describe('Words already found by the player.'),
+  allValidWords: z.array(z.string()).describe('All possible valid words for this level.'),
 });
-export type StrategicColumnSuggestionInput = z.infer<typeof StrategicColumnSuggestionInputSchema>;
+export type WordHintInput = z.infer<typeof WordHintInputSchema>;
 
-const StrategicColumnSuggestionOutputSchema = z.object({
-  suggestedColumn: z.number().describe('The recommended column (0 to gridWidth-1) for the current stack.'),
-  cycleCount: z.number().describe('How many times to cycle the gems (0, 1, or 2) for the best result.'),
-  reasoning: z.string().describe('Explanation for the move.'),
+const WordHintOutputSchema = z.object({
+  hintWord: z.string().describe('A word the user has NOT found yet.'),
+  reasoning: z.string().describe('Encouragement or a small clue about the word.'),
 });
-export type StrategicColumnSuggestionOutput = z.infer<typeof StrategicColumnSuggestionOutputSchema>;
+export type WordHintOutput = z.infer<typeof WordHintOutputSchema>;
 
-const strategicColumnSuggestionPrompt = ai.definePrompt({
-  name: 'strategicColumnSuggestionPrompt',
-  input: {schema: StrategicColumnSuggestionInputSchema},
-  output: {schema: StrategicColumnSuggestionOutputSchema},
-  prompt: `You are a Grandmaster at "Columns", a match-3 puzzle game. 
-A stack of 3 gems is falling. You can move the stack left/right and cycle the 3 gems internally.
-Match 3 or more gems horizontally, vertically, or diagonally.
+const wordHintPrompt = ai.definePrompt({
+  name: 'wordHintPrompt',
+  input: {schema: WordHintInputSchema},
+  output: {schema: WordHintOutputSchema},
+  prompt: `You are a Word Game Expert. 
+The player has these letters: {{{json letters}}}.
+They have already found: {{{json foundWords}}}.
+The remaining valid words are: {{{json allValidWords}}}.
 
-Current Stack (Top to Bottom): {{{json currentStack}}}
-Grid State (Row by Row):
-{{{json grid}}}
-
-Analyze the grid to find columns where placing this stack would create an immediate match or set up a powerful cascade. 
-Suggest the best column (0-indexed) and how many cycles to perform.
+Pick ONE word from the valid words that has NOT been found yet. 
+Provide a helpful but cryptic hint for it. Do not just give the word away in the reasoning.
 `,
 });
 
-const strategicColumnSuggestionFlow = ai.defineFlow(
+const wordHintFlow = ai.defineFlow(
   {
-    name: 'strategicColumnSuggestionFlow',
-    inputSchema: StrategicColumnSuggestionInputSchema,
-    outputSchema: StrategicColumnSuggestionOutputSchema,
+    name: 'wordHintFlow',
+    inputSchema: WordHintInputSchema,
+    outputSchema: WordHintOutputSchema,
   },
   async (input) => {
-    const {output} = await strategicColumnSuggestionPrompt(input);
+    // Filter out words already found
+    const remaining = input.allValidWords.filter(w => !input.foundWords.includes(w));
+    if (remaining.length === 0) return { hintWord: '', reasoning: 'You found them all!' };
+
+    const {output} = await wordHintPrompt(input);
     if (!output) throw new Error('AI analysis failed.');
     return output;
   }
 );
 
-export async function strategicColumnSuggestion(input: StrategicColumnSuggestionInput): Promise<StrategicColumnSuggestionOutput> {
-  return strategicColumnSuggestionFlow(input);
+export async function getWordHint(input: WordHintInput): Promise<WordHintOutput> {
+  return wordHintFlow(input);
 }
