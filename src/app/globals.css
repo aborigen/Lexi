@@ -35,7 +35,6 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased overflow-x-hidden;
-    /* Sky Gradient */
     background: linear-gradient(to bottom, #87CEEB 0%, #B0E2FF 40%, #E0F7FA 100%);
     background-attachment: fixed;
     touch-action: manipulation;
@@ -43,14 +42,13 @@
     min-height: 100vh;
   }
 
-  /* The Sun */
   body::before {
     content: "";
     position: fixed;
-    top: 50px;
-    right: 50px;
-    width: 120px;
-    height: 120px;
+    top: 5vw;
+    right: 5vw;
+    width: clamp(60px, 15vw, 120px);
+    height: clamp(60px, 15vw, 120px);
     background: radial-gradient(circle, #fff700 0%, #ffcc00 100%);
     border-radius: 50%;
     box-shadow: 0 0 60px #ffcc00, 0 0 120px rgba(255, 204, 0, 0.4);
@@ -59,7 +57,6 @@
     animation: float 6s ease-in-out infinite;
   }
 
-  /* Clouds using multiple gradients */
   body::after {
     content: "";
     position: fixed;
@@ -71,15 +68,8 @@
     background-image: 
       radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 10%),
       radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
-      radial-gradient(circle at 15% 35%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
-      
       radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 15%),
-      radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.8) 0%, transparent 18%),
-      radial-gradient(circle at 65% 25%, rgba(255, 255, 255, 0.8) 0%, transparent 18%),
-
-      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 20%),
-      radial-gradient(circle at 45% 65%, rgba(255, 255, 255, 0.6) 0%, transparent 25%),
-      radial-gradient(circle at 35% 65%, rgba(255, 255, 255, 0.6) 0%, transparent 25%);
+      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 20%);
     pointer-events: none;
     background-repeat: no-repeat;
     opacity: 0.8;
