@@ -12,5 +12,9 @@ A bright and engaging Word Connect puzzle game built with Next.js, React, and Fi
 - **Yandex SDK Integration**: Cloud high-score synchronization and localization.
 - **Blue Sky Theme**: Sunny and vibrant UI design.
 
+## Documentation
+- [UI Architecture](./docs/CODE_DOCUMENTATION.md)
+- [Yandex Games Promo Materials](./docs/PROMO_MATERIALS.md)
+
 ## Getting Started
 To get started, take a look at `src/app/page.tsx`.
