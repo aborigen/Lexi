@@ -72,7 +72,11 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "esbuild": "0.19.12"
+  },
+  "optionalDependencies": {
+    "@esbuild/darwin-x64": "0.19.12"
   },
   "browserslist": [
     ">0.3%",

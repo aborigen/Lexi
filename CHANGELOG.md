@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.1.4] - 2024-05-31
+### Fixed
+- **Installation Fix**: Added explicit `@esbuild/darwin-x64` to `optionalDependencies` to bypass `node install.js` script failures on macOS 10.15.
+
 ## [2.1.3] - 2024-05-31
 ### Fixed
 - **Legacy macOS Support**: Added `npm overrides` to force `esbuild@0.19.12`. This resolves `dyld` symbol errors on macOS 10.15 (Catalina) where newer esbuild binaries fail due to missing system APIs.
