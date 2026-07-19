@@ -89,18 +89,18 @@ export function WordConnect({
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-md mx-auto">
       {/* Target Word Grid */}
-      <div className="flex flex-wrap justify-center gap-4 min-h-[100px] w-full p-4 glass rounded-3xl">
+      <div className="flex flex-wrap justify-center gap-3 md:gap-4 min-h-[80px] md:min-h-[100px] w-full p-3 md:p-5 glass rounded-2xl md:rounded-3xl overflow-hidden">
         {level.validWords.map(word => (
-          <div key={word} className="flex gap-1">
+          <div key={word} className="flex gap-1 md:gap-1.5">
             {word.split('').map((char, i) => (
               <div 
                 key={i} 
                 className={cn(
-                  "w-8 h-8 flex items-center justify-center border-2 rounded-lg font-bold text-sm transition-all duration-500",
+                  "w-7 h-7 md:w-9 md:h-9 flex items-center justify-center border md:border-2 rounded-md md:rounded-lg font-bold text-xs md:text-sm transition-all duration-500",
                   foundWords.includes(word) 
-                    ? "bg-primary text-white border-primary shadow-lg scale-110" 
+                    ? "bg-primary text-white border-primary shadow-md md:shadow-lg scale-105 md:scale-110" 
                     : "bg-white/10 border-white/20 text-transparent"
                 )}
               >
@@ -114,7 +114,7 @@ export function WordConnect({
       {/* Circle Interaction Area */}
       <div 
         ref={containerRef}
-        className="relative select-none touch-none"
+        className="relative select-none touch-none scale-[0.85] sm:scale-100"
         style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
         onMouseMove={handleInteractionMove}
         onTouchMove={handleInteractionMove}
@@ -160,8 +160,8 @@ export function WordConnect({
               onMouseDown={() => handleInteractionStart(i)}
               onTouchStart={() => handleInteractionStart(i)}
               className={cn(
-                "absolute flex items-center justify-center font-black text-2xl rounded-full cursor-pointer transition-all duration-200 shadow-xl",
-                isSelected ? "bg-primary text-white scale-125 z-10" : "glass hover:bg-white/60"
+                "absolute flex items-center justify-center font-black text-xl md:text-2xl rounded-full cursor-pointer transition-all duration-200 shadow-lg md:shadow-xl",
+                isSelected ? "bg-primary text-white scale-110 md:scale-125 z-10" : "glass hover:bg-white/60"
               )}
               style={{
                 left: pos.x - LETTER_RADIUS,
@@ -177,9 +177,9 @@ export function WordConnect({
       </div>
 
       {/* Current Selection Preview */}
-      <div className="h-12 flex items-center justify-center">
+      <div className="h-10 md:h-14 flex items-center justify-center">
         {selectedIndices.length > 0 && (
-          <div className="glass px-6 py-2 rounded-full text-2xl font-black text-primary animate-in zoom-in-50">
+          <div className="glass px-5 py-1.5 md:px-8 md:py-2.5 rounded-full text-xl md:text-3xl font-black text-primary animate-in zoom-in-75">
             {selectedIndices.map(i => level.letters[i]).join('')}
           </div>
         )}
