@@ -89,16 +89,16 @@ export function WordConnect({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 md:gap-8 w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-center gap-4 w-full h-full max-h-full min-h-0 p-2">
       {/* Target Word Grid */}
-      <div className="flex flex-wrap justify-center gap-2 md:gap-4 min-h-[60px] md:min-h-[100px] w-full p-2 md:p-5 glass rounded-xl md:rounded-3xl overflow-hidden">
+      <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4 min-h-[60px] md:min-h-[100px] w-full p-3 md:p-5 glass rounded-2xl md:rounded-3xl overflow-y-auto custom-scrollbar shrink-0">
         {level.validWords.map(word => (
-          <div key={word} className="flex gap-0.5 md:gap-1.5">
+          <div key={word} className="flex gap-0.5 md:gap-1">
             {word.split('').map((char, i) => (
               <div 
                 key={i} 
                 className={cn(
-                  "w-5 h-5 md:w-9 md:h-9 flex items-center justify-center border md:border-2 rounded md:rounded-lg font-bold text-[10px] md:text-sm transition-all duration-500",
+                  "w-5 h-5 md:w-8 md:h-8 flex items-center justify-center border md:border-2 rounded md:rounded-lg font-bold text-[10px] md:text-sm transition-all duration-500",
                   foundWords.includes(word) 
                     ? "bg-primary text-white border-primary shadow-md scale-105" 
                     : "bg-white/10 border-white/20 text-transparent"
@@ -111,75 +111,77 @@ export function WordConnect({
         ))}
       </div>
 
-      {/* Circle Interaction Area - Uses relative scaling for short landscape screens */}
-      <div 
-        ref={containerRef}
-        className="relative select-none touch-none scale-[0.7] sm:scale-90 md:scale-100 transition-transform duration-300 landscape:scale-[0.6] sm:landscape:scale-80 md:landscape:scale-100"
-        style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
-        onMouseMove={handleInteractionMove}
-        onTouchMove={handleInteractionMove}
-        onMouseUp={handleInteractionEnd}
-        onTouchEnd={handleInteractionEnd}
-        onMouseLeave={handleInteractionEnd}
-      >
-        <svg className="absolute inset-0 pointer-events-none w-full h-full">
-          {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
-            const start = getLetterPos(idx);
-            const end = getLetterPos(selectedIndices[i+1]);
-            return (
+      {/* Circle Interaction Area */}
+      <div className="flex-1 flex items-center justify-center min-h-0 overflow-visible py-4">
+        <div 
+          ref={containerRef}
+          className="relative select-none touch-none transition-transform duration-300 scale-[0.8] sm:scale-90 md:scale-100 lg:scale-110"
+          style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
+          onMouseMove={handleInteractionMove}
+          onTouchMove={handleInteractionMove}
+          onMouseUp={handleInteractionEnd}
+          onTouchEnd={handleInteractionEnd}
+          onMouseLeave={handleInteractionEnd}
+        >
+          <svg className="absolute inset-0 pointer-events-none w-full h-full">
+            {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
+              const start = getLetterPos(idx);
+              const end = getLetterPos(selectedIndices[i+1]);
+              return (
+                <line 
+                  key={i} 
+                  x1={start.x} y1={start.y} 
+                  x2={end.x} y2={end.y} 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth="8" 
+                  strokeLinecap="round"
+                  className="opacity-50"
+                />
+              );
+            })}
+            {selectedIndices.length > 0 && dragPath && (
               <line 
-                key={i} 
-                x1={start.x} y1={start.y} 
-                x2={end.x} y2={end.y} 
+                x1={getLetterPos(selectedIndices[selectedIndices.length-1]).x} 
+                y1={getLetterPos(selectedIndices[selectedIndices.length-1]).y} 
+                x2={dragPath.x} y2={dragPath.y} 
                 stroke="hsl(var(--primary))" 
                 strokeWidth="8" 
                 strokeLinecap="round"
-                className="opacity-50"
+                className="opacity-30"
               />
+            )}
+          </svg>
+
+          {level.letters.map((char, i) => {
+            const pos = getLetterPos(i);
+            const isSelected = selectedIndices.includes(i);
+            return (
+              <div
+                key={i}
+                onMouseDown={() => handleInteractionStart(i)}
+                onTouchStart={() => handleInteractionStart(i)}
+                className={cn(
+                  "absolute flex items-center justify-center font-black text-xl md:text-2xl rounded-full cursor-pointer transition-all duration-200 shadow-lg",
+                  isSelected ? "bg-primary text-white scale-110 z-10" : "glass hover:bg-white/60"
+                )}
+                style={{
+                  left: pos.x - LETTER_RADIUS,
+                  top: pos.y - LETTER_RADIUS,
+                  width: LETTER_RADIUS * 2,
+                  height: LETTER_RADIUS * 2,
+                }}
+              >
+                {char}
+              </div>
             );
           })}
-          {selectedIndices.length > 0 && dragPath && (
-            <line 
-              x1={getLetterPos(selectedIndices[selectedIndices.length-1]).x} 
-              y1={getLetterPos(selectedIndices[selectedIndices.length-1]).y} 
-              x2={dragPath.x} y2={dragPath.y} 
-              stroke="hsl(var(--primary))" 
-              strokeWidth="8" 
-              strokeLinecap="round"
-              className="opacity-30"
-            />
-          )}
-        </svg>
-
-        {level.letters.map((char, i) => {
-          const pos = getLetterPos(i);
-          const isSelected = selectedIndices.includes(i);
-          return (
-            <div
-              key={i}
-              onMouseDown={() => handleInteractionStart(i)}
-              onTouchStart={() => handleInteractionStart(i)}
-              className={cn(
-                "absolute flex items-center justify-center font-black text-xl md:text-2xl rounded-full cursor-pointer transition-all duration-200 shadow-lg",
-                isSelected ? "bg-primary text-white scale-110 z-10" : "glass hover:bg-white/60"
-              )}
-              style={{
-                left: pos.x - LETTER_RADIUS,
-                top: pos.y - LETTER_RADIUS,
-                width: LETTER_RADIUS * 2,
-                height: LETTER_RADIUS * 2,
-              }}
-            >
-              {char}
-            </div>
-          );
-        })}
+        </div>
       </div>
 
       {/* Current Selection Preview */}
-      <div className="h-8 md:h-14 flex items-center justify-center">
+      <div className="h-10 md:h-16 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
-          <div className="glass px-4 py-1 md:px-8 md:py-2.5 rounded-full text-lg md:text-3xl font-black text-primary animate-in zoom-in-75">
+          <div className="glass px-6 py-2 md:px-10 md:py-3 rounded-full text-xl md:text-3xl font-black text-primary animate-in zoom-in-90 duration-300">
             {selectedIndices.map(i => level.letters[i]).join('')}
           </div>
         )}
