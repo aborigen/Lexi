@@ -1,26 +1,38 @@
 
-# WordConnect.tsx Technical Documentation
+# Lexi.AI - UI Architecture Documentation
 
-The `WordConnect` component handles the core logic for a circular word-linking puzzle game.
+Lexi.AI utilizes a responsive, glassmorphic design built with Tailwind CSS and ShadCN UI. The layout is optimized for both desktop browsers and the Yandex Games mobile overlay.
 
-## Core Mechanics
+## Layout Overview
 
-### Circular Layout
-Letters are positioned around a central point using polar-to-cartesian coordinate conversion. 
-- `getLetterPos(index)`: Calculates the `{x, y}` position for a letter based on its index in the 5-letter array.
+The root layout is located in `src/app/page.tsx` and follows a three-part structure:
 
-### Interaction Logic
-The game uses a "drawing" interaction model supported by both Mouse and Touch events.
-- `handleInteractionStart`: Initializes the selection path.
-- `handleInteractionMove`: Tracks the cursor/finger. It detects "collision" with other letters by checking the distance between the pointer and letter centers.
-- `handleInteractionEnd`: Validates the formed string against the current level's `validWords` list.
+### 1. Global Header
+Manages the application state for localization, scoring, and level resets.
+- **Language Toggle**: Switches between `en` and `ru` namespaces in `translations.ts`.
+- **Score Persistence**: High scores are synchronized with `localStorage` and Yandex Cloud Storage via `src/lib/yandex-sdk.ts`.
 
-### Word Validation
-Words are only counted once. If the user finds all valid words for a level, the `onLevelComplete` callback is triggered.
+### 2. Strategic Grid (`lg:grid-cols-[1fr_2fr_1fr]`)
+On desktop, the game uses a balanced grid to provide all information at a glance.
+- **Found Words (Left)**: Tracks discovered combinations.
+- **Game Engine (Center)**: The `WordConnect` component handles interaction logic.
+- **AI Sidebar (Right)**: Hosts the `AIAdvisor` for Genkit-powered hints.
 
-### Visual Feedback
-- **SVG Layer**: Draws dynamic lines between selected letters in real-time.
-- **Word Grid**: A collection of hidden letter boxes that reveal their content once a word is correctly identified.
+### 3. Responsive Stacking
+On screens smaller than 1024px (Tailwind `lg` breakpoint), the grid transforms:
+1. **Game Engine** moves to the top for immediate accessibility.
+2. **Found Words** follows to provide feedback on progress.
+3. **AI Advisor** is placed at the bottom to minimize visual clutter during active play.
 
-## AI Hint Integration
-The AI advisor receives the current set of letters, words already found, and the full list of valid words. It identifies a missing word and provides a cryptic hint.
+## Component: WordConnect.tsx
+
+The core game logic uses a "collision detection" model for letter selection:
+- **Polar Positioning**: Letters are calculated using `CIRCLE_RADIUS` and `angle` math to form a perfect ring.
+- **Interaction Model**: Supports `onMouseMove` and `onTouchMove`. It calculates the distance between the cursor/finger and letter centers to trigger a "hit".
+- **SVG Layer**: A dedicated SVG overlay draws line segments between the selected indices in `selectedIndices`.
+
+## Theme: Blue Sky
+The visual aesthetic is controlled via `src/app/globals.css` using:
+- **HSL Variables**: Primary yellow (`--primary`) and background blue (`--background`).
+- **CSS Backgrounds**: A radial-gradient "Sun" and multiple radial-gradient "Clouds" positioned fixed to the viewport.
+- **Glassmorphism**: A custom `.glass` utility class providing backdrop-blur and semi-transparent backgrounds.
