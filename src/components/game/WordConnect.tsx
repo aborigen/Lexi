@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { LEVELS, CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
+import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
+import { LEVELS } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/translations';
 

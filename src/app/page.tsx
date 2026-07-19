@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { LEVELS } from '@/lib/game-constants';
+import { LEVELS } from '@/lib/levels';
 import { Trophy, RefreshCcw, BrainCircuit, HelpCircle, Gamepad2, Languages, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
