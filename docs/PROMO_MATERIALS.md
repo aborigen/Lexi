@@ -30,7 +30,7 @@ Feeling stuck? Use our unique **Lexical AI Advisor** to receive clever, cryptic 
 - **Full Description**:
 Добро пожаловать в безмятежный мир Lexi.AI, где слова оживают под ярко-голубым небом!
 
-Lexi.AI — это интуитивно понятная головоломка, которая проверит ваш словарный запас и смекалку. Соединяйте буквы круговыми движениями, чтобы находить скрытые слова и проходить уровни.
+Lexi.AI — это интуитивно понятка головоломка, которая проверит ваш словарный запас и смекалку. Соединяйте буквы круговыми движениями, чтобы находить скрытые слова и проходить уровни.
 
 Застряли на сложном слове? Воспользуйтесь нашим **Лингво-ИИ**, который даст вам тонкую и загадочную подсказку, помогая найти решение самостоятельно. Идеально подходит для любителей кроссвордов, филвордов и игр в слова.
 
@@ -41,12 +41,29 @@ Lexi.AI — это интуитивно понятная головоломка,
 - 🏆 **Синхронизация рекордов**: Соревнуйтесь за первое место в таблице лидеров.
 - 🌍 **Полная локализация**: Играйте на русском или английском языке.
 
-## 2. Visual Asset Suggestions
+## 2. Game Icon Concepts (512x512 px)
 
-### Icon (512x512 px)
-- **Description**: A bold, stylized yellow letter "L" or "A" inside a glowing circular ring.
-- **Background**: Light blue gradient (Sky color) with a hint of a soft cloud in the corner.
-- **Style**: Glassmorphic borders with a slight drop shadow for depth.
+The icon is the first thing players see. It should be bright, high-contrast, and represent the core mechanic (linking letters).
+
+### Concept A: The "Glow Link" (Recommended)
+- **Visuals**: A bold, italicized yellow "L" (for Lexi) in the center. A glowing primary-colored line forms a loop around it, connecting two smaller circular dots (representing letters).
+- **Background**: A vibrant sky-blue gradient.
+- **Detail**: Add a soft, white semi-transparent cloud in the bottom-right corner to match the in-game theme.
+- **Vibe**: Energetic, modern, and high-tech.
+
+### Concept B: The "AI Brainbox"
+- **Visuals**: A stylized brain icon made of glowing circuit lines (representing the AI Advisor) merged with a letter "A".
+- **Background**: Clean white glassmorphic circle on a light blue field.
+- **Detail**: Use the game's primary yellow for the circuit lines.
+- **Vibe**: Intellectual, premium, and unique.
+
+### Concept C: The "Sunny Word"
+- **Visuals**: The sun from the game background, but with a letter "S" or "W" inside it. A line is shown "drawing" a connection from the sun to a nearby cloud.
+- **Background**: Deep sky blue.
+- **Detail**: High saturation to pop against the white backgrounds of many gaming portals.
+- **Vibe**: Relaxing, friendly, and "Summer" themed.
+
+## 3. Visual Asset Suggestions (Others)
 
 ### Cover (800x600 px)
 - **Description**: The central circular game UI from the app. 
@@ -59,7 +76,7 @@ Lexi.AI — это интуитивно понятная головоломка,
 2. **AI in Action**: A shot of the AI Advisor panel showing a cryptic hint like "A celestial body seen at night...".
 3. **Level Clear**: The celebratory toast message with a flurry of found words.
 
-## 3. Keywords & Tags
+## 4. Keywords & Tags
 
 ### English
 Word, Connect, Puzzle, AI, Brain, Language, Search, Crossword, Logic, Educational.
