@@ -3,13 +3,16 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Loader2, BrainCircuit } from 'lucide-react';
-import { getWordHint, type WordHintInput } from '@/ai/flows/strategic-column-suggestion';
+import { Loader2, BrainCircuit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { t } from '@/lib/translations';
 
 interface AIAdvisorProps {
-  gameState: WordHintInput;
+  gameState: {
+    letters: string[];
+    foundWords: string[];
+    allValidWords: string[];
+  };
   onSuggestionReceived: (hint: string) => void;
   lang?: string;
 }
@@ -25,19 +28,26 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
     setIsAnalyzing(true);
     setSuggestion(null);
 
-    try {
-      const result = await getWordHint(gameState);
-      setSuggestion(result.reasoning);
-      onSuggestionReceived(result.hintWord);
-    } catch (error) {
-      toast({
-        title: t('ai_failed_title', lang),
-        description: t('ai_failed_desc', lang),
-        variant: "destructive"
-      });
-    } finally {
+    // Simulate "thinking" time for the advisor effect
+    setTimeout(() => {
+      const remaining = gameState.allValidWords.filter(w => !gameState.foundWords.includes(w));
+      
+      if (remaining.length === 0) {
+        setSuggestion(lang === 'ru' ? 'Вы нашли все слова!' : 'You found them all!');
+      } else {
+        // Pick a random remaining word
+        const randomWord = remaining[Math.floor(Math.random() * remaining.length)];
+        
+        // Provide a local hint (e.g., length and first letter)
+        const hintText = lang === 'ru' 
+          ? `Хм... Попробуйте слово из ${randomWord.length} букв на "${randomWord[0]}"`
+          : `Hmm... Try a ${randomWord.length}-letter word starting with "${randomWord[0]}"`;
+        
+        setSuggestion(hintText);
+        onSuggestionReceived(randomWord);
+      }
       setIsAnalyzing(false);
-    }
+    }, 800);
   };
 
   const isButtonDisabled = isAnalyzing || !gameState.letters || gameState.letters.length === 0;
