@@ -25,4 +25,16 @@ export const LEVELS: WordLevel[] = [
     letters: ['H', 'E', 'A', 'R', 'T'], 
     validWords: ['HEART', 'HATER', 'EARTH', 'HARE', 'HEAR', 'HEAT', 'RATE', 'TEAR', 'HAT', 'HER', 'EAR', 'ART', 'TEA', 'EAT'] 
   },
+  {
+    letters: ['П', 'И', 'Л', 'О', 'Т'],
+    validWords: ['ПИЛОТ', 'ПОЛ', 'ЛОТ', 'ТИП', 'ПОТ', 'ТОП']
+  },
+  {
+    letters: ['К', 'О', 'М', 'А', 'Р'],
+    validWords: ['КОМАР', 'КОРА', 'КОМА', 'МАК', 'РОК', 'РОМ']
+  },
+  {
+    letters: ['К', 'Н', 'И', 'Г', 'А'],
+    validWords: ['КНИГА', 'НИКА', 'КИНА', 'ГИКА']
+  }
 ];
