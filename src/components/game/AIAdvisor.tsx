@@ -1,10 +1,8 @@
-
 "use client";
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, BrainCircuit } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 import { t } from '@/lib/translations';
 
 interface AIAdvisorProps {
@@ -20,7 +18,6 @@ interface AIAdvisorProps {
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAdvisorProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [suggestion, setSuggestion] = useState<string | null>(null);
-  const { toast } = useToast();
 
   const handleGetSuggestion = async () => {
     if (isAnalyzing || !gameState.letters || gameState.letters.length === 0) return;
@@ -33,15 +30,16 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
       const remaining = gameState.allValidWords.filter(w => !gameState.foundWords.includes(w));
       
       if (remaining.length === 0) {
-        setSuggestion(lang === 'ru' ? 'Вы нашли все слова!' : 'You found them all!');
+        setSuggestion(t('hint_all_found', lang));
       } else {
         // Pick a random remaining word
         const randomWord = remaining[Math.floor(Math.random() * remaining.length)];
         
-        // Provide a local hint (e.g., length and first letter)
-        const hintText = lang === 'ru' 
-          ? `Хм... Попробуйте слово из ${randomWord.length} букв на "${randomWord[0]}"`
-          : `Hmm... Try a ${randomWord.length}-letter word starting with "${randomWord[0]}"`;
+        // Provide a localized hint template replacement
+        const template = t('hint_template', lang);
+        const hintText = template
+          .replace('{n}', randomWord.length.toString())
+          .replace('{c}', randomWord[0].toUpperCase());
         
         setSuggestion(hintText);
         onSuggestionReceived(randomWord);

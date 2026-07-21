@@ -1,4 +1,3 @@
-
 'use client';
 
 type TranslationKeys = 
@@ -19,7 +18,9 @@ type TranslationKeys =
   | 'game_over_desc'
   | 'ai_failed_title'
   | 'ai_failed_desc'
-  | 'next_level';
+  | 'next_level'
+  | 'hint_all_found'
+  | 'hint_template';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -40,7 +41,9 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     game_over_desc: 'You found all words!',
     ai_failed_title: 'Lexical Link Failed',
     ai_failed_desc: 'The AI is reading the dictionary...',
-    next_level: 'Next Level'
+    next_level: 'Next Level',
+    hint_all_found: 'You found them all!',
+    hint_template: 'Hmm... Try a {n}-letter word starting with "{c}"'
   },
   ru: {
     high_score: 'Рекорд',
@@ -60,7 +63,9 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     game_over_desc: 'Вы нашли все слова!',
     ai_failed_title: 'Сбой лингво-связи',
     ai_failed_desc: 'ИИ листает словарь...',
-    next_level: 'След. уровень'
+    next_level: 'След. уровень',
+    hint_all_found: 'Вы нашли все слова!',
+    hint_template: 'Хм... Попробуйте слово из {n} букв на "{c}"'
   }
 };
 
