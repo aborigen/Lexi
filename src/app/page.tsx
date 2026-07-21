@@ -32,6 +32,7 @@ export default function WordConnectPage() {
       const sdk = await initYandexSDK();
       if (sdk) {
         setIsYandexReady(true);
+        // Sync detected environment language
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
 
@@ -47,6 +48,11 @@ export default function WordConnectPage() {
     };
     init();
   }, []);
+
+  // Update HTML lang attribute for accessibility when state changes
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     if (score > highScore) {

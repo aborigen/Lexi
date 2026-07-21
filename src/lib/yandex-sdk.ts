@@ -82,11 +82,14 @@ export function signalGameReady() {
 }
 
 /**
- * Gets the environment language from Yandex SDK.
+ * Gets the environment language from Yandex SDK and maps to supported app languages.
  */
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
-  return sdk?.environment?.i18n?.lang || 'en';
+  const rawLang = sdk?.environment?.i18n?.lang || 'en';
+  // Map variety of language codes (ru-RU, en-US, etc) to supported 'en' or 'ru'
+  if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
+  return 'en';
 }
 
 /**
