@@ -4,6 +4,11 @@
  * @fileOverview Utility for interacting with the Yandex Games SDK.
  */
 
+export interface YandexStorage {
+  get: (keys: string[]) => Promise<Record<string, any>>;
+  set: (data: Record<string, any>) => Promise<void>;
+}
+
 export interface YandexSDK {
   auth: {
     getPlayerData: () => Promise<any>;
@@ -17,7 +22,7 @@ export interface YandexSDK {
       onOffline?: () => void;
     }) => void;
   };
-  getStorage: () => Promise<any>;
+  getStorage: () => Promise<YandexStorage>;
   features: {
     LoadingAPI?: {
       ready: () => void;
@@ -63,6 +68,17 @@ export async function initYandexSDK(): Promise<YandexSDK | null> {
  */
 export function getYandexSDK(): YandexSDK | null {
   return yandexInstance;
+}
+
+/**
+ * Signals to Yandex Games that the game has finished loading and is ready.
+ */
+export function signalGameReady() {
+  const sdk = getYandexSDK();
+  if (sdk?.features?.LoadingAPI) {
+    sdk.features.LoadingAPI.ready();
+    console.log('Yandex Games: Game Ready signaled');
+  }
 }
 
 /**

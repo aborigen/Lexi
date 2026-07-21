@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -8,7 +7,7 @@ import { Trophy, RefreshCcw, Gamepad2, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
-import { initYandexSDK, syncHighScoreToYandex, fetchHighScoreFromYandex, getEnvironmentLanguage } from '@/lib/yandex-sdk';
+import { initYandexSDK, syncHighScoreToYandex, fetchHighScoreFromYandex, getEnvironmentLanguage, signalGameReady } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 
 export default function WordConnectPage() {
@@ -25,19 +24,25 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
+      // 1. Get local storage score first for instant feedback
       const saved = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
       if (saved) setHighScore(parseInt(saved));
 
+      // 2. Initialize SDK
       const sdk = await initYandexSDK();
       if (sdk) {
         setIsYandexReady(true);
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
+
+        // 3. Sync scores from cloud
         const yandexHigh = await fetchHighScoreFromYandex();
         if (yandexHigh !== null && yandexHigh > (parseInt(saved || '0'))) {
           setHighScore(yandexHigh);
         }
-        if (sdk.features.LoadingAPI) sdk.features.LoadingAPI.ready();
+
+        // 4. Signal Game Ready to remove loading screen
+        signalGameReady();
       }
     };
     init();
