@@ -12,7 +12,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "archive": "sh scripts/build-archive.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
