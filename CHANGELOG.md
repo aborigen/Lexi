@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.3.0] - 2024-06-02
+### Removed
+- **Esbuild Removal**: Stripped all `esbuild` dependencies, optional binaries, and overrides. 
+- **Build Refactoring**: Switched fully to Next.js native SWC compiler for better compatibility and to avoid binary installation scripts.
+
 ## [2.2.0] - 2024-06-01
 ### Added
 - **Simplified UI**: Centered minimalist layout focusing on core gameplay.
@@ -20,23 +25,3 @@
 ## [2.1.4] - 2024-05-31
 ### Fixed
 - **Installation Fix**: Added explicit `@esbuild/darwin-x64` to `optionalDependencies` to bypass `node install.js` script failures on macOS 10.15.
-
-## [2.1.3] - 2024-05-31
-### Fixed
-- **Legacy macOS Support**: Added `npm overrides` to force `esbuild@0.19.12`. This resolves `dyld` symbol errors on macOS 10.15 (Catalina).
-
-## [2.1.2] - 2024-05-30
-### Fixed
-- **Build Compatibility**: Removed explicit `esbuild` pins to allow the package manager to resolve compatible binaries for macOS 10.15.
-
-## [2.1.0] - 2024-05-28
-### Added
-- **OS Compatibility**: Explicitly pinned `esbuild` version and updated `browserslist` for Safari 13.
-- **Static Export**: Enabled `output: 'export'` in `next.config.ts`.
-
-## [2.0.0] - 2024-05-27
-### Added
-- **Total Pivot**: Refactored from Columns.AI to Lexi.AI (Word Connect).
-- **Circular Interaction**: New drawing mechanic for linking letters.
-- **Word Validation**: Dictionary-based system with level progression.
-- **Lexical AI**: GenAI flow providing cryptic linguistic hints.
