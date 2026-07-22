@@ -79,8 +79,6 @@ export default function WordConnectPage() {
       return;
     }
     
-    // In a production Yandex Game, this would trigger a native UI or custom modal
-    // For now, we fetch and log, and show a toast.
     const entries = await fetchLeaderboardEntries();
     if (entries) {
       console.log('Leaderboard entries:', entries);
@@ -111,34 +109,34 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full bg-background text-foreground overflow-hidden flex flex-col">
-      <div className="max-w-xl w-full mx-auto px-4 py-2 flex flex-col flex-1 min-h-0">
-        <header className="flex flex-row justify-between items-center py-4 shrink-0">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col flex-1 min-h-0">
+        <header className="flex flex-row justify-between items-center py-2 shrink-0">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
-            <h1 className="text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
+            <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
-          <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-1.5 glass px-3 py-1 rounded-full border-primary/20 mr-1">
-               <Trophy className="w-3.5 h-3.5 text-primary" />
-               <span className="text-sm font-black">{score.toLocaleString()}</span>
+          <div className="flex gap-1.5 items-center">
+            <div className="flex items-center gap-1 glass px-2.5 py-1 rounded-full border-primary/20">
+               <Trophy className="w-3 h-3 text-primary" />
+               <span className="text-xs font-black">{score.toLocaleString()}</span>
             </div>
             
-            <div className="flex gap-1">
-              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full h-8 w-8">
+            <div className="flex gap-0.5">
+              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full h-7 w-7">
                 <ListOrdered className="w-4 h-4 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full h-8 w-8">
+              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full h-7 w-7">
                 <Languages className="w-4 h-4 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full h-8 w-8">
+              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full h-7 w-7">
                 <RefreshCcw className="w-4 h-4 text-muted-foreground" />
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col min-h-0 gap-4 pb-4">
+        <main className="flex-1 flex flex-col min-h-0 gap-2 pb-2">
           <WordConnect 
             levelIndex={levelIndex}
             onScoreUpdate={handleScoreUpdate}
@@ -147,7 +145,7 @@ export default function WordConnectPage() {
             lang={lang}
           />
           
-          <div className="shrink-0 flex flex-col gap-3">
+          <div className="shrink-0 flex flex-col gap-2">
             <AIAdvisor 
               onSuggestionReceived={() => {}}
               gameState={gameState}
@@ -155,9 +153,9 @@ export default function WordConnectPage() {
               levelIndex={levelIndex}
             />
             
-            <div className="flex gap-2 overflow-x-auto custom-scrollbar py-2 px-1">
+            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1 px-1 min-h-[32px]">
               {gameState.foundWords.map(word => (
-                <div key={word} className="shrink-0 bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
+                <div key={word} className="shrink-0 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
                   {word}
                 </div>
               ))}
