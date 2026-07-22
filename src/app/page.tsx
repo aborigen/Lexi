@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -127,48 +128,46 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden">
-        <header className="flex flex-row justify-between items-center py-2 shrink-0 h-12">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full">
+        <header className="flex flex-row justify-between items-center py-4 shrink-0">
           <div className="flex items-center space-x-2">
-            <Gamepad2 className="w-5 h-5 text-primary" />
-            <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
+            <Gamepad2 className="w-6 h-6 text-primary" />
+            <h1 className="text-xl sm:text-2xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
-          <div className="flex gap-1.5 items-center">
-            <div className="flex items-center gap-1 glass px-2.5 py-1 rounded-full border-primary/20">
-               <Trophy className="w-3 h-3 text-primary" />
-               <span className="text-xs font-black">{score.toLocaleString()}</span>
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-1.5 glass px-3 py-1.5 rounded-full border-primary/20">
+               <Trophy className="w-4 h-4 text-primary" />
+               <span className="text-sm font-black">{score.toLocaleString()}</span>
             </div>
             
-            <div className="flex gap-0.5">
-              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full h-7 w-7">
-                <ListOrdered className="w-4 h-4 text-muted-foreground" />
+            <div className="flex gap-1">
+              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full">
+                <ListOrdered className="w-5 h-5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full h-7 w-7">
-                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
+                {theme === 'light' ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full h-7 w-7">
-                <Languages className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full">
+                <Languages className="w-5 h-5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full h-7 w-7">
-                <RefreshCcw className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full">
+                <RefreshCcw className="w-5 h-5 text-muted-foreground" />
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col min-h-0 gap-2 pb-4 overflow-hidden">
-          <div className="flex-1 min-h-0">
-            <WordConnect 
-              levelIndex={levelIndex}
-              onScoreUpdate={handleScoreUpdate}
-              onLevelComplete={handleLevelComplete}
-              onStateUpdate={handleStateUpdate}
-              lang={lang}
-            />
-          </div>
+        <main className="flex-1 flex flex-col gap-4 pb-6 overflow-y-auto custom-scrollbar">
+          <WordConnect 
+            levelIndex={levelIndex}
+            onScoreUpdate={handleScoreUpdate}
+            onLevelComplete={handleLevelComplete}
+            onStateUpdate={handleStateUpdate}
+            lang={lang}
+          />
           
-          <div className="shrink-0 flex flex-col gap-2">
+          <div className="space-y-4">
             <AIAdvisor 
               onSuggestionReceived={() => {}}
               gameState={gameState}
@@ -176,15 +175,15 @@ export default function WordConnectPage() {
               levelIndex={levelIndex}
             />
             
-            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1 px-1 min-h-[36px] max-h-[80px]">
+            <div className="flex gap-2 overflow-x-auto custom-scrollbar py-1">
               {gameState.foundWords.length > 0 ? (
                 gameState.foundWords.map(word => (
-                  <div key={word} className="shrink-0 h-6 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300 flex items-center">
+                  <div key={word} className="shrink-0 bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
                     {word}
                   </div>
                 ))
               ) : (
-                <div className="text-[10px] text-muted-foreground/40 italic px-2 py-1">
+                <div className="text-xs text-muted-foreground/40 italic px-2">
                   {t('found_words', lang)}...
                 </div>
               )}
