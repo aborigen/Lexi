@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
 import { LEVELS } from '@/lib/levels';
 import { cn } from '@/lib/utils';
@@ -47,23 +47,28 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Pre-calculate letter positions when letters or circle size changes
+  const letterPositions = useMemo(() => {
+    if (!shuffledLetters.length) return [];
+    return shuffledLetters.map((_, index) => {
+      const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
+      return {
+        x: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.cos(angle),
+        y: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.sin(angle)
+      };
+    });
+  }, [shuffledLetters]);
+
   useEffect(() => {
     if (level) {
       setShuffledLetters(shuffleArray(level.letters));
+    } else {
+      setShuffledLetters([]);
     }
     setFoundWords([]);
     setSelectedIndices([]);
     setDragPath(null);
   }, [levelIndex, lang, level]);
-
-  const getLetterPos = (index: number) => {
-    if (!level || shuffledLetters.length === 0) return { x: 0, y: 0 };
-    const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
-    return {
-      x: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.cos(angle),
-      y: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.sin(angle)
-    };
-  };
 
   useEffect(() => {
     if (level && shuffledLetters.length > 0) {
@@ -76,7 +81,7 @@ export function WordConnect({
     audioManager.playSelect(0);
   };
 
-  const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleInteractionMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     if (selectedIndices.length === 0 || shuffledLetters.length === 0) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
@@ -84,6 +89,8 @@ export function WordConnect({
 
     let clientX, clientY;
     if ('touches' in e) {
+      // Prevent default to stop scrolling while playing
+      if (e.cancelable) e.preventDefault();
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
@@ -95,31 +102,50 @@ export function WordConnect({
     const y = clientY - rect.top;
     setDragPath({ x, y });
 
-    shuffledLetters.forEach((_, idx) => {
+    // Check for "backtrack" (undo last letter if moving back to previous)
+    if (selectedIndices.length > 1) {
+      const prevIdx = selectedIndices[selectedIndices.length - 2];
+      const prevPos = letterPositions[prevIdx];
+      const distToPrev = Math.sqrt(Math.pow(x - prevPos.x, 2) + Math.pow(y - prevPos.y, 2));
+      
+      if (distToPrev < LETTER_RADIUS * 1.2) {
+        setSelectedIndices(prev => prev.slice(0, -1));
+        audioManager.playSelect(selectedIndices.length - 2);
+        return;
+      }
+    }
+
+    // Check for collision with new letters
+    letterPositions.forEach((pos, idx) => {
       if (selectedIndices.includes(idx)) return;
-      const pos = getLetterPos(idx);
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
-      if (dist < LETTER_RADIUS * 1.6) {
+      if (dist < LETTER_RADIUS * 1.5) {
         audioManager.playSelect(selectedIndices.length);
         setSelectedIndices(prev => [...prev, idx]);
       }
     });
-  };
+  }, [selectedIndices, shuffledLetters, letterPositions]);
 
   const handleInteractionEnd = () => {
     if (selectedIndices.length === 0 || !level || shuffledLetters.length === 0) return;
 
     const currentWord = selectedIndices.map(i => shuffledLetters[i]).join('');
-    if (level.validWords.includes(currentWord) && !foundWords.includes(currentWord)) {
-      const newFound = [...foundWords, currentWord];
-      setFoundWords(newFound);
-      onScoreUpdate(currentWord.length * 10);
-      
-      if (newFound.length === level.validWords.length) {
-        audioManager.playLevelComplete();
-        onLevelComplete();
+    
+    if (level.validWords.includes(currentWord)) {
+      if (!foundWords.includes(currentWord)) {
+        const newFound = [...foundWords, currentWord];
+        setFoundWords(newFound);
+        onScoreUpdate(currentWord.length * 10);
+        
+        if (newFound.length === level.validWords.length) {
+          audioManager.playLevelComplete();
+          onLevelComplete();
+        } else {
+          audioManager.playSuccess();
+        }
       } else {
-        audioManager.playSuccess();
+        // Already found
+        audioManager.playSelect(0);
       }
     } else if (selectedIndices.length > 1) {
       audioManager.playError();
@@ -134,7 +160,7 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center gap-2 py-2 flex-1 overflow-hidden">
+    <div className="flex flex-col items-center gap-2 py-2 flex-1 overflow-hidden touch-none">
       <div className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0">
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -169,7 +195,7 @@ export function WordConnect({
       <div className="flex-1 flex items-center justify-center w-full min-h-0">
         <div 
           ref={containerRef}
-          className="relative select-none touch-none scale-[0.6] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0"
+          className="relative select-none touch-none scale-[0.65] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0"
           style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
@@ -185,8 +211,9 @@ export function WordConnect({
               </filter>
             </defs>
             {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
-              const start = getLetterPos(idx);
-              const end = getLetterPos(selectedIndices[i+1]);
+              const start = letterPositions[idx];
+              const end = letterPositions[selectedIndices[i+1]];
+              if (!start || !end) return null;
               return (
                 <line 
                   key={i} 
@@ -202,8 +229,8 @@ export function WordConnect({
             })}
             {selectedIndices.length > 0 && dragPath && (
               <line 
-                x1={getLetterPos(selectedIndices[selectedIndices.length-1]).x} 
-                y1={getLetterPos(selectedIndices[selectedIndices.length-1]).y} 
+                x1={letterPositions[selectedIndices[selectedIndices.length-1]].x} 
+                y1={letterPositions[selectedIndices[selectedIndices.length-1]].y} 
                 x2={dragPath.x} y2={dragPath.y} 
                 stroke="hsl(var(--primary))" 
                 strokeWidth="12" 
@@ -214,13 +241,17 @@ export function WordConnect({
           </svg>
 
           {shuffledLetters.map((char, i) => {
-            const pos = getLetterPos(i);
+            const pos = letterPositions[i];
             const isSelected = selectedIndices.includes(i);
             return (
               <div
                 key={i}
                 onMouseDown={() => handleInteractionStart(i)}
-                onTouchStart={() => handleInteractionStart(i)}
+                onTouchStart={(e) => {
+                  // Prevent default to stop scrolling
+                  if (e.cancelable) e.preventDefault();
+                  handleInteractionStart(i);
+                }}
                 className={cn(
                   "absolute flex items-center justify-center font-black text-2xl rounded-full cursor-pointer transition-all duration-200 select-none",
                   isSelected 
@@ -243,3 +274,4 @@ export function WordConnect({
     </div>
   );
 }
+
