@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -24,6 +24,7 @@ export default function WordConnectPage() {
   const [levelIndex, setLevelIndex] = useState(0);
   const [isYandexReady, setIsYandexReady] = useState(false);
   const [lang, setLang] = useState('en');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
@@ -32,8 +33,13 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
-      const saved = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
-      if (saved) setHighScore(parseInt(saved));
+      // Local storage high score
+      const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
+      if (savedScore) setHighScore(parseInt(savedScore));
+
+      // Local storage theme
+      const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
+      setTheme(savedTheme as 'light' | 'dark');
 
       const sdk = await initYandexSDK();
       if (sdk) {
@@ -42,7 +48,7 @@ export default function WordConnectPage() {
         setLang(envLang);
 
         const yandexHigh = await fetchHighScoreFromYandex();
-        if (yandexHigh !== null && yandexHigh > (parseInt(saved || '0'))) {
+        if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
           setHighScore(yandexHigh);
         }
 
@@ -56,6 +62,15 @@ export default function WordConnectPage() {
     document.documentElement.lang = lang;
     setLevelIndex(0);
   }, [lang]);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('app_theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (score > highScore) {
@@ -81,7 +96,6 @@ export default function WordConnectPage() {
     
     const entries = await fetchLeaderboardEntries();
     if (entries) {
-      console.log('Leaderboard entries:', entries);
       toast({ 
         title: t('show_leaderboard', lang), 
         description: "Checking worldwide rankings... Open Yandex Games console to see the full list.",
@@ -95,7 +109,6 @@ export default function WordConnectPage() {
       description: t('game_over_desc', lang),
     });
     
-    // Explicitly sync and report score on level completion
     if (isYandexReady) {
       reportScoreToLeaderboard(score);
     }
@@ -112,9 +125,10 @@ export default function WordConnectPage() {
   }, []);
 
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   return (
-    <div className="h-screen w-full bg-background text-foreground overflow-hidden flex flex-col">
+    <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
       <div className="max-w-xl w-full mx-auto px-4 flex flex-col flex-1 min-h-0">
         <header className="flex flex-row justify-between items-center py-2 shrink-0">
           <div className="flex items-center space-x-2">
@@ -131,6 +145,9 @@ export default function WordConnectPage() {
             <div className="flex gap-0.5">
               <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full h-7 w-7">
                 <ListOrdered className="w-4 h-4 text-muted-foreground" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full h-7 w-7">
+                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
               </Button>
               <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full h-7 w-7">
                 <Languages className="w-4 h-4 text-muted-foreground" />

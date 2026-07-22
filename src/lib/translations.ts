@@ -21,7 +21,8 @@ type TranslationKeys =
   | 'next_level'
   | 'hint_all_found'
   | 'hint_template'
-  | 'show_leaderboard';
+  | 'show_leaderboard'
+  | 'toggle_theme';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -45,7 +46,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     next_level: 'Next Level',
     hint_all_found: 'You found them all!',
     hint_template: 'Hmm... Try a {n}-letter word starting with "{c}"',
-    show_leaderboard: 'Leaderboard'
+    show_leaderboard: 'Leaderboard',
+    toggle_theme: 'Toggle Theme'
   },
   ru: {
     high_score: 'Рекорд',
@@ -68,7 +70,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     next_level: 'След. уровень',
     hint_all_found: 'Вы нашли все слова!',
     hint_template: 'Хм... Попробуйте слово из {n} букв на "{c}"',
-    show_leaderboard: 'Лидеры'
+    show_leaderboard: 'Лидеры',
+    toggle_theme: 'Сменить тему'
   }
 };
 
