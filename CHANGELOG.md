@@ -2,9 +2,15 @@
 # Changelog
 
 ## [2.3.0] - 2024-06-02
-### Removed
-- **Esbuild Removal**: Stripped all `esbuild` dependencies, optional binaries, and overrides. 
-- **Build Refactoring**: Switched fully to Next.js native SWC compiler for better compatibility and to avoid binary installation scripts.
+### Added
+- **Synthesized Audio**: Implemented a zero-asset `AudioManager` using Web Audio API for interactive sound effects.
+- **Dynamic Theme**: Enhanced "Blue Sky" palette with animated sun rays, vibrant gradients, and improved glassmorphism.
+- **Game Icon**: Added a high-contrast SVG icon and `GameIcon` component for Yandex Games branding.
+- **Build Automation**: New CLI script for generating static exports and ZIP archives for publishing.
+
+### Changed
+- **UI Visibility**: Redesigned empty word slot placeholders with better depth and visibility.
+- **Performance**: Switched fully to Next.js SWC, removing all `esbuild` dependencies.
 
 ## [2.2.0] - 2024-06-01
 ### Added
@@ -21,7 +27,3 @@
 ### Fixed
 - **Build Stability**: Finalized `esbuild` compatibility for macOS 10.15 (Catalina).
 - **Layout Overflow**: Fixed scrolling issues on small viewports.
-
-## [2.1.4] - 2024-05-31
-### Fixed
-- **Installation Fix**: Added explicit `@esbuild/darwin-x64` to `optionalDependencies` to bypass `node install.js` script failures on macOS 10.15.
