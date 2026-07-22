@@ -53,7 +53,6 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    // Reset level progression when language changes to ensure valid content
     setLevelIndex(0);
   }, [lang]);
 
@@ -131,6 +130,7 @@ export default function WordConnectPage() {
               onSuggestionReceived={() => {}}
               gameState={gameState}
               lang={lang}
+              levelIndex={levelIndex}
             />
             
             <div className="flex gap-2 overflow-x-auto custom-scrollbar py-2 px-1">

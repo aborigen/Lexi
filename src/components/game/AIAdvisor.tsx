@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2, BrainCircuit } from 'lucide-react';
+import { BrainCircuit } from 'lucide-react';
 import { t } from '@/lib/translations';
-import { getWordHint } from '@/ai/flows/strategic-column-suggestion';
+import { LEVELS } from '@/lib/levels';
 
 interface AIAdvisorProps {
   gameState: {
@@ -14,39 +14,51 @@ interface AIAdvisorProps {
   };
   onSuggestionReceived: (hint: string) => void;
   lang?: string;
+  levelIndex?: number;
 }
 
-export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAdvisorProps) {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', levelIndex = 0 }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
 
-  const handleGetSuggestion = async () => {
-    if (isAnalyzing || !gameState.letters || gameState.letters.length === 0) return;
-    
-    setIsAnalyzing(true);
+  // Clear hint when gameState words change (e.g. word found)
+  useEffect(() => {
     setCitation(null);
+  }, [gameState.foundWords.length]);
 
-    try {
-      const result = await getWordHint({
-        letters: gameState.letters,
-        foundWords: gameState.foundWords,
-        allValidWords: gameState.allValidWords,
-        lang: lang
-      });
+  const handleGetSuggestion = () => {
+    if (!gameState.letters || gameState.letters.length === 0) return;
 
-      setCitation(result.citation);
-      if (result.hintWord) {
-        onSuggestionReceived(result.hintWord);
-      }
-    } catch (error) {
-      console.error("Failed to fetch hint:", error);
-      setCitation(t('ai_failed_desc', lang));
-    } finally {
-      setIsAnalyzing(false);
+    // Filter levels for the current language
+    const filteredLevels = LEVELS.filter(lvl => lvl.lang === lang);
+    const currentLevel = filteredLevels[levelIndex % filteredLevels.length];
+    
+    if (!currentLevel) return;
+
+    // Find words not yet found
+    const remaining = currentLevel.validWords.filter(w => !gameState.foundWords.includes(w));
+    
+    if (remaining.length === 0) {
+      setCitation(t('hint_all_found', lang));
+      return;
+    }
+
+    // Prioritize longer words for better hints
+    const sorted = [...remaining].sort((a, b) => b.length - a.length);
+    const targetWord = sorted[0];
+    const hint = currentLevel.hints[targetWord];
+
+    if (hint) {
+      setCitation(hint);
+    } else {
+      // Fallback if hint is missing
+      setCitation(t('hint_template', lang)
+        .replace('{n}', targetWord.length.toString())
+        .replace('{c}', targetWord[0])
+      );
     }
   };
 
-  const isButtonDisabled = isAnalyzing || !gameState.letters || gameState.letters.length === 0;
+  const isButtonDisabled = !gameState.letters || gameState.letters.length === 0;
 
   return (
     <div className="glass p-4 rounded-[1.5rem] border-white/60 bg-white/40 flex flex-col md:flex-row items-center gap-4 shadow-lg min-h-[80px]">
@@ -56,8 +68,8 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
         onClick={handleGetSuggestion}
         disabled={isButtonDisabled}
       >
-        {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
-        {isAnalyzing ? t('analyzing', lang) : t('get_hint', lang)}
+        <BrainCircuit className="w-4 h-4 mr-2" />
+        {t('get_hint', lang)}
       </Button>
       
       <div className="flex-1 min-w-0">
