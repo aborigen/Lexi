@@ -20,7 +20,8 @@ type TranslationKeys =
   | 'ai_failed_desc'
   | 'next_level'
   | 'hint_all_found'
-  | 'hint_template';
+  | 'hint_template'
+  | 'show_leaderboard';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -43,7 +44,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     ai_failed_desc: 'The AI is currently speechless. Try again in a moment.',
     next_level: 'Next Level',
     hint_all_found: 'You found them all!',
-    hint_template: 'Hmm... Try a {n}-letter word starting with "{c}"'
+    hint_template: 'Hmm... Try a {n}-letter word starting with "{c}"',
+    show_leaderboard: 'Leaderboard'
   },
   ru: {
     high_score: 'Рекорд',
@@ -65,7 +67,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     ai_failed_desc: 'ИИ временно потерял дар речи. Попробуйте еще раз.',
     next_level: 'След. уровень',
     hint_all_found: 'Вы нашли все слова!',
-    hint_template: 'Хм... Попробуйте слово из {n} букв на "{c}"'
+    hint_template: 'Хм... Попробуйте слово из {n} букв на "{c}"',
+    show_leaderboard: 'Лидеры'
   }
 };
 

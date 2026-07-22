@@ -18,6 +18,7 @@ export interface YandexLeaderboards {
 export interface YandexSDK {
   auth: {
     getPlayerData: () => Promise<any>;
+    openAuthDialog: () => Promise<void>;
   };
   getLeaderboards: () => Promise<YandexLeaderboards>;
   adv: {
@@ -132,8 +133,26 @@ export async function reportScoreToLeaderboard(score: number) {
     await lb.setLeaderboardScore('leaders', score);
     console.log('High score reported to leaderboard "leaders":', score);
   } catch (e) {
-    // This can fail if the player is not authorized or leaderboards aren't enabled in console
     console.warn('Failed to report score to Yandex Leaderboard:', e);
+  }
+}
+
+/**
+ * Fetches leaderboard entries. Used to simulate showing the leaderboard.
+ */
+export async function fetchLeaderboardEntries(limit = 10) {
+  const sdk = getYandexSDK();
+  if (!sdk) return null;
+
+  try {
+    const lb = await sdk.getLeaderboards();
+    return await lb.getLeaderboardEntries('leaders', { 
+      includeUser: true, 
+      quantityTop: limit 
+    });
+  } catch (e) {
+    console.warn('Failed to fetch leaderboard entries:', e);
+    return null;
   }
 }
 

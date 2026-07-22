@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { Trophy, RefreshCcw, Gamepad2, Languages } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -13,7 +13,8 @@ import {
   fetchHighScoreFromYandex, 
   getEnvironmentLanguage, 
   signalGameReady,
-  reportScoreToLeaderboard 
+  reportScoreToLeaderboard,
+  fetchLeaderboardEntries 
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 
@@ -72,6 +73,24 @@ export default function WordConnectPage() {
     setLevelIndex(0);
   }, []);
 
+  const handleShowLeaderboard = async () => {
+    if (!isYandexReady) {
+      toast({ title: "SDK Error", description: "Yandex Games SDK is not ready." });
+      return;
+    }
+    
+    // In a production Yandex Game, this would trigger a native UI or custom modal
+    // For now, we fetch and log, and show a toast.
+    const entries = await fetchLeaderboardEntries();
+    if (entries) {
+      console.log('Leaderboard entries:', entries);
+      toast({ 
+        title: t('show_leaderboard', lang), 
+        description: "Checking worldwide rankings... Open Yandex Games console to see the full list.",
+      });
+    }
+  };
+
   const handleLevelComplete = useCallback(() => {
     toast({ 
       title: t('game_over_title', lang), 
@@ -99,13 +118,16 @@ export default function WordConnectPage() {
             <h1 className="text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-1.5 glass px-3 py-1 rounded-full border-primary/20">
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-1.5 glass px-3 py-1 rounded-full border-primary/20 mr-1">
                <Trophy className="w-3.5 h-3.5 text-primary" />
                <span className="text-sm font-black">{score.toLocaleString()}</span>
             </div>
             
             <div className="flex gap-1">
+              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full h-8 w-8">
+                <ListOrdered className="w-4 h-4 text-muted-foreground" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full h-8 w-8">
                 <Languages className="w-4 h-4 text-muted-foreground" />
               </Button>
