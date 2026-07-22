@@ -62,7 +62,7 @@ export default function WordConnectPage() {
       }
     };
     init();
-  }, []);
+  }, [highScore]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -188,20 +188,6 @@ export default function WordConnectPage() {
               lang={lang}
               levelIndex={levelIndex}
             />
-            
-            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1">
-              {gameState.foundWords.length > 0 ? (
-                gameState.foundWords.map(word => (
-                  <div key={word} className="shrink-0 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
-                    {word}
-                  </div>
-                ))
-              ) : (
-                <div className="text-[10px] text-muted-foreground/40 italic px-2">
-                  {t('found_words', lang)}...
-                </div>
-              )}
-            </div>
           </div>
         </main>
       </div>
