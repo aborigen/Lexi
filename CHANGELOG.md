@@ -1,6 +1,15 @@
 
 # Changelog
 
+## [2.5.0] - 2024-06-04
+### Added
+- **Static Citation Hints**: Implemented a comprehensive library of pre-defined literary and linguistic hints, allowing for a pure static export without backend dependencies.
+- **Dynamic Letter Shuffling**: Letters on the circular interaction board are now randomized upon level load or language switch for increased variety.
+
+### Changed
+- **Deployment Mode**: Re-enabled `output: export` in Next.js configuration for standalone publishing.
+- **Hint Logic**: Transitioned from LLM-based generation to a performant local retrieval system.
+
 ## [2.4.0] - 2024-06-03
 ### Added
 - **Yandex Leaderboards**: Integrated support for the 'leaders' leaderboard, automatically reporting new high scores.
