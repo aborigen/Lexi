@@ -1,21 +1,22 @@
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for providing word hints in the Word Connect game.
+ * @fileOverview This file defines a Genkit flow for providing citation-style word hints in the Word Connect game.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const WordHintInputSchema = z.object({
-  letters: z.array(z.string()).describe('The 5 letters available on the board.'),
+  letters: z.array(z.string()).describe('The letters available on the board.'),
   foundWords: z.array(z.string()).describe('Words already found by the player.'),
   allValidWords: z.array(z.string()).describe('All possible valid words for this level.'),
+  lang: z.string().optional().default('en'),
 });
 export type WordHintInput = z.infer<typeof WordHintInputSchema>;
 
 const WordHintOutputSchema = z.object({
-  hintWord: z.string().describe('A word the user has NOT found yet.'),
-  reasoning: z.string().describe('Encouragement or a small clue about the word.'),
+  hintWord: z.string().describe('The target word that the user needs to find.'),
+  citation: z.string().describe('A sentence or citation with the target word replaced by "_____".'),
 });
 export type WordHintOutput = z.infer<typeof WordHintOutputSchema>;
 
@@ -23,14 +24,18 @@ const wordHintPrompt = ai.definePrompt({
   name: 'wordHintPrompt',
   input: {schema: WordHintInputSchema},
   output: {schema: WordHintOutputSchema},
-  prompt: `You are a Word Game Expert. 
-The player has these letters: {{{json letters}}}.
-They have already found: {{{json foundWords}}}.
-The remaining valid words are: {{{json allValidWords}}}.
+  prompt: `You are a Literary and Linguistics Expert. 
+The player is playing a Word Connect game in language: {{lang}}.
+Available letters: {{{json letters}}}.
+Found words: {{{json foundWords}}}.
+Target valid words: {{{json allValidWords}}}.
 
-Pick ONE word from the valid words that has NOT been found yet. 
-Provide a helpful but cryptic hint for it. Do not just give the word away in the reasoning.
-`,
+1. Pick ONE word from the valid words (preferably 5 letters long) that has NOT been found yet.
+2. Generate a famous citation, a well-known proverb, or a creative and evocative sentence that naturally includes this word.
+3. Replace that specific word in the citation with a blank like "_____".
+4. Ensure the context makes it possible (but slightly challenging) to guess the missing word.
+
+Output the target word and the citation with the blank.`,
 });
 
 const wordHintFlow = ai.defineFlow(
@@ -40,9 +45,13 @@ const wordHintFlow = ai.defineFlow(
     outputSchema: WordHintOutputSchema,
   },
   async (input) => {
-    // Filter out words already found
     const remaining = input.allValidWords.filter(w => !input.foundWords.includes(w));
-    if (remaining.length === 0) return { hintWord: '', reasoning: 'You found them all!' };
+    if (remaining.length === 0) {
+      return { 
+        hintWord: '', 
+        citation: input.lang === 'ru' ? 'Вы нашли все слова!' : 'You found them all!' 
+      };
+    }
 
     const {output} = await wordHintPrompt(input);
     if (!output) throw new Error('AI analysis failed.');

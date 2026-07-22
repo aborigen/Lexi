@@ -1,8 +1,7 @@
-
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // Removed output: 'export' to support dynamic server actions for AI flows
   images: {
     unoptimized: true,
     remotePatterns: [
