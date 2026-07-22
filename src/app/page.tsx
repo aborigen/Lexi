@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -24,34 +25,30 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
-      // 1. Get local storage score first for instant feedback
       const saved = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
       if (saved) setHighScore(parseInt(saved));
 
-      // 2. Initialize SDK
       const sdk = await initYandexSDK();
       if (sdk) {
         setIsYandexReady(true);
-        // Sync detected environment language
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
 
-        // 3. Sync scores from cloud
         const yandexHigh = await fetchHighScoreFromYandex();
         if (yandexHigh !== null && yandexHigh > (parseInt(saved || '0'))) {
           setHighScore(yandexHigh);
         }
 
-        // 4. Signal Game Ready to remove loading screen
         signalGameReady();
       }
     };
     init();
   }, []);
 
-  // Update HTML lang attribute for accessibility when state changes
   useEffect(() => {
     document.documentElement.lang = lang;
+    // Reset level progression when language changes to ensure valid content
+    setLevelIndex(0);
   }, [lang]);
 
   useEffect(() => {

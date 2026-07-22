@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
 import { LEVELS } from '@/lib/levels';
 import { cn } from '@/lib/utils';
@@ -21,18 +22,28 @@ export function WordConnect({
   onStateUpdate,
   lang = 'en' 
 }: WordConnectProps) {
-  const level = LEVELS[levelIndex % LEVELS.length];
+  // Filter levels based on the current language
+  const filteredLevels = useMemo(() => {
+    const l = LEVELS.filter(lvl => lvl.lang === lang);
+    return l.length > 0 ? l : LEVELS.filter(lvl => lvl.lang === 'en');
+  }, [lang]);
+
+  const level = filteredLevels[levelIndex % filteredLevels.length];
+  
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Sync found words state when level changes
+  // Sync found words state when level or language changes
   useEffect(() => {
     setFoundWords([]);
-  }, [levelIndex]);
+    setSelectedIndices([]);
+    setDragPath(null);
+  }, [levelIndex, lang]);
 
   const getLetterPos = (index: number) => {
+    if (!level) return { x: 0, y: 0 };
     const angle = (index * (360 / level.letters.length) - 90) * (Math.PI / 180);
     return {
       x: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.cos(angle),
@@ -41,7 +52,9 @@ export function WordConnect({
   };
 
   useEffect(() => {
-    onStateUpdate(level.letters, foundWords, level.validWords);
+    if (level) {
+      onStateUpdate(level.letters, foundWords, level.validWords);
+    }
   }, [level, foundWords, onStateUpdate]);
 
   const handleInteractionStart = (index: number) => {
@@ -50,7 +63,7 @@ export function WordConnect({
   };
 
   const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (selectedIndices.length === 0) return;
+    if (selectedIndices.length === 0 || !level) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -80,7 +93,7 @@ export function WordConnect({
   };
 
   const handleInteractionEnd = () => {
-    if (selectedIndices.length === 0) return;
+    if (selectedIndices.length === 0 || !level) return;
 
     const currentWord = selectedIndices.map(i => level.letters[i]).join('');
     if (level.validWords.includes(currentWord) && !foundWords.includes(currentWord)) {
@@ -102,12 +115,12 @@ export function WordConnect({
     setDragPath(null);
   };
 
-  // Sort valid words by length to make the grid look more organized
+  if (!level) return null;
+
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 w-full h-full min-h-0">
-      {/* Word Grid Slots */}
       <div className="flex flex-wrap justify-center gap-3 w-full p-6 glass rounded-[2rem] min-h-[120px] shrink-0">
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-1.5">
@@ -131,7 +144,6 @@ export function WordConnect({
         ))}
       </div>
 
-      {/* Circle Interaction Area */}
       <div className="flex-1 flex items-center justify-center min-h-0 py-2">
         <div 
           ref={containerRef}
@@ -143,7 +155,6 @@ export function WordConnect({
           onTouchEnd={handleInteractionEnd}
           onMouseLeave={handleInteractionEnd}
         >
-          {/* Interaction Lines */}
           <svg className="absolute inset-0 pointer-events-none w-full h-full">
             <defs>
               <filter id="line-glow">
@@ -180,7 +191,6 @@ export function WordConnect({
             )}
           </svg>
 
-          {/* Letter Bubbles */}
           {level.letters.map((char, i) => {
             const pos = getLetterPos(i);
             const isSelected = selectedIndices.includes(i);
@@ -209,7 +219,6 @@ export function WordConnect({
         </div>
       </div>
 
-      {/* Current Selection Preview */}
       <div className="h-16 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
           <div className="sunny-gradient px-10 py-3 rounded-full text-3xl font-black text-white animate-in zoom-in-90 duration-300 shadow-[0_10px_30px_rgba(255,171,0,0.4)] border-2 border-white/80">
