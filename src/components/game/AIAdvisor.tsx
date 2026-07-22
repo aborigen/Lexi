@@ -51,25 +51,24 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en' }: AIAd
   const isButtonDisabled = isAnalyzing || !gameState.letters || gameState.letters.length === 0;
 
   return (
-    <div className="glass p-3 rounded-2xl border-primary/20 bg-primary/5 flex items-center gap-3">
+    <div className="glass p-4 rounded-[1.5rem] border-white/60 bg-white/40 flex items-center gap-4 shadow-lg">
       <Button 
         size="sm" 
-        variant="secondary" 
-        className="h-8 px-3 text-[10px] font-bold bg-primary hover:bg-primary/80 text-white rounded-xl shadow-md shrink-0"
+        className="h-10 px-4 text-xs font-black sunny-gradient hover:opacity-90 text-white rounded-2xl shadow-[0_6px_15px_rgba(255,171,0,0.3)] shrink-0 border-b-4 border-black/10 active:border-b-0 active:translate-y-1 transition-all"
         onClick={handleGetSuggestion}
         disabled={isButtonDisabled}
       >
-        {isAnalyzing ? <Loader2 className="w-3 h-3 animate-spin mr-1.5" /> : <BrainCircuit className="w-3 h-3 mr-1.5" />}
+        {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
         {isAnalyzing ? t('analyzing', lang) : t('get_hint', lang)}
       </Button>
       
       <div className="flex-1 min-w-0">
         {suggestion ? (
-          <p className="text-[10px] text-muted-foreground leading-tight animate-in fade-in slide-in-from-left-2 duration-500 line-clamp-2">
+          <p className="text-xs font-bold text-foreground/80 leading-tight animate-in fade-in slide-in-from-left-4 duration-500 line-clamp-2">
             {suggestion}
           </p>
         ) : (
-          <p className="text-[10px] text-muted-foreground italic">
+          <p className="text-xs font-medium text-muted-foreground/70 italic">
             {t('wait_ai', lang)}
           </p>
         )}

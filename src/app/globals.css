@@ -1,30 +1,29 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 195 100% 95%;
-    --foreground: 200 50% 10%;
+    --background: 195 100% 92%;
+    --foreground: 200 60% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 200 50% 10%;
+    --card-foreground: 200 60% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 200 50% 10%;
-    --primary: 45 100% 50%;
+    --popover-foreground: 200 60% 12%;
+    --primary: 42 100% 55%;
     --primary-foreground: 0 0% 10%;
-    --secondary: 195 50% 85%;
-    --secondary-foreground: 200 50% 10%;
-    --muted: 195 20% 90%;
-    --muted-foreground: 200 30% 40%;
-    --accent: 45 100% 50%;
+    --secondary: 195 70% 88%;
+    --secondary-foreground: 200 60% 15%;
+    --muted: 195 30% 92%;
+    --muted-foreground: 200 30% 35%;
+    --accent: 35 100% 60%;
     --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 195 30% 85%;
-    --input: 195 30% 85%;
-    --ring: 45 100% 50%;
-    --radius: 1rem;
+    --border: 195 40% 88%;
+    --input: 195 40% 88%;
+    --ring: 42 100% 55%;
+    --radius: 1.25rem;
   }
 }
 
@@ -35,28 +34,30 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased overflow-x-hidden;
-    background: linear-gradient(to bottom, #87CEEB 0%, #B0E2FF 40%, #E0F7FA 100%);
+    background: linear-gradient(180deg, #4FC3F7 0%, #B3E5FC 40%, #E1F5FE 100%);
     background-attachment: fixed;
     touch-action: manipulation;
     position: relative;
     min-height: 100vh;
   }
 
+  /* The Animated Sun */
   body::before {
     content: "";
     position: fixed;
-    top: 5vw;
-    right: 5vw;
-    width: clamp(60px, 15vw, 120px);
-    height: clamp(60px, 15vw, 120px);
-    background: radial-gradient(circle, #fff700 0%, #ffcc00 100%);
+    top: -50px;
+    right: -50px;
+    width: clamp(200px, 40vw, 400px);
+    height: clamp(200px, 40vw, 400px);
+    background: radial-gradient(circle, #FFF176 0%, #FFD600 50%, rgba(255, 214, 0, 0) 70%);
     border-radius: 50%;
-    box-shadow: 0 0 60px #ffcc00, 0 0 120px rgba(255, 204, 0, 0.4);
     z-index: -1;
     pointer-events: none;
-    animation: float 6s ease-in-out infinite;
+    animation: sun-glow 8s ease-in-out infinite alternate;
+    opacity: 0.6;
   }
 
+  /* Decorative Light Rays */
   body::after {
     content: "";
     position: fixed;
@@ -66,51 +67,75 @@
     height: 100%;
     z-index: -2;
     background-image: 
-      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 10%),
-      radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
-      radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 15%),
-      radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 20%);
+      radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.9) 0%, transparent 12%),
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.7) 0%, transparent 15%),
+      radial-gradient(circle at 75% 15%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+      radial-gradient(circle at 45% 70%, rgba(255, 255, 255, 0.5) 0%, transparent 25%);
     pointer-events: none;
     background-repeat: no-repeat;
-    opacity: 0.8;
+    animation: clouds-drift 60s linear infinite;
   }
 }
 
 .glass {
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
 }
 
-@supports ((-webkit-backdrop-filter: blur(24px)) or (backdrop-filter: blur(24px))) {
+@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
   .glass {
-    background-color: rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
+    background-color: rgba(255, 255, 255, 0.35);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
   }
 }
 
+.sunny-gradient {
+  background: linear-gradient(135deg, #FFD600 0%, #FFAB00 100%);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 
+@keyframes sun-glow {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+  100% { transform: scale(1.1) translate(-10px, 10px); opacity: 0.8; }
+}
+
+@keyframes clouds-drift {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 0%; }
+}
+
 @keyframes float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.05); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
 }
 
 .select-none {
   user-select: none;
   -webkit-user-select: none;
+}
+
+.word-slot-found {
+  animation: pop-and-glow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes pop-and-glow {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.2); box-shadow: 0 0 20px rgba(255, 214, 0, 0.6); }
+  100% { transform: scale(1.1); }
 }
