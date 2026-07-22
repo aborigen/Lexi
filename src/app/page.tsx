@@ -94,8 +94,14 @@ export default function WordConnectPage() {
       title: t('game_over_title', lang), 
       description: t('game_over_desc', lang),
     });
+    
+    // Explicitly sync and report score on level completion
+    if (isYandexReady) {
+      reportScoreToLeaderboard(score);
+    }
+    
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
-  }, [lang]);
+  }, [lang, isYandexReady, score]);
 
   const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
     setGameState({ letters, foundWords, allValidWords });

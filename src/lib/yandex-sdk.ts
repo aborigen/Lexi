@@ -113,10 +113,10 @@ export async function syncHighScoreToYandex(score: number) {
 
     if (score > currentHigh) {
       await storage.set({ highScore: score });
-      console.log('High score synced to Yandex Cloud');
+      console.log('High score synced to Yandex Cloud storage');
     }
   } catch (e) {
-    console.warn('Failed to sync high score to Yandex:', e);
+    console.warn('Failed to sync high score to Yandex storage:', e);
   }
 }
 
@@ -125,15 +125,18 @@ export async function syncHighScoreToYandex(score: number) {
  */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
-  if (!sdk) return;
+  if (!sdk) {
+    console.log('Yandex SDK not ready for leaderboard reporting');
+    return;
+  }
 
   try {
     const lb = await sdk.getLeaderboards();
-    // Yandex SDK handles checking if score is higher before updating
+    // Yandex SDK handles checking if score is higher before updating internally
     await lb.setLeaderboardScore('leaders', score);
-    console.log('High score reported to leaderboard "leaders":', score);
+    console.log('Success: Score reported to Yandex leaderboard "leaders":', score);
   } catch (e) {
-    console.warn('Failed to report score to Yandex Leaderboard:', e);
+    console.warn('Failed to report score to Yandex leaderboard "leaders":', e);
   }
 }
 
