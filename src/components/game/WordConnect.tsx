@@ -134,7 +134,7 @@ export function WordConnect({
 
   return (
     <div className="flex flex-col items-center justify-center gap-2 w-full h-full min-h-0">
-      <div className="flex flex-wrap justify-center gap-2 w-full p-3 glass rounded-2xl min-h-[90px] shrink-0">
+      <div className="flex flex-wrap justify-center gap-2 w-full p-2 sm:p-3 glass rounded-2xl min-h-[80px] sm:min-h-[90px] shrink-0">
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-1">
             {word.split('').map((char, i) => {
@@ -143,7 +143,7 @@ export function WordConnect({
                 <div 
                   key={i} 
                   className={cn(
-                    "w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center border-2 rounded-lg font-black text-xs sm:text-sm transition-all duration-500",
+                    "w-6 h-6 sm:w-9 sm:h-9 flex items-center justify-center border-2 rounded-lg font-black text-[10px] sm:text-sm transition-all duration-500",
                     isFound 
                       ? "sunny-gradient text-white border-white shadow-[0_4px_12px_rgba(255,171,0,0.4)] word-slot-found" 
                       : "bg-white/10 border-white/40 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
@@ -160,7 +160,7 @@ export function WordConnect({
       <div className="flex-1 flex items-center justify-center min-h-0 py-1">
         <div 
           ref={containerRef}
-          className="relative select-none touch-none scale-75 sm:scale-100"
+          className="relative select-none touch-none scale-65 sm:scale-100 transition-transform duration-300"
           style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
@@ -234,7 +234,7 @@ export function WordConnect({
 
       <div className="h-10 sm:h-14 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-8 py-2 rounded-full text-xl sm:text-2xl font-black text-white animate-in zoom-in-90 duration-300 shadow-[0_6px_20px_rgba(255,171,0,0.4)] border-2 border-white/80">
+          <div className="sunny-gradient px-6 sm:px-8 py-1.5 sm:py-2 rounded-full text-lg sm:text-2xl font-black text-white animate-in zoom-in-90 duration-300 shadow-[0_6px_20px_rgba(255,171,0,0.4)] border-2 border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
