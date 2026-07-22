@@ -87,20 +87,23 @@ export function WordConnect({
     setDragPath(null);
   };
 
+  // Sort valid words by length to make the grid look more organized
+  const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
+
   return (
     <div className="flex flex-col items-center justify-center gap-6 w-full h-full min-h-0">
       {/* Word Grid Slots */}
-      <div className="flex flex-wrap justify-center gap-3 w-full p-4 glass rounded-3xl min-h-[80px] shrink-0">
-        {level.validWords.map(word => (
-          <div key={word} className="flex gap-1">
+      <div className="flex flex-wrap justify-center gap-3 w-full p-4 glass rounded-3xl min-h-[100px] shrink-0">
+        {sortedValidWords.map(word => (
+          <div key={word} className="flex gap-1.5 p-1">
             {word.split('').map((char, i) => (
               <div 
                 key={i} 
                 className={cn(
-                  "w-6 h-6 flex items-center justify-center border rounded-lg font-black text-xs transition-all duration-500",
+                  "w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border-2 rounded-lg font-black text-xs sm:text-sm transition-all duration-500",
                   foundWords.includes(word) 
-                    ? "bg-primary text-white border-primary shadow-lg scale-110" 
-                    : "bg-white/10 border-white/20 text-transparent"
+                    ? "bg-primary text-white border-primary shadow-[0_4px_10px_rgba(255,204,0,0.4)] scale-110" 
+                    : "bg-white/20 border-white/40 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
                 )}
               >
                 {foundWords.includes(word) ? char : ''}
