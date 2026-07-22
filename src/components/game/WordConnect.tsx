@@ -15,6 +15,18 @@ interface WordConnectProps {
   lang?: string;
 }
 
+/**
+ * Shuffles an array using the Fisher-Yates algorithm.
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export function WordConnect({ 
   levelIndex, 
   onScoreUpdate, 
@@ -30,21 +42,25 @@ export function WordConnect({
 
   const level = filteredLevels[levelIndex % filteredLevels.length];
   
+  const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Sync found words state when level or language changes
+  // Sync state when level or language changes
   useEffect(() => {
+    if (level) {
+      setShuffledLetters(shuffleArray(level.letters));
+    }
     setFoundWords([]);
     setSelectedIndices([]);
     setDragPath(null);
-  }, [levelIndex, lang]);
+  }, [levelIndex, lang, level]);
 
   const getLetterPos = (index: number) => {
-    if (!level) return { x: 0, y: 0 };
-    const angle = (index * (360 / level.letters.length) - 90) * (Math.PI / 180);
+    if (!level || shuffledLetters.length === 0) return { x: 0, y: 0 };
+    const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
     return {
       x: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.cos(angle),
       y: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.sin(angle)
@@ -52,10 +68,10 @@ export function WordConnect({
   };
 
   useEffect(() => {
-    if (level) {
-      onStateUpdate(level.letters, foundWords, level.validWords);
+    if (level && shuffledLetters.length > 0) {
+      onStateUpdate(shuffledLetters, foundWords, level.validWords);
     }
-  }, [level, foundWords, onStateUpdate]);
+  }, [level, foundWords, onStateUpdate, shuffledLetters]);
 
   const handleInteractionStart = (index: number) => {
     setSelectedIndices([index]);
@@ -63,7 +79,7 @@ export function WordConnect({
   };
 
   const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (selectedIndices.length === 0 || !level) return;
+    if (selectedIndices.length === 0 || shuffledLetters.length === 0) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -81,7 +97,7 @@ export function WordConnect({
     const y = clientY - rect.top;
     setDragPath({ x, y });
 
-    level.letters.forEach((_, idx) => {
+    shuffledLetters.forEach((_, idx) => {
       if (selectedIndices.includes(idx)) return;
       const pos = getLetterPos(idx);
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
@@ -93,9 +109,9 @@ export function WordConnect({
   };
 
   const handleInteractionEnd = () => {
-    if (selectedIndices.length === 0 || !level) return;
+    if (selectedIndices.length === 0 || !level || shuffledLetters.length === 0) return;
 
-    const currentWord = selectedIndices.map(i => level.letters[i]).join('');
+    const currentWord = selectedIndices.map(i => shuffledLetters[i]).join('');
     if (level.validWords.includes(currentWord) && !foundWords.includes(currentWord)) {
       const newFound = [...foundWords, currentWord];
       setFoundWords(newFound);
@@ -115,7 +131,7 @@ export function WordConnect({
     setDragPath(null);
   };
 
-  if (!level) return null;
+  if (!level || shuffledLetters.length === 0) return null;
 
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
@@ -191,7 +207,7 @@ export function WordConnect({
             )}
           </svg>
 
-          {level.letters.map((char, i) => {
+          {shuffledLetters.map((char, i) => {
             const pos = getLetterPos(i);
             const isSelected = selectedIndices.includes(i);
             return (
@@ -222,7 +238,7 @@ export function WordConnect({
       <div className="h-16 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
           <div className="sunny-gradient px-10 py-3 rounded-full text-3xl font-black text-white animate-in zoom-in-90 duration-300 shadow-[0_10px_30px_rgba(255,171,0,0.4)] border-2 border-white/80">
-            {selectedIndices.map(i => level.letters[i]).join('')}
+            {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
       </div>
