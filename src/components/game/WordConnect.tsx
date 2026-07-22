@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
 import { LEVELS } from '@/lib/levels';
 import { cn } from '@/lib/utils';
+import { audioManager } from '@/lib/audio-manager';
 
 interface WordConnectProps {
   levelIndex: number;
@@ -27,6 +28,11 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Sync found words state when level changes
+  useEffect(() => {
+    setFoundWords([]);
+  }, [levelIndex]);
+
   const getLetterPos = (index: number) => {
     const angle = (index * (360 / level.letters.length) - 90) * (Math.PI / 180);
     return {
@@ -41,6 +47,7 @@ export function WordConnect({
 
   const handleInteractionStart = (index: number) => {
     setSelectedIndices([index]);
+    audioManager.playSelect(0);
   };
 
   const handleInteractionMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -67,12 +74,15 @@ export function WordConnect({
       const pos = getLetterPos(idx);
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
       if (dist < LETTER_RADIUS * 1.5) {
+        audioManager.playSelect(selectedIndices.length);
         setSelectedIndices(prev => [...prev, idx]);
       }
     });
   };
 
   const handleInteractionEnd = () => {
+    if (selectedIndices.length === 0) return;
+
     const currentWord = selectedIndices.map(i => level.letters[i]).join('');
     if (level.validWords.includes(currentWord) && !foundWords.includes(currentWord)) {
       const newFound = [...foundWords, currentWord];
@@ -80,9 +90,15 @@ export function WordConnect({
       onScoreUpdate(currentWord.length * 10);
       
       if (newFound.length === level.validWords.length) {
+        audioManager.playLevelComplete();
         onLevelComplete();
+      } else {
+        audioManager.playSuccess();
       }
+    } else if (selectedIndices.length > 1) {
+      audioManager.playError();
     }
+    
     setSelectedIndices([]);
     setDragPath(null);
   };
@@ -94,8 +110,8 @@ export function WordConnect({
     <div className="flex flex-col items-center justify-center gap-6 w-full h-full min-h-0">
       {/* Word Grid Slots */}
       <div className="flex flex-wrap justify-center gap-3 w-full p-4 glass rounded-3xl min-h-[100px] shrink-0">
-        {sortedValidWords.map(word => (
-          <div key={word} className="flex gap-1.5 p-1">
+        {sortedValidWords.map((word, idx) => (
+          <div key={`${word}-${idx}`} className="flex gap-1.5 p-1">
             {word.split('').map((char, i) => (
               <div 
                 key={i} 
@@ -103,7 +119,7 @@ export function WordConnect({
                   "w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border-2 rounded-lg font-black text-xs sm:text-sm transition-all duration-500",
                   foundWords.includes(word) 
                     ? "bg-primary text-white border-primary shadow-[0_4px_10px_rgba(255,204,0,0.4)] scale-110" 
-                    : "bg-white/20 border-white/40 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
+                    : "bg-white/10 border-white/30 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
                 )}
               >
                 {foundWords.includes(word) ? char : ''}
