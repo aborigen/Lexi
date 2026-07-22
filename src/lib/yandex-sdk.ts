@@ -9,11 +9,17 @@ export interface YandexStorage {
   set: (data: Record<string, any>) => Promise<void>;
 }
 
+export interface YandexLeaderboards {
+  setLeaderboardScore: (name: string, score: number, extraData?: string) => Promise<void>;
+  getLeaderboardPlayerEntry: (name: string) => Promise<any>;
+  getLeaderboardEntries: (name: string, options?: any) => Promise<any>;
+}
+
 export interface YandexSDK {
   auth: {
     getPlayerData: () => Promise<any>;
   };
-  getLeaderboards: () => Promise<any>;
+  getLeaderboards: () => Promise<YandexLeaderboards>;
   adv: {
     showFullscreenAdv: (callbacks?: {
       onOpen?: () => void;
@@ -110,6 +116,24 @@ export async function syncHighScoreToYandex(score: number) {
     }
   } catch (e) {
     console.warn('Failed to sync high score to Yandex:', e);
+  }
+}
+
+/**
+ * Reports the high score to the 'leaders' leaderboard.
+ */
+export async function reportScoreToLeaderboard(score: number) {
+  const sdk = getYandexSDK();
+  if (!sdk) return;
+
+  try {
+    const lb = await sdk.getLeaderboards();
+    // Yandex SDK handles checking if score is higher before updating
+    await lb.setLeaderboardScore('leaders', score);
+    console.log('High score reported to leaderboard "leaders":', score);
+  } catch (e) {
+    // This can fail if the player is not authorized or leaderboards aren't enabled in console
+    console.warn('Failed to report score to Yandex Leaderboard:', e);
   }
 }
 

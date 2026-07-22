@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -8,7 +7,14 @@ import { Trophy, RefreshCcw, Gamepad2, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
-import { initYandexSDK, syncHighScoreToYandex, fetchHighScoreFromYandex, getEnvironmentLanguage, signalGameReady } from '@/lib/yandex-sdk';
+import { 
+  initYandexSDK, 
+  syncHighScoreToYandex, 
+  fetchHighScoreFromYandex, 
+  getEnvironmentLanguage, 
+  signalGameReady,
+  reportScoreToLeaderboard 
+} from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 
 export default function WordConnectPage() {
@@ -55,7 +61,10 @@ export default function WordConnectPage() {
     if (score > highScore) {
       setHighScore(score);
       localStorage.setItem('word_high_score', score.toString());
-      if (isYandexReady) syncHighScoreToYandex(score);
+      if (isYandexReady) {
+        syncHighScoreToYandex(score);
+        reportScoreToLeaderboard(score);
+      }
     }
   }, [score, highScore, isYandexReady]);
 
