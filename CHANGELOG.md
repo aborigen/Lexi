@@ -1,6 +1,19 @@
 
 # Changelog
 
+## [2.6.0] - 2024-06-05
+### Added
+- **Leaderboard UX**: Integrated a new "Show Leaderboard" button in the header for easier access to global rankings.
+- **Automated Score Sync**: Scores are now explicitly reported to Yandex Games leaderboards immediately upon level completion.
+
+### Changed
+- **Mobile Optimization**: Redesigned UI for portrait orientation on smartphones, including a more compact header and a reduced scale for the letter circle.
+- **Build Pipeline**: Updated archiving scripts to include the project's semantic version in the final ZIP filename for better release tracking.
+- **Code Structure**: Refactored game components (renamed `ColumnsGame` to `Game`) for better project clarity.
+
+### Fixed
+- **Leaderboard Reporting**: Audited SDK integration to ensure high scores are reported using the latest state values, preventing stale data updates.
+
 ## [2.5.0] - 2024-06-04
 ### Added
 - **Static Citation Hints**: Implemented a comprehensive library of pre-defined literary and linguistic hints, allowing for a pure static export without backend dependencies.
@@ -29,19 +42,3 @@
 ### Changed
 - **UI Visibility**: Redesigned empty word slot placeholders with better depth and visibility.
 - **Performance**: Switched fully to Next.js SWC, removing all `esbuild` dependencies.
-
-## [2.2.0] - 2024-06-01
-### Added
-- **Simplified UI**: Centered minimalist layout focusing on core gameplay.
-- **Russian Levels**: Added 5-letter Russian word puzzles (ПИЛОТ, КОМАР, КНИГА).
-- **Landscape Support**: Adaptive grid for better experience on wide screens and tablets.
-- **Local Font Stacks**: Switched to system fonts for better performance and offline reliability.
-
-### Changed
-- **Code Organization**: Moved levels and word lists to a dedicated `src/lib/levels.ts`.
-- **Yandex SDK Refinement**: Improved `signalGameReady` timing and automated language detection.
-- **Accessibility**: Implemented dynamic `html lang` attribute updates.
-
-### Fixed
-- **Build Stability**: Finalized `esbuild` compatibility for macOS 10.15 (Catalina).
-- **Layout Overflow**: Fixed scrolling issues on small viewports.
