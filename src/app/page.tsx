@@ -33,11 +33,9 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
-      // Local storage high score
       const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
       if (savedScore) setHighScore(parseInt(savedScore));
 
-      // Local storage theme
       const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
       setTheme(savedTheme as 'light' | 'dark');
 
@@ -129,8 +127,8 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col flex-1 min-h-0">
-        <header className="flex flex-row justify-between items-center py-2 shrink-0">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden">
+        <header className="flex flex-row justify-between items-center py-2 shrink-0 h-12">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
             <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
@@ -159,14 +157,16 @@ export default function WordConnectPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col min-h-0 gap-2 pb-4">
-          <WordConnect 
-            levelIndex={levelIndex}
-            onScoreUpdate={handleScoreUpdate}
-            onLevelComplete={handleLevelComplete}
-            onStateUpdate={handleStateUpdate}
-            lang={lang}
-          />
+        <main className="flex-1 flex flex-col min-h-0 gap-2 pb-4 overflow-hidden">
+          <div className="flex-1 min-h-0">
+            <WordConnect 
+              levelIndex={levelIndex}
+              onScoreUpdate={handleScoreUpdate}
+              onLevelComplete={handleLevelComplete}
+              onStateUpdate={handleStateUpdate}
+              lang={lang}
+            />
+          </div>
           
           <div className="shrink-0 flex flex-col gap-2">
             <AIAdvisor 
@@ -176,12 +176,18 @@ export default function WordConnectPage() {
               levelIndex={levelIndex}
             />
             
-            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1 px-1 min-h-[32px]">
-              {gameState.foundWords.map(word => (
-                <div key={word} className="shrink-0 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
-                  {word}
+            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1 px-1 min-h-[36px] max-h-[80px]">
+              {gameState.foundWords.length > 0 ? (
+                gameState.foundWords.map(word => (
+                  <div key={word} className="shrink-0 h-6 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300 flex items-center">
+                    {word}
+                  </div>
+                ))
+              ) : (
+                <div className="text-[10px] text-muted-foreground/40 italic px-2 py-1">
+                  {t('found_words', lang)}...
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </main>

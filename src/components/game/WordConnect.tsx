@@ -133,20 +133,21 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 w-full h-full min-h-0">
-      <div className="flex flex-wrap justify-center gap-2 w-full p-2 sm:p-3 glass rounded-2xl min-h-[80px] sm:min-h-[90px] shrink-0">
+    <div className="flex flex-col items-center gap-2 w-full h-full overflow-hidden">
+      {/* Word Slots Container: scrollable if many words */}
+      <div className="w-full shrink-0 max-h-[160px] overflow-y-auto custom-scrollbar p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2">
         {sortedValidWords.map((word, idx) => (
-          <div key={`${word}-${idx}`} className="flex gap-1">
+          <div key={`${word}-${idx}`} className="flex gap-0.5 sm:gap-1">
             {word.split('').map((char, i) => {
               const isFound = foundWords.includes(word);
               return (
                 <div 
                   key={i} 
                   className={cn(
-                    "w-6 h-6 sm:w-9 sm:h-9 flex items-center justify-center border-2 rounded-lg font-black text-[10px] sm:text-sm transition-all duration-500",
+                    "w-5 h-5 sm:w-8 sm:h-8 flex items-center justify-center border-2 rounded-md sm:rounded-lg font-black text-[9px] sm:text-xs transition-all duration-500",
                     isFound 
-                      ? "sunny-gradient text-white border-white shadow-[0_4px_12px_rgba(255,171,0,0.4)] word-slot-found" 
-                      : "bg-white/10 border-white/40 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
+                      ? "sunny-gradient text-white border-white shadow-[0_2px_8px_rgba(255,171,0,0.4)] word-slot-found" 
+                      : "bg-white/10 border-white/40 text-transparent shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]"
                   )}
                 >
                   {isFound ? char : ''}
@@ -157,11 +158,17 @@ export function WordConnect({
         ))}
       </div>
 
-      <div className="flex-1 flex items-center justify-center min-h-0 py-1">
+      {/* Circle Container: flex-1 to take center space without overlapping */}
+      <div className="flex-1 flex items-center justify-center w-full min-h-0 py-1 overflow-hidden">
         <div 
           ref={containerRef}
-          className="relative select-none touch-none scale-65 sm:scale-100 transition-transform duration-300"
-          style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
+          className="relative select-none touch-none scale-[0.6] sm:scale-90 md:scale-100 transition-transform duration-300"
+          style={{ 
+            width: CIRCLE_RADIUS * 2, 
+            height: CIRCLE_RADIUS * 2,
+            maxHeight: '100%',
+            maxWidth: '100%' 
+          }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
           onMouseUp={handleInteractionEnd}
@@ -232,9 +239,10 @@ export function WordConnect({
         </div>
       </div>
 
-      <div className="h-10 sm:h-14 flex items-center justify-center shrink-0">
+      {/* Current Word Indicator: shrink-0 at bottom */}
+      <div className="h-8 sm:h-12 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-6 sm:px-8 py-1.5 sm:py-2 rounded-full text-lg sm:text-2xl font-black text-white animate-in zoom-in-90 duration-300 shadow-[0_6px_20px_rgba(255,171,0,0.4)] border-2 border-white/80">
+          <div className="sunny-gradient px-5 sm:px-8 py-1 rounded-full text-base sm:text-xl font-black text-white animate-in zoom-in-95 duration-300 shadow-[0_4px_12px_rgba(255,171,0,0.4)] border-2 border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
