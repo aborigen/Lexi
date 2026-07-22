@@ -134,20 +134,20 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center gap-8 py-4">
-      <div className="w-full p-4 glass rounded-2xl flex flex-wrap justify-center gap-2 sm:gap-3">
+    <div className="flex flex-col items-center gap-2 py-2 flex-1 overflow-hidden">
+      <div className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0">
         {sortedValidWords.map((word, idx) => (
-          <div key={`${word}-${idx}`} className="flex gap-1">
+          <div key={`${word}-${idx}`} className="flex gap-0.5">
             {word.split('').map((char, i) => {
               const isFound = foundWords.includes(word);
               return (
                 <div 
                   key={i} 
                   className={cn(
-                    "w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center border-2 rounded-lg font-black text-xs sm:text-sm transition-all duration-500",
+                    "w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-xs transition-all duration-500",
                     isFound 
-                      ? "sunny-gradient text-white border-white shadow-[0_4px_12px_rgba(255,171,0,0.4)] word-slot-found" 
-                      : "bg-white/10 border-white/40 text-transparent shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]"
+                      ? "sunny-gradient text-white border-white shadow-[0_2px_6px_rgba(255,171,0,0.3)] word-slot-found" 
+                      : "bg-white/10 border-white/40 text-transparent"
                   )}
                 >
                   {isFound ? char : ''}
@@ -158,85 +158,87 @@ export function WordConnect({
         ))}
       </div>
 
-      <div className="h-10 flex items-center justify-center">
+      <div className="h-8 flex items-center justify-center shrink-0">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-8 py-2 rounded-full text-xl font-black text-white animate-in zoom-in-95 duration-300 shadow-[0_8px_20px_rgba(255,171,0,0.4)] border-2 border-white/80">
+          <div className="sunny-gradient px-4 py-1 rounded-full text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
       </div>
 
-      <div 
-        ref={containerRef}
-        className="relative select-none touch-none scale-[0.65] sm:scale-90 md:scale-100 transition-transform duration-300"
-        style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
-        onMouseMove={handleInteractionMove}
-        onTouchMove={handleInteractionMove}
-        onMouseUp={handleInteractionEnd}
-        onTouchEnd={handleInteractionEnd}
-        onMouseLeave={handleInteractionEnd}
-      >
-        <svg className="absolute inset-0 pointer-events-none">
-          <defs>
-            <filter id="line-glow">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
-          {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
-            const start = getLetterPos(idx);
-            const end = getLetterPos(selectedIndices[i+1]);
-            return (
+      <div className="flex-1 flex items-center justify-center w-full min-h-0">
+        <div 
+          ref={containerRef}
+          className="relative select-none touch-none scale-[0.6] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0"
+          style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
+          onMouseMove={handleInteractionMove}
+          onTouchMove={handleInteractionMove}
+          onMouseUp={handleInteractionEnd}
+          onTouchEnd={handleInteractionEnd}
+          onMouseLeave={handleInteractionEnd}
+        >
+          <svg className="absolute inset-0 pointer-events-none">
+            <defs>
+              <filter id="line-glow">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+            {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
+              const start = getLetterPos(idx);
+              const end = getLetterPos(selectedIndices[i+1]);
+              return (
+                <line 
+                  key={i} 
+                  x1={start.x} y1={start.y} 
+                  x2={end.x} y2={end.y} 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth="12" 
+                  strokeLinecap="round"
+                  className="opacity-80"
+                  filter="url(#line-glow)"
+                />
+              );
+            })}
+            {selectedIndices.length > 0 && dragPath && (
               <line 
-                key={i} 
-                x1={start.x} y1={start.y} 
-                x2={end.x} y2={end.y} 
+                x1={getLetterPos(selectedIndices[selectedIndices.length-1]).x} 
+                y1={getLetterPos(selectedIndices[selectedIndices.length-1]).y} 
+                x2={dragPath.x} y2={dragPath.y} 
                 stroke="hsl(var(--primary))" 
                 strokeWidth="12" 
                 strokeLinecap="round"
-                className="opacity-80"
-                filter="url(#line-glow)"
+                className="opacity-40"
               />
+            )}
+          </svg>
+
+          {shuffledLetters.map((char, i) => {
+            const pos = getLetterPos(i);
+            const isSelected = selectedIndices.includes(i);
+            return (
+              <div
+                key={i}
+                onMouseDown={() => handleInteractionStart(i)}
+                onTouchStart={() => handleInteractionStart(i)}
+                className={cn(
+                  "absolute flex items-center justify-center font-black text-2xl rounded-full cursor-pointer transition-all duration-200 select-none",
+                  isSelected 
+                    ? "sunny-gradient text-white scale-125 z-10 shadow-[0_8px_16px_rgba(255,171,0,0.5)] border-2 border-white" 
+                    : "glass hover:bg-white/90 hover:scale-105 border-2 border-white/60 shadow-lg"
+                )}
+                style={{
+                  left: pos.x - LETTER_RADIUS,
+                  top: pos.y - LETTER_RADIUS,
+                  width: LETTER_RADIUS * 2,
+                  height: LETTER_RADIUS * 2,
+                }}
+              >
+                {char}
+              </div>
             );
           })}
-          {selectedIndices.length > 0 && dragPath && (
-            <line 
-              x1={getLetterPos(selectedIndices[selectedIndices.length-1]).x} 
-              y1={getLetterPos(selectedIndices[selectedIndices.length-1]).y} 
-              x2={dragPath.x} y2={dragPath.y} 
-              stroke="hsl(var(--primary))" 
-              strokeWidth="12" 
-              strokeLinecap="round"
-              className="opacity-40"
-            />
-          )}
-        </svg>
-
-        {shuffledLetters.map((char, i) => {
-          const pos = getLetterPos(i);
-          const isSelected = selectedIndices.includes(i);
-          return (
-            <div
-              key={i}
-              onMouseDown={() => handleInteractionStart(i)}
-              onTouchStart={() => handleInteractionStart(i)}
-              className={cn(
-                "absolute flex items-center justify-center font-black text-2xl rounded-full cursor-pointer transition-all duration-200 select-none",
-                isSelected 
-                  ? "sunny-gradient text-white scale-125 z-10 shadow-[0_8px_16px_rgba(255,171,0,0.5)] border-2 border-white" 
-                  : "glass hover:bg-white/90 hover:scale-105 border-2 border-white/60 shadow-lg"
-              )}
-              style={{
-                left: pos.x - LETTER_RADIUS,
-                top: pos.y - LETTER_RADIUS,
-                width: LETTER_RADIUS * 2,
-                height: LETTER_RADIUS * 2,
-              }}
-            >
-              {char}
-            </div>
-          );
-        })}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+
 'use client';
 
 /**
@@ -65,6 +66,7 @@ export async function initYandexSDK(): Promise<YandexSDK | null> {
         resolve(null);
       });
     } else {
+      console.warn('Yandex Games script not found on window');
       resolve(null);
     }
   });
@@ -94,7 +96,6 @@ export function signalGameReady() {
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
   const rawLang = sdk?.environment?.i18n?.lang || 'en';
-  // Map variety of language codes (ru-RU, en-US, etc) to supported 'en' or 'ru'
   if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
   return 'en';
 }
@@ -109,7 +110,7 @@ export async function syncHighScoreToYandex(score: number) {
   try {
     const storage = await sdk.getStorage();
     const data = await storage.get(['highScore']);
-    const currentHigh = data.highScore || 0;
+    const currentHigh = data?.highScore || 0;
 
     if (score > currentHigh) {
       await storage.set({ highScore: score });
@@ -125,23 +126,19 @@ export async function syncHighScoreToYandex(score: number) {
  */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
-  if (!sdk) {
-    console.log('Yandex SDK not ready for leaderboard reporting');
-    return;
-  }
+  if (!sdk) return;
 
   try {
     const lb = await sdk.getLeaderboards();
-    // Yandex SDK handles checking if score is higher before updating internally
     await lb.setLeaderboardScore('leaders', score);
-    console.log('Success: Score reported to Yandex leaderboard "leaders":', score);
+    console.log('Score reported to Yandex leaderboard "leaders":', score);
   } catch (e) {
     console.warn('Failed to report score to Yandex leaderboard "leaders":', e);
   }
 }
 
 /**
- * Fetches leaderboard entries. Used to simulate showing the leaderboard.
+ * Fetches leaderboard entries.
  */
 export async function fetchLeaderboardEntries(limit = 10) {
   const sdk = getYandexSDK();
@@ -169,7 +166,7 @@ export async function fetchHighScoreFromYandex(): Promise<number | null> {
   try {
     const storage = await sdk.getStorage();
     const data = await storage.get(['highScore']);
-    return data.highScore || 0;
+    return (data && typeof data.highScore === 'number') ? data.highScore : 0;
   } catch (e) {
     console.warn('Failed to fetch high score from Yandex:', e);
     return null;

@@ -34,24 +34,31 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
-      const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
-      if (savedScore) setHighScore(parseInt(savedScore));
-
-      const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
-      setTheme(savedTheme as 'light' | 'dark');
-
-      const sdk = await initYandexSDK();
-      if (sdk) {
-        setIsYandexReady(true);
-        const envLang = getEnvironmentLanguage();
-        setLang(envLang);
-
-        const yandexHigh = await fetchHighScoreFromYandex();
-        if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
-          setHighScore(yandexHigh);
+      try {
+        // Safe localStorage access
+        const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
+        if (savedScore && !isNaN(parseInt(savedScore))) {
+          setHighScore(parseInt(savedScore));
         }
 
-        signalGameReady();
+        const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
+        setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
+
+        const sdk = await initYandexSDK();
+        if (sdk) {
+          setIsYandexReady(true);
+          const envLang = getEnvironmentLanguage();
+          setLang(envLang);
+
+          const yandexHigh = await fetchHighScoreFromYandex();
+          if (yandexHigh !== null && yandexHigh > highScore) {
+            setHighScore(yandexHigh);
+          }
+
+          signalGameReady();
+        }
+      } catch (error) {
+        console.error("Initialization error:", error);
       }
     };
     init();
@@ -59,7 +66,6 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    setLevelIndex(0);
   }, [lang]);
 
   useEffect(() => {
@@ -68,13 +74,17 @@ export default function WordConnectPage() {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('app_theme', theme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('app_theme', theme);
+    }
   }, [theme]);
 
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
-      localStorage.setItem('word_high_score', score.toString());
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('word_high_score', score.toString());
+      }
       if (isYandexReady) {
         syncHighScoreToYandex(score);
         reportScoreToLeaderboard(score);
@@ -93,12 +103,16 @@ export default function WordConnectPage() {
       return;
     }
     
-    const entries = await fetchLeaderboardEntries();
-    if (entries) {
-      toast({ 
-        title: t('show_leaderboard', lang), 
-        description: "Checking worldwide rankings... Open Yandex Games console to see the full list.",
-      });
+    try {
+      const entries = await fetchLeaderboardEntries();
+      if (entries) {
+        toast({ 
+          title: t('show_leaderboard', lang), 
+          description: "Rankings updated.",
+        });
+      }
+    } catch (e) {
+      console.error("Leaderboard error:", e);
     }
   };
 
@@ -129,36 +143,36 @@ export default function WordConnectPage() {
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
       <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full">
-        <header className="flex flex-row justify-between items-center py-4 shrink-0">
+        <header className="flex flex-row justify-between items-center py-2 shrink-0">
           <div className="flex items-center space-x-2">
-            <Gamepad2 className="w-6 h-6 text-primary" />
-            <h1 className="text-xl sm:text-2xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
+            <Gamepad2 className="w-5 h-5 text-primary" />
+            <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
           <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-1.5 glass px-3 py-1.5 rounded-full border-primary/20">
-               <Trophy className="w-4 h-4 text-primary" />
-               <span className="text-sm font-black">{score.toLocaleString()}</span>
+            <div className="flex items-center gap-1 glass px-2 py-1 rounded-full border-primary/20">
+               <Trophy className="w-3.5 h-3.5 text-primary" />
+               <span className="text-xs font-black">{score.toLocaleString()}</span>
             </div>
             
-            <div className="flex gap-1">
-              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full">
-                <ListOrdered className="w-5 h-5 text-muted-foreground" />
+            <div className="flex gap-0.5">
+              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full w-8 h-8">
+                <ListOrdered className="w-4 h-4 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
-                {theme === 'light' ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-8 h-8">
+                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full">
-                <Languages className="w-5 h-5 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full w-8 h-8">
+                <Languages className="w-4 h-4 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full">
-                <RefreshCcw className="w-5 h-5 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full w-8 h-8">
+                <RefreshCcw className="w-4 h-4 text-muted-foreground" />
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col gap-4 pb-6 overflow-y-auto custom-scrollbar">
+        <main className="flex-1 flex flex-col justify-between pb-4 overflow-hidden">
           <WordConnect 
             levelIndex={levelIndex}
             onScoreUpdate={handleScoreUpdate}
@@ -167,7 +181,7 @@ export default function WordConnectPage() {
             lang={lang}
           />
           
-          <div className="space-y-4">
+          <div className="flex flex-col gap-2 shrink-0">
             <AIAdvisor 
               onSuggestionReceived={() => {}}
               gameState={gameState}
@@ -175,15 +189,15 @@ export default function WordConnectPage() {
               levelIndex={levelIndex}
             />
             
-            <div className="flex gap-2 overflow-x-auto custom-scrollbar py-1">
+            <div className="flex gap-1.5 overflow-x-auto custom-scrollbar py-1">
               {gameState.foundWords.length > 0 ? (
                 gameState.foundWords.map(word => (
-                  <div key={word} className="shrink-0 bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
+                  <div key={word} className="shrink-0 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border border-primary/20 animate-in zoom-in-50 duration-300">
                     {word}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-muted-foreground/40 italic px-2">
+                <div className="text-[10px] text-muted-foreground/40 italic px-2">
                   {t('found_words', lang)}...
                 </div>
               )}
