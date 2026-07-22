@@ -1,6 +1,15 @@
 
 # Changelog
 
+## [2.4.0] - 2024-06-03
+### Added
+- **Yandex Leaderboards**: Integrated support for the 'leaders' leaderboard, automatically reporting new high scores.
+- **Content Localization**: Levels are now strictly filtered by language (English/Russian), ensuring a consistent linguistic experience.
+
+### Changed
+- **Level Progression**: Implemented automatic level resets when switching languages to prevent invalid word states.
+- **SDK Sync**: Improved synchronization between Yandex Cloud Storage and local high scores.
+
 ## [2.3.0] - 2024-06-02
 ### Added
 - **Synthesized Audio**: Implemented a zero-asset `AudioManager` using Web Audio API for interactive sound effects.
