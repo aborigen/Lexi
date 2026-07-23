@@ -1,14 +1,13 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
-import { LEVELS } from '@/lib/levels';
+import { WordLevel } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
 
 interface WordConnectProps {
-  levelIndex: number;
+  level: WordLevel;
   onScoreUpdate: (score: number) => void;
   onLevelComplete: () => void;
   onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
@@ -25,19 +24,12 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function WordConnect({ 
-  levelIndex, 
+  level, 
   onScoreUpdate, 
   onLevelComplete, 
   onStateUpdate,
   lang = 'en' 
 }: WordConnectProps) {
-  const filteredLevels = useMemo(() => {
-    const l = LEVELS.filter(lvl => lvl.lang === lang);
-    return l.length > 0 ? l : LEVELS.filter(lvl => lvl.lang === 'en');
-  }, [lang]);
-
-  const level = filteredLevels[levelIndex % filteredLevels.length];
-  
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
@@ -58,11 +50,11 @@ export function WordConnect({
   useEffect(() => {
     if (level) {
       setShuffledLetters(shuffleArray(level.letters));
+      setFoundWords([]);
+      setSelectedIndices([]);
+      setDragPath(null);
     }
-    setFoundWords([]);
-    setSelectedIndices([]);
-    setDragPath(null);
-  }, [levelIndex, lang, level]);
+  }, [level]);
 
   useEffect(() => {
     if (level && shuffledLetters.length > 0) {

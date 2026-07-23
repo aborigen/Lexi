@@ -1,11 +1,10 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { BrainCircuit } from 'lucide-react';
 import { t } from '@/lib/translations';
-import { LEVELS } from '@/lib/levels';
+import { WordLevel } from '@/lib/levels';
 
 interface AIAdvisorProps {
   gameState: {
@@ -15,25 +14,20 @@ interface AIAdvisorProps {
   };
   onSuggestionReceived: (hint: string) => void;
   lang?: string;
-  levelIndex?: number;
+  level: WordLevel;
 }
 
-export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', levelIndex = 0 }: AIAdvisorProps) {
+export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
 
   useEffect(() => {
     setCitation(null);
-  }, [gameState.foundWords.length]);
+  }, [gameState.foundWords.length, level]);
 
   const handleGetSuggestion = () => {
-    if (!gameState.letters || gameState.letters.length === 0) return;
+    if (!gameState.letters || gameState.letters.length === 0 || !level) return;
 
-    const filteredLevels = LEVELS.filter(lvl => lvl.lang === lang);
-    const currentLevel = filteredLevels[levelIndex % filteredLevels.length];
-    
-    if (!currentLevel) return;
-
-    const remaining = currentLevel.validWords.filter(w => !gameState.foundWords.includes(w));
+    const remaining = level.validWords.filter(w => !gameState.foundWords.includes(w));
     
     if (remaining.length === 0) {
       setCitation(t('hint_all_found', lang));
@@ -42,7 +36,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', levelI
 
     const sorted = [...remaining].sort((a, b) => b.length - a.length);
     const targetWord = sorted[0];
-    const hint = currentLevel.hints[targetWord];
+    const hint = level.hints[targetWord];
 
     if (hint) {
       setCitation(hint);
