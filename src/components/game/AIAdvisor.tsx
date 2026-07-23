@@ -51,27 +51,27 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
   const isButtonDisabled = !gameState.letters || gameState.letters.length === 0;
 
   return (
-    <div className="glass p-2 rounded-xl border-white/60 bg-white/40 flex items-center gap-2 shadow-sm shrink-0">
+    <div className="glass p-3 rounded-xl border-white/60 bg-white/40 flex items-center gap-3 shadow-sm shrink-0">
       <Button 
         size="sm" 
-        className="h-8 px-2 text-[9px] font-black sunny-gradient hover:opacity-90 text-white rounded-lg shadow-sm shrink-0 border-b border-black/10 active:border-b-0 active:translate-y-0.5 transition-all"
+        className="h-10 px-3 text-[11px] sm:text-xs font-black sunny-gradient hover:opacity-90 text-white rounded-lg shadow-sm shrink-0 border-b border-black/10 active:border-b-0 active:translate-y-0.5 transition-all"
         onClick={handleGetSuggestion}
         disabled={isButtonDisabled}
       >
-        <BrainCircuit className="w-3 h-3 mr-1" />
+        <BrainCircuit className="w-4 h-4 mr-1.5" />
         {t('get_hint', lang)}
       </Button>
       
       <div className="flex-1 min-w-0">
         {citation ? (
           <div className="animate-in fade-in slide-in-from-left-2 duration-400">
-             <p className="text-[8px] font-bold text-primary uppercase tracking-tighter mb-0">{t('strategy_identified', lang)}</p>
-             <p className="text-[10px] font-bold text-foreground/80 leading-tight italic line-clamp-1">
+             <p className="text-[10px] font-bold text-primary uppercase tracking-tighter mb-0.5">{t('strategy_identified', lang)}</p>
+             <p className="text-xs sm:text-sm font-bold text-foreground/80 leading-snug italic line-clamp-2">
               "{citation}"
             </p>
           </div>
         ) : (
-          <p className="text-[9px] font-medium text-muted-foreground/70 italic">
+          <p className="text-xs font-medium text-muted-foreground/70 italic leading-tight">
             {t('wait_ai', lang)}
           </p>
         )}
