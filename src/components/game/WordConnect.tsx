@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -35,6 +36,14 @@ export function WordConnect({
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Use a Ref to keep track of indices for high-performance stable callbacks
+  const selectedIndicesRef = useRef<number[]>([]);
+
+  // Synchronize state to ref
+  useEffect(() => {
+    selectedIndicesRef.current = selectedIndices;
+  }, [selectedIndices]);
 
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
@@ -49,9 +58,11 @@ export function WordConnect({
 
   useEffect(() => {
     if (level) {
-      setShuffledLetters(shuffleArray(level.letters));
+      const shuffled = shuffleArray(level.letters);
+      setShuffledLetters(shuffled);
       setFoundWords([]);
       setSelectedIndices([]);
+      selectedIndicesRef.current = [];
       setDragPath(null);
     }
   }, [level]);
@@ -68,7 +79,8 @@ export function WordConnect({
   };
 
   const handleInteractionMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    if (selectedIndices.length === 0 || shuffledLetters.length === 0) return;
+    const currentIndices = selectedIndicesRef.current;
+    if (currentIndices.length === 0 || shuffledLetters.length === 0) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -87,30 +99,36 @@ export function WordConnect({
     const y = (clientY - rect.top) / (rect.height / (CIRCLE_RADIUS * 2));
     setDragPath({ x, y });
 
-    if (selectedIndices.length > 1) {
-      const prevIdx = selectedIndices[selectedIndices.length - 2];
+    // Backtrack Logic: If we move back to the previous letter, deselect the current one
+    if (currentIndices.length > 1) {
+      const prevIdx = currentIndices[currentIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
       const distToPrev = Math.sqrt(Math.pow(x - prevPos.x, 2) + Math.pow(y - prevPos.y, 2));
+      
       if (distToPrev < LETTER_RADIUS * 1.2) {
-        setSelectedIndices(prev => prev.slice(0, -1));
-        audioManager.playSelect(selectedIndices.length - 2);
+        const newIndices = currentIndices.slice(0, -1);
+        setSelectedIndices(newIndices);
+        audioManager.playSelect(newIndices.length - 1);
         return;
       }
     }
 
+    // Forward selection
     letterPositions.forEach((pos, idx) => {
-      if (selectedIndices.includes(idx)) return;
+      if (currentIndices.includes(idx)) return;
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
       if (dist < LETTER_RADIUS * 1.5) {
-        audioManager.playSelect(selectedIndices.length);
-        setSelectedIndices(prev => [...prev, idx]);
+        const newIndices = [...currentIndices, idx];
+        setSelectedIndices(newIndices);
+        audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [selectedIndices, shuffledLetters, letterPositions]);
+  }, [shuffledLetters, letterPositions]); // selectedIndices removed from deps to maintain callback stability
 
   const handleInteractionEnd = () => {
-    if (selectedIndices.length === 0 || !level || shuffledLetters.length === 0) return;
-    const currentWord = selectedIndices.map(i => shuffledLetters[i]).join('');
+    const currentIndices = selectedIndicesRef.current;
+    if (currentIndices.length === 0 || !level || shuffledLetters.length === 0) return;
+    const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
     if (level.validWords.includes(currentWord)) {
       if (!foundWords.includes(currentWord)) {
@@ -124,12 +142,14 @@ export function WordConnect({
           audioManager.playSuccess();
         }
       } else {
+        // Already found feedback
         audioManager.playSelect(0);
       }
-    } else if (selectedIndices.length > 1) {
+    } else if (currentIndices.length > 1) {
       audioManager.playError();
     }
     setSelectedIndices([]);
+    selectedIndicesRef.current = [];
     setDragPath(null);
   };
 
