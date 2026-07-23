@@ -29,3 +29,10 @@
 
 ### Fixed
 - **Leaderboard Reporting**: Audited SDK integration to ensure high scores are reported using the latest state values, preventing stale data updates.
+
+## [2.5.0] - 2024-06-01
+### Added
+- **Core Engine**: Initial release of the Word Connect gameplay mechanics.
+- **Genkit Integration**: Launched the AI Advisor powered by Google Gemini via Firebase Genkit for smart hints.
+- **Audio System**: Implemented a Web Audio API synthesizer for lightweight, offline-ready sound effects.
+- **Yandex SDK**: Initial integration for cloud storage, environment detection, and basic high-score tracking.
