@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -37,7 +36,7 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Use a Ref to keep track of indices for high-performance stable callbacks
+  // Use a Ref to keep track of indices for high-performance stable callbacks during interaction
   const selectedIndicesRef = useRef<number[]>([]);
 
   // Synchronize state to ref
@@ -123,7 +122,7 @@ export function WordConnect({
         audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [shuffledLetters, letterPositions]); // selectedIndices removed from deps to maintain callback stability
+  }, [shuffledLetters, letterPositions]); // selectedIndices state is NOT a dependency to keep handler stable
 
   const handleInteractionEnd = () => {
     const currentIndices = selectedIndicesRef.current;
@@ -142,7 +141,6 @@ export function WordConnect({
           audioManager.playSuccess();
         }
       } else {
-        // Already found feedback
         audioManager.playSelect(0);
       }
     } else if (currentIndices.length > 1) {
