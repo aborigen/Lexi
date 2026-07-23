@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -114,6 +115,7 @@ export default function WordConnectPage() {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
     setActiveLevels(shuffleArray(base));
+    toast({ title: t('reset', lang), description: "Game progress cleared." });
   }, [lang]);
 
   const handleShowLeaderboard = async () => {
@@ -122,10 +124,15 @@ export default function WordConnectPage() {
       return;
     }
     try {
-      await fetchLeaderboardEntries();
-      toast({ title: t('show_leaderboard', lang), description: "Rankings updated." });
+      const entries = await fetchLeaderboardEntries();
+      console.log("Leaderboard Data:", entries);
+      toast({ 
+        title: t('show_leaderboard', lang), 
+        description: "Global rankings fetched. Comparison complete." 
+      });
     } catch (e) {
       console.error("Leaderboard error:", e);
+      toast({ title: "Leaderboard Error", description: "Failed to fetch rankings.", variant: "destructive" });
     }
   };
 
