@@ -35,7 +35,6 @@ export default function WordConnectPage() {
   useEffect(() => {
     const init = async () => {
       try {
-        // Safe localStorage access
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -102,15 +101,9 @@ export default function WordConnectPage() {
       toast({ title: "SDK Error", description: "Yandex Games SDK is not ready." });
       return;
     }
-    
     try {
-      const entries = await fetchLeaderboardEntries();
-      if (entries) {
-        toast({ 
-          title: t('show_leaderboard', lang), 
-          description: "Rankings updated.",
-        });
-      }
+      await fetchLeaderboardEntries();
+      toast({ title: t('show_leaderboard', lang), description: "Rankings updated." });
     } catch (e) {
       console.error("Leaderboard error:", e);
     }
@@ -121,11 +114,9 @@ export default function WordConnectPage() {
       title: t('game_over_title', lang), 
       description: t('game_over_desc', lang),
     });
-    
     if (isYandexReady) {
       reportScoreToLeaderboard(score);
     }
-    
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
   }, [lang, isYandexReady, score]);
 
@@ -142,14 +133,14 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden">
         <header className="flex flex-row justify-between items-center py-2 shrink-0">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
             <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-1.5 items-center">
             <div className="flex items-center gap-1 glass px-2 py-1 rounded-full border-primary/20">
                <Trophy className="w-3.5 h-3.5 text-primary" />
                <span className="text-xs font-black">{score.toLocaleString()}</span>
@@ -172,7 +163,7 @@ export default function WordConnectPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col justify-between pb-4 overflow-hidden">
+        <main className="flex-1 flex flex-col min-h-0 pb-4 overflow-hidden">
           <WordConnect 
             levelIndex={levelIndex}
             onScoreUpdate={handleScoreUpdate}
@@ -181,7 +172,7 @@ export default function WordConnectPage() {
             lang={lang}
           />
           
-          <div className="flex flex-col gap-2 shrink-0">
+          <div className="mt-auto pt-2 shrink-0">
             <AIAdvisor 
               onSuggestionReceived={() => {}}
               gameState={gameState}

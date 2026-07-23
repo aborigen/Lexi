@@ -15,9 +15,6 @@ interface WordConnectProps {
   lang?: string;
 }
 
-/**
- * Shuffles an array using the Fisher-Yates algorithm.
- */
 function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
@@ -47,7 +44,6 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Pre-calculate letter positions when letters or circle size changes
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
@@ -62,8 +58,6 @@ export function WordConnect({
   useEffect(() => {
     if (level) {
       setShuffledLetters(shuffleArray(level.letters));
-    } else {
-      setShuffledLetters([]);
     }
     setFoundWords([]);
     setSelectedIndices([]);
@@ -89,7 +83,6 @@ export function WordConnect({
 
     let clientX, clientY;
     if ('touches' in e) {
-      // Prevent default to stop scrolling while playing
       if (e.cancelable) e.preventDefault();
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
@@ -98,16 +91,14 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const x = (clientX - rect.left) / (rect.width / (CIRCLE_RADIUS * 2));
+    const y = (clientY - rect.top) / (rect.height / (CIRCLE_RADIUS * 2));
     setDragPath({ x, y });
 
-    // Check for "backtrack" (undo last letter if moving back to previous)
     if (selectedIndices.length > 1) {
       const prevIdx = selectedIndices[selectedIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
       const distToPrev = Math.sqrt(Math.pow(x - prevPos.x, 2) + Math.pow(y - prevPos.y, 2));
-      
       if (distToPrev < LETTER_RADIUS * 1.2) {
         setSelectedIndices(prev => prev.slice(0, -1));
         audioManager.playSelect(selectedIndices.length - 2);
@@ -115,7 +106,6 @@ export function WordConnect({
       }
     }
 
-    // Check for collision with new letters
     letterPositions.forEach((pos, idx) => {
       if (selectedIndices.includes(idx)) return;
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
@@ -128,7 +118,6 @@ export function WordConnect({
 
   const handleInteractionEnd = () => {
     if (selectedIndices.length === 0 || !level || shuffledLetters.length === 0) return;
-
     const currentWord = selectedIndices.map(i => shuffledLetters[i]).join('');
     
     if (level.validWords.includes(currentWord)) {
@@ -136,7 +125,6 @@ export function WordConnect({
         const newFound = [...foundWords, currentWord];
         setFoundWords(newFound);
         onScoreUpdate(currentWord.length * 10);
-        
         if (newFound.length === level.validWords.length) {
           audioManager.playLevelComplete();
           onLevelComplete();
@@ -144,23 +132,20 @@ export function WordConnect({
           audioManager.playSuccess();
         }
       } else {
-        // Already found
         audioManager.playSelect(0);
       }
     } else if (selectedIndices.length > 1) {
       audioManager.playError();
     }
-    
     setSelectedIndices([]);
     setDragPath(null);
   };
 
   if (!level || shuffledLetters.length === 0) return null;
-
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center gap-2 py-2 flex-1 overflow-hidden touch-none">
+    <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none">
       <div className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0">
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -203,7 +188,7 @@ export function WordConnect({
           onTouchEnd={handleInteractionEnd}
           onMouseLeave={handleInteractionEnd}
         >
-          <svg className="absolute inset-0 pointer-events-none">
+          <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CIRCLE_RADIUS*2} ${CIRCLE_RADIUS*2}`}>
             <defs>
               <filter id="line-glow">
                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -248,7 +233,6 @@ export function WordConnect({
                 key={i}
                 onMouseDown={() => handleInteractionStart(i)}
                 onTouchStart={(e) => {
-                  // Prevent default to stop scrolling
                   if (e.cancelable) e.preventDefault();
                   handleInteractionStart(i);
                 }}
@@ -274,4 +258,3 @@ export function WordConnect({
     </div>
   );
 }
-
