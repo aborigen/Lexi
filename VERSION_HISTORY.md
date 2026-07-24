@@ -1,27 +1,23 @@
+
 # Lexi.AI - Version History
 
-This document tracks the major milestones and release history of the Lexi.AI Word Connect puzzle.
+## v2.8.0 (2024-06-10)
+### Major Updates
+- **Yandex SDK V2 Compliance**: Fully refactored integration to meet latest Yandex Games standards, ensuring better stability and future-proofing.
+- **Performance Audit**: Optimized the `WordConnect` component to handle high-frequency touch events with zero lag using state-ref synchronization.
+- **Literature Integration**: Added classic Russian literary citations (Pushkin) to the level pool.
 
 ## v2.7.0 (2024-06-06)
 ### Major Updates
 - **Theme Engine**: Integrated a dynamic theme switcher supporting "Blue Sky" (Light) and "Starry Night" (Dark) modes with persistent state.
-- **Enhanced Russian Content**: Added 10+ new levels featuring classical Russian literature citations (Pushkin, Lermontov, Tyutchev, etc.).
+- **Enhanced Russian Content**: Added 10+ new levels featuring classical Russian literature citations.
 - **Smart Shuffling**: Implemented a randomization engine that shuffles levels on game start and language toggle.
 - **WordConnect UX**: Added backtrack/undo gesture support to the circular interaction component.
-
-### Technical Improvements
-- **Modular Content**: Split level data into `en.ts` and `ru.ts` for better scalability.
-- **Hydration Safety**: Hardened the initialization logic to prevent "Unexpected end of JSON input" and hydration mismatches.
-- **Performance**: Memoized polar coordinate calculations for the interaction board.
 
 ## v2.6.0 (2024-06-05)
 ### Features
 - **Global Leaderboards**: Added a dedicated leaderboard view integrated with the Yandex Games SDK.
 - **Automated Sync**: High scores are now automatically reported to the cloud upon level completion.
-
-### UI/UX
-- **Mobile First**: Redesigned the main layout for a zero-scroll experience on mobile portrait screens.
-- **Active Preview**: Added a floating word preview that appears during the connection gesture.
 
 ## v2.5.0 (2024-06-01)
 ### Core Engine

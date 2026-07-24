@@ -1,6 +1,18 @@
 
 # Changelog
 
+## [2.8.0] - 2024-06-10
+### Added
+- **Literary Content**: Expanded Russian library with 5+ new levels featuring Pushkin's *Eugene Onegin*.
+- **Yandex V2 Refactor**: Complete rewrite of the Yandex SDK integration for full V2 compatibility, including strictly-typed interfaces and `LoadingAPI` signaling.
+
+### Changed
+- **Performance Optimization**: Implemented the "Ref-Sync" pattern in `WordConnect.tsx` to ensure high-performance, lag-free interaction during drag gestures.
+- **Mobile UX**: Increased hint font sizes and enabled multi-line support for better readability on smartphones.
+
+### Fixed
+- **Next.js Stability**: Resolved event listener re-registration issues that could lead to framework invariant errors.
+
 ## [2.7.0] - 2024-06-06
 ### Added
 - **Theme Engine**: Implemented dynamic theme switching between "Blue Sky" (Light) and "Starry Night" (Dark) with HSL persistence.
