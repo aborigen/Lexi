@@ -4,6 +4,13 @@
  * @fileOverview Utility for interacting with the Yandex Games SDK V2.
  */
 
+export interface PlayerStats {
+  totalWordsFound: number;
+  levelsCleared: number;
+  hintsUsed: number;
+  lastPlayed: number;
+}
+
 export interface YandexStorage {
   get: (keys: string[]) => Promise<Record<string, any>>;
   set: (data: Record<string, any>) => Promise<void>;
@@ -63,7 +70,6 @@ export async function initYandexSDK(): Promise<YandexSDK | null> {
   if (yandexInstance) return yandexInstance;
 
   return new Promise((resolve) => {
-    // Check for global YaGames object injected by the V2 script
     // @ts-ignore
     if (typeof window.YaGames !== 'undefined') {
       // @ts-ignore
@@ -76,23 +82,16 @@ export async function initYandexSDK(): Promise<YandexSDK | null> {
         resolve(null);
       });
     } else {
-      console.warn('Yandex Games V2 script not found on window. Ensure https://yandex.ru/games/sdk/v2 is loaded.');
+      console.warn('Yandex Games V2 script not found on window.');
       resolve(null);
     }
   });
 }
 
-/**
- * Returns the current Yandex SDK instance if initialized.
- */
 export function getYandexSDK(): YandexSDK | null {
   return yandexInstance;
 }
 
-/**
- * Signals to Yandex Games that the game has finished loading and is ready for interaction.
- * Crucial for V2 compliance.
- */
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
@@ -101,20 +100,61 @@ export function signalGameReady() {
   }
 }
 
-/**
- * Gets the environment language from Yandex SDK and maps to supported app languages.
- */
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
   const rawLang = sdk?.environment?.i18n?.lang || 'en';
-  // Normalize to supported codes
   if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
   return 'en';
 }
 
 /**
- * Syncs the high score to Yandex Cloud Storage.
+ * Updates player statistics in Yandex Cloud Storage.
  */
+export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
+  const sdk = getYandexSDK();
+  if (!sdk) return;
+
+  try {
+    const storage = await sdk.getStorage();
+    const currentData = await storage.get(['stats']);
+    const stats: PlayerStats = currentData.stats || {
+      totalWordsFound: 0,
+      levelsCleared: 0,
+      hintsUsed: 0,
+      lastPlayed: Date.now()
+    };
+
+    const updatedStats: PlayerStats = {
+      totalWordsFound: stats.totalWordsFound + (newStats.totalWordsFound || 0),
+      levelsCleared: stats.levelsCleared + (newStats.levelsCleared || 0),
+      hintsUsed: stats.hintsUsed + (newStats.hintsUsed || 0),
+      lastPlayed: Date.now()
+    };
+
+    await storage.set({ stats: updatedStats });
+    console.log('Player statistics updated in Yandex Cloud');
+  } catch (e) {
+    console.warn('Failed to update player stats:', e);
+  }
+}
+
+/**
+ * Fetches player statistics from Yandex Cloud Storage.
+ */
+export async function fetchPlayerStats(): Promise<PlayerStats | null> {
+  const sdk = getYandexSDK();
+  if (!sdk) return null;
+
+  try {
+    const storage = await sdk.getStorage();
+    const data = await storage.get(['stats']);
+    return data.stats || null;
+  } catch (e) {
+    console.warn('Failed to fetch player stats:', e);
+    return null;
+  }
+}
+
 export async function syncHighScoreToYandex(score: number) {
   const sdk = getYandexSDK();
   if (!sdk) return;
@@ -126,17 +166,12 @@ export async function syncHighScoreToYandex(score: number) {
 
     if (score > currentHigh) {
       await storage.set({ highScore: score });
-      console.log('High score updated in Yandex Cloud storage');
     }
   } catch (e) {
-    console.warn('Failed to sync high score to Yandex storage:', e);
+    console.warn('Failed to sync high score:', e);
   }
 }
 
-/**
- * Reports the high score to the Yandex leaderboard.
- * Assumes a leaderboard named 'leaders' is configured in the developer console.
- */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
   if (!sdk) return;
@@ -144,15 +179,11 @@ export async function reportScoreToLeaderboard(score: number) {
   try {
     const lb = await sdk.getLeaderboards();
     await lb.setLeaderboardScore('leaders', score);
-    console.log('Score reported to Yandex leaderboard "leaders":', score);
   } catch (e) {
-    console.warn('Failed to report score to Yandex leaderboard:', e);
+    console.warn('Failed to report score:', e);
   }
 }
 
-/**
- * Fetches top leaderboard entries.
- */
 export async function fetchLeaderboardEntries(limit = 10) {
   const sdk = getYandexSDK();
   if (!sdk) return null;
@@ -164,14 +195,11 @@ export async function fetchLeaderboardEntries(limit = 10) {
       quantityTop: limit 
     });
   } catch (e) {
-    console.warn('Failed to fetch leaderboard entries:', e);
+    console.warn('Failed to fetch leaderboard:', e);
     return null;
   }
 }
 
-/**
- * Fetches the high score from Yandex Cloud Storage upon game start.
- */
 export async function fetchHighScoreFromYandex(): Promise<number | null> {
   const sdk = getYandexSDK();
   if (!sdk) return null;
@@ -181,7 +209,7 @@ export async function fetchHighScoreFromYandex(): Promise<number | null> {
     const data = await storage.get(['highScore']);
     return (data && typeof data.highScore === 'number') ? data.highScore : 0;
   } catch (e) {
-    console.warn('Failed to fetch high score from Yandex:', e);
+    console.warn('Failed to fetch high score:', e);
     return null;
   }
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -14,7 +14,10 @@ import {
   getEnvironmentLanguage, 
   signalGameReady,
   reportScoreToLeaderboard,
-  fetchLeaderboardEntries 
+  fetchLeaderboardEntries,
+  updatePlayerStats,
+  fetchPlayerStats,
+  PlayerStats
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
@@ -36,17 +39,16 @@ export default function WordConnectPage() {
   const [isYandexReady, setIsYandexReady] = useState(false);
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
     allValidWords: []
   });
 
-  // Initialization: High Score and SDK
   useEffect(() => {
     const init = async () => {
       try {
-        // 1. Local storage sync
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -55,23 +57,21 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
-        // 2. Yandex SDK V2 initialization
         const sdk = await initYandexSDK();
         if (sdk) {
           setIsYandexReady(true);
-          
-          // Set language from environment
           const envLang = getEnvironmentLanguage();
           setLang(envLang);
 
-          // Fetch cloud high score
           const yandexHigh = await fetchHighScoreFromYandex();
           if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
             setHighScore(yandexHigh);
             localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
-          // V2 compliance: signal load ready
+          const stats = await fetchPlayerStats();
+          if (stats) setPlayerStats(stats);
+
           signalGameReady();
         }
       } catch (error) {
@@ -81,7 +81,6 @@ export default function WordConnectPage() {
     init();
   }, []);
 
-  // Update levels when language changes
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -89,7 +88,6 @@ export default function WordConnectPage() {
     setLevelIndex(0);
   }, [lang]);
 
-  // Handle Theme
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -101,7 +99,6 @@ export default function WordConnectPage() {
     }
   }, [theme]);
 
-  // Persist High Score
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
@@ -130,37 +127,53 @@ export default function WordConnectPage() {
       return;
     }
     try {
-      // Typically, showLeaderboard is handled by the Yandex overlay, but we can also fetch data manually
       const entries = await fetchLeaderboardEntries();
-      console.log("Global Leaderboard Data:", entries);
-      toast({ 
-        title: t('show_leaderboard', lang), 
-        description: "Yandex Rankings synchronized." 
-      });
+      console.log("Leaderboard Data:", entries);
+      toast({ title: t('show_leaderboard', lang), description: "Rankings synchronized." });
     } catch (e) {
-      console.error("Leaderboard error:", e);
-      toast({ title: "Leaderboard Error", description: "Failed to access rankings.", variant: "destructive" });
+      toast({ title: "Leaderboard Error", variant: "destructive" });
     }
   };
 
-  const handleLevelComplete = useCallback(() => {
-    toast({ 
-      title: t('game_over_title', lang), 
-      description: t('game_over_desc', lang),
+  const handleShowStats = () => {
+    if (!playerStats) {
+      toast({ title: "No Data", description: "Statistics are not yet available." });
+      return;
+    }
+    toast({
+      title: "Player Statistics",
+      description: `Words Found: ${playerStats.totalWordsFound}\nLevels Cleared: ${playerStats.levelsCleared}\nHints Used: ${playerStats.hintsUsed}`,
     });
-    // Explicitly report score on level completion
+  };
+
+  const handleLevelComplete = useCallback(() => {
+    toast({ title: t('game_over_title', lang), description: t('game_over_desc', lang) });
+    
     if (isYandexReady) {
       reportScoreToLeaderboard(score);
+      updatePlayerStats({ levelsCleared: 1 });
+      fetchPlayerStats().then(s => s && setPlayerStats(s));
     }
+    
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
   }, [lang, isYandexReady, score]);
 
-  const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
-    setGameState({ letters, foundWords, allValidWords });
-  }, []);
-
   const handleScoreUpdate = useCallback((newScore: number) => {
     setScore(prev => prev + newScore);
+    // Track each word found for stats
+    if (isYandexReady) {
+      updatePlayerStats({ totalWordsFound: 1 });
+    }
+  }, [isYandexReady]);
+
+  const handleHintUsed = useCallback(() => {
+    if (isYandexReady) {
+      updatePlayerStats({ hintsUsed: 1 });
+    }
+  }, [isYandexReady]);
+
+  const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
+    setGameState({ letters, foundWords, allValidWords });
   }, []);
 
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
@@ -184,6 +197,9 @@ export default function WordConnectPage() {
             </div>
             
             <div className="flex gap-0.5">
+              <Button variant="ghost" size="icon" onClick={handleShowStats} className="rounded-full w-8 h-8">
+                <BarChart3 className="w-4 h-4 text-muted-foreground" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full w-8 h-8">
                 <ListOrdered className="w-4 h-4 text-muted-foreground" />
               </Button>
@@ -214,7 +230,7 @@ export default function WordConnectPage() {
           <div className="mt-auto pt-2 shrink-0">
             {currentLevel && (
               <AIAdvisor 
-                onSuggestionReceived={() => {}}
+                onSuggestionReceived={handleHintUsed}
                 gameState={gameState}
                 lang={lang}
                 level={currentLevel}
