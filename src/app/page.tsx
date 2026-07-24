@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -43,9 +42,11 @@ export default function WordConnectPage() {
     allValidWords: []
   });
 
+  // Initialization: High Score and SDK
   useEffect(() => {
     const init = async () => {
       try {
+        // 1. Local storage sync
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -54,17 +55,23 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
+        // 2. Yandex SDK V2 initialization
         const sdk = await initYandexSDK();
         if (sdk) {
           setIsYandexReady(true);
+          
+          // Set language from environment
           const envLang = getEnvironmentLanguage();
           setLang(envLang);
 
+          // Fetch cloud high score
           const yandexHigh = await fetchHighScoreFromYandex();
-          if (yandexHigh !== null && yandexHigh > highScore) {
+          if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
             setHighScore(yandexHigh);
+            localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
+          // V2 compliance: signal load ready
           signalGameReady();
         }
       } catch (error) {
@@ -72,8 +79,9 @@ export default function WordConnectPage() {
       }
     };
     init();
-  }, [highScore]);
+  }, []);
 
+  // Update levels when language changes
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -81,10 +89,7 @@ export default function WordConnectPage() {
     setLevelIndex(0);
   }, [lang]);
 
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
-
+  // Handle Theme
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -96,6 +101,7 @@ export default function WordConnectPage() {
     }
   }, [theme]);
 
+  // Persist High Score
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
@@ -120,19 +126,20 @@ export default function WordConnectPage() {
 
   const handleShowLeaderboard = async () => {
     if (!isYandexReady) {
-      toast({ title: "SDK Error", description: "Yandex Games SDK is not ready." });
+      toast({ title: "SDK Error", description: "Yandex Games SDK is not initialized." });
       return;
     }
     try {
+      // Typically, showLeaderboard is handled by the Yandex overlay, but we can also fetch data manually
       const entries = await fetchLeaderboardEntries();
-      console.log("Leaderboard Data:", entries);
+      console.log("Global Leaderboard Data:", entries);
       toast({ 
         title: t('show_leaderboard', lang), 
-        description: "Global rankings fetched. Comparison complete." 
+        description: "Yandex Rankings synchronized." 
       });
     } catch (e) {
       console.error("Leaderboard error:", e);
-      toast({ title: "Leaderboard Error", description: "Failed to fetch rankings.", variant: "destructive" });
+      toast({ title: "Leaderboard Error", description: "Failed to access rankings.", variant: "destructive" });
     }
   };
 
@@ -141,6 +148,7 @@ export default function WordConnectPage() {
       title: t('game_over_title', lang), 
       description: t('game_over_desc', lang),
     });
+    // Explicitly report score on level completion
     if (isYandexReady) {
       reportScoreToLeaderboard(score);
     }

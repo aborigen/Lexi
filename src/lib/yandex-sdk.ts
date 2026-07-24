@@ -1,8 +1,7 @@
-
 'use client';
 
 /**
- * @fileOverview Utility for interacting with the Yandex Games SDK.
+ * @fileOverview Utility for interacting with the Yandex Games SDK V2.
  */
 
 export interface YandexStorage {
@@ -13,7 +12,11 @@ export interface YandexStorage {
 export interface YandexLeaderboards {
   setLeaderboardScore: (name: string, score: number, extraData?: string) => Promise<void>;
   getLeaderboardPlayerEntry: (name: string) => Promise<any>;
-  getLeaderboardEntries: (name: string, options?: any) => Promise<any>;
+  getLeaderboardEntries: (name: string, options?: {
+    includeUser?: boolean;
+    quantityAround?: number;
+    quantityTop?: number;
+  }) => Promise<any>;
 }
 
 export interface YandexSDK {
@@ -28,6 +31,12 @@ export interface YandexSDK {
       onClose?: (wasShown: boolean) => void;
       onError?: (error: any) => void;
       onOffline?: () => void;
+    }) => void;
+    showRewardedVideo: (callbacks?: {
+      onOpen?: () => void;
+      onRewarded?: () => void;
+      onClose?: () => void;
+      onError?: (error: any) => void;
     }) => void;
   };
   getStorage: () => Promise<YandexStorage>;
@@ -47,26 +56,27 @@ export interface YandexSDK {
 let yandexInstance: YandexSDK | null = null;
 
 /**
- * Initializes the Yandex Games SDK.
+ * Initializes the Yandex Games SDK V2.
  */
 export async function initYandexSDK(): Promise<YandexSDK | null> {
   if (typeof window === 'undefined') return null;
   if (yandexInstance) return yandexInstance;
 
   return new Promise((resolve) => {
+    // Check for global YaGames object injected by the V2 script
     // @ts-ignore
     if (typeof window.YaGames !== 'undefined') {
       // @ts-ignore
       window.YaGames.init().then((sdk: YandexSDK) => {
         yandexInstance = sdk;
-        console.log('Yandex SDK initialized successfully');
+        console.log('Yandex SDK V2 initialized successfully');
         resolve(sdk);
       }).catch((e: any) => {
-        console.error('Yandex SDK failed to initialize:', e);
+        console.error('Yandex SDK V2 failed to initialize:', e);
         resolve(null);
       });
     } else {
-      console.warn('Yandex Games script not found on window');
+      console.warn('Yandex Games V2 script not found on window. Ensure https://yandex.ru/games/sdk/v2 is loaded.');
       resolve(null);
     }
   });
@@ -80,13 +90,14 @@ export function getYandexSDK(): YandexSDK | null {
 }
 
 /**
- * Signals to Yandex Games that the game has finished loading and is ready.
+ * Signals to Yandex Games that the game has finished loading and is ready for interaction.
+ * Crucial for V2 compliance.
  */
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
     sdk.features.LoadingAPI.ready();
-    console.log('Yandex Games: Game Ready signaled');
+    console.log('Yandex Games V2: LoadingAPI.ready() signaled');
   }
 }
 
@@ -96,6 +107,7 @@ export function signalGameReady() {
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
   const rawLang = sdk?.environment?.i18n?.lang || 'en';
+  // Normalize to supported codes
   if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
   return 'en';
 }
@@ -114,7 +126,7 @@ export async function syncHighScoreToYandex(score: number) {
 
     if (score > currentHigh) {
       await storage.set({ highScore: score });
-      console.log('High score synced to Yandex Cloud storage');
+      console.log('High score updated in Yandex Cloud storage');
     }
   } catch (e) {
     console.warn('Failed to sync high score to Yandex storage:', e);
@@ -122,7 +134,8 @@ export async function syncHighScoreToYandex(score: number) {
 }
 
 /**
- * Reports the high score to the 'leaders' leaderboard.
+ * Reports the high score to the Yandex leaderboard.
+ * Assumes a leaderboard named 'leaders' is configured in the developer console.
  */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
@@ -133,12 +146,12 @@ export async function reportScoreToLeaderboard(score: number) {
     await lb.setLeaderboardScore('leaders', score);
     console.log('Score reported to Yandex leaderboard "leaders":', score);
   } catch (e) {
-    console.warn('Failed to report score to Yandex leaderboard "leaders":', e);
+    console.warn('Failed to report score to Yandex leaderboard:', e);
   }
 }
 
 /**
- * Fetches leaderboard entries.
+ * Fetches top leaderboard entries.
  */
 export async function fetchLeaderboardEntries(limit = 10) {
   const sdk = getYandexSDK();
@@ -157,7 +170,7 @@ export async function fetchLeaderboardEntries(limit = 10) {
 }
 
 /**
- * Fetches the high score from Yandex Cloud Storage.
+ * Fetches the high score from Yandex Cloud Storage upon game start.
  */
 export async function fetchHighScoreFromYandex(): Promise<number | null> {
   const sdk = getYandexSDK();
