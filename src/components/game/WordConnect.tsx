@@ -5,6 +5,8 @@ import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-con
 import { WordLevel } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
+import { HandMetal as Pointer } from 'lucide-react';
+import { t } from '@/lib/translations';
 
 interface WordConnectProps {
   level: WordLevel;
@@ -34,14 +36,12 @@ export function WordConnect({
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Use a Ref to keep track of indices for high-performance stable callbacks during interaction
   const selectedIndicesRef = useRef<number[]>([]);
-
-  // Total canvas size including the radius of the letters and a small buffer
   const CANVAS_SIZE = (CIRCLE_RADIUS + LETTER_RADIUS + INTERACTION_BUFFER);
-  const OFFSET = CANVAS_SIZE; // Center point
+  const OFFSET = CANVAS_SIZE;
 
   useEffect(() => {
     selectedIndicesRef.current = selectedIndices;
@@ -57,6 +57,13 @@ export function WordConnect({
       };
     });
   }, [shuffledLetters, OFFSET]);
+
+  useEffect(() => {
+    const isFirstTime = !localStorage.getItem('lexi_onboarding_complete');
+    if (isFirstTime) {
+      setShowOnboarding(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (level) {
@@ -75,7 +82,15 @@ export function WordConnect({
     }
   }, [level, foundWords, onStateUpdate, shuffledLetters]);
 
+  const completeOnboarding = useCallback(() => {
+    if (showOnboarding) {
+      setShowOnboarding(false);
+      localStorage.setItem('lexi_onboarding_complete', 'true');
+    }
+  }, [showOnboarding]);
+
   const handleInteractionStart = (index: number) => {
+    completeOnboarding();
     setSelectedIndices([index]);
     audioManager.playSelect(0);
   };
@@ -97,12 +112,10 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    // Map client coordinates to our internal canvas space
     const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
     const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
     setDragPath({ x, y });
 
-    // Backtrack Logic
     if (currentIndices.length > 1) {
       const prevIdx = currentIndices[currentIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
@@ -116,7 +129,6 @@ export function WordConnect({
       }
     }
 
-    // Forward selection
     letterPositions.forEach((pos, idx) => {
       if (currentIndices.includes(idx)) return;
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
@@ -155,11 +167,29 @@ export function WordConnect({
     setDragPath(null);
   };
 
+  // Generate the onboarding path based on the first word
+  const onboardingPath = useMemo(() => {
+    if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
+    const firstWord = level.validWords.find(w => w.length >= 3) || level.validWords[0];
+    if (!firstWord) return null;
+
+    const indices: number[] = [];
+    for (const char of firstWord.split('')) {
+      const idx = shuffledLetters.indexOf(char);
+      if (idx !== -1 && !indices.includes(idx)) {
+        indices.push(idx);
+      }
+    }
+    
+    if (indices.length < 2) return null;
+    return indices.map(i => letterPositions[i]);
+  }, [showOnboarding, level, shuffledLetters, letterPositions]);
+
   if (!level || shuffledLetters.length === 0) return null;
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none">
+    <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none relative">
       <div 
         key={`grid-${level.letters.join('')}`} 
         className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left"
@@ -194,7 +224,7 @@ export function WordConnect({
         )}
       </div>
 
-      <div className="flex-1 flex items-center justify-center w-full min-h-0">
+      <div className="flex-1 flex items-center justify-center w-full min-h-0 relative">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
@@ -213,6 +243,20 @@ export function WordConnect({
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
             </defs>
+
+            {/* Onboarding Path Hint */}
+            {showOnboarding && onboardingPath && (
+              <path 
+                d={`M ${onboardingPath.map(p => `${p.x},${p.y}`).join(' L ')}`}
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray="1000"
+                className="opacity-20 animate-onboarding-path"
+              />
+            )}
+
             {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
               const start = letterPositions[idx];
               const end = letterPositions[selectedIndices[i+1]];
@@ -271,6 +315,25 @@ export function WordConnect({
               </div>
             );
           })}
+
+          {/* Onboarding Hand Animation */}
+          {showOnboarding && onboardingPath && (
+            <div 
+              className="absolute pointer-events-none z-50 animate-onboarding-hand"
+              style={{
+                left: onboardingPath[0].x - 12,
+                top: onboardingPath[0].y - 12,
+                transition: 'all 4s linear'
+              }}
+            >
+              <div className="flex flex-col items-center">
+                <Pointer className="w-8 h-8 text-primary drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" fill="currentColor" />
+                <span className="text-[10px] font-black uppercase text-primary bg-white/80 px-2 py-0.5 rounded-full shadow-sm mt-1 whitespace-nowrap">
+                  {t('guide_draw', lang)}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
