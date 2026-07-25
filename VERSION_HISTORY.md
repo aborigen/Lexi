@@ -1,6 +1,11 @@
 
 # Lexi.AI - Version History
 
+## v2.12.0 (2024-06-20)
+### UX
+- **Interactive Tutorial**: Added an animated finger guide that shows new players how to connect letters.
+- **Context-Aware**: The guide intelligently picks a word from the current level to demonstrate.
+
 ## v2.11.0 (2024-06-18)
 ### Content
 - **Massive Update**: Integrated 44 new Russian levels featuring iconic verses from *Eugene Onegin*.

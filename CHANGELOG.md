@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.12.0] - 2024-06-20
+### Added
+- **Onboarding System**: Implemented a dynamic "Hand Pointer" animation for first-time users. It demonstrates the core "drag-to-connect" mechanic using the first level's letters.
+- **Persistence**: Onboarding completion status is now saved in `localStorage` to prevent repeat tutorials for returning players.
+
 ## [2.11.0] - 2024-06-18
 ### Added
 - **Literary Content Expansion**: Added 44 new Russian levels based on Alexander Pushkin's *Eugene Onegin*, bringing the total to 53 high-quality literary puzzles.
