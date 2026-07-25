@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.11.0] - 2024-06-18
+### Added
+- **Literary Content Expansion**: Added 44 new Russian levels based on Alexander Pushkin's *Eugene Onegin*, bringing the total to 53 high-quality literary puzzles.
+- **Verse Formatting**: Enhanced the hint system to support multi-line poetic citations with improved vertical spacing in the high-visibility overlay.
+
 ## [2.10.0] - 2024-06-15
 ### Changed
 - **Data Architecture**: Refactored game level storage into external JSON files (`en.json` and `ru.json`) to improve maintainability and simplify future content updates.
@@ -16,13 +21,3 @@
 ### Fixed
 - **Interaction Accuracy**: Audited `WordConnect` component; corrected container sizing to prevent letter clipping and optimized gesture collision detection.
 - **Next.js Stability**: Hardened event registration logic using the Ref-Sync pattern to prevent Next.js framework invariants during rapid dragging.
-
-## [2.8.0] - 2024-06-10
-### Changed
-- **Yandex V2 Refactor**: Complete rewrite of the Yandex SDK integration for full V2 compatibility, including strictly-typed interfaces and `LoadingAPI` signaling.
-- **Performance Optimization**: Implemented high-performance state tracking in `WordConnect.tsx` to ensure lag-free circular interactions.
-
-## [2.7.0] - 2024-06-06
-### Added
-- **Theme Engine**: Implemented dynamic theme switching between "Blue Sky" (Light) and "Starry Night" (Dark).
-- **Gameplay Shuffling**: Implemented automatic level randomization on game start.
