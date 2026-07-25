@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.10.0] - 2024-06-15
+### Changed
+- **Data Architecture**: Refactored game level storage into external JSON files (`en.json` and `ru.json`) to improve maintainability and simplify future content updates.
+- **Level Loading**: Updated the core levels engine to unified imports from localized JSON resources.
+
 ## [2.9.0] - 2024-06-12
 ### Added
 - **UI Animations**: Implemented "Slide-in-from-left" for the Word Grid and "Zoom-in" for the Interaction Circle to enhance game feel.

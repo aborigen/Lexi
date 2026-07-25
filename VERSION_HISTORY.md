@@ -1,6 +1,10 @@
 
 # Lexi.AI - Version History
 
+## v2.10.0 (2024-06-15)
+### Architecture
+- **JSON Migration**: Levels are now decoupled from code and stored in structured JSON files for English and Russian locales.
+
 ## v2.9.0 (2024-06-12)
 ### UI & Interaction
 - **Polished Entry Effects**: Added unique CSS animations for level loading (Slide-in and Zoom).
