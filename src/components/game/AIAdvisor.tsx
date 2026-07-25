@@ -23,10 +23,15 @@ interface AIAdvisorProps {
   level: WordLevel;
 }
 
+/**
+ * AIAdvisor Component
+ * Displays a hint in a high-visibility centered overlay for better mobile readability.
+ */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
+  // Clear citation when level or found words change
   useEffect(() => {
     setCitation(null);
   }, [gameState.foundWords.length, level]);
@@ -42,6 +47,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
       return;
     }
 
+    // Pick the longest remaining word for the hint
     const sorted = [...remaining].sort((a, b) => b.length - a.length);
     const targetWord = sorted[0];
     const hint = level.hints[targetWord];
@@ -50,6 +56,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
     if (hint) {
       finalHint = hint;
     } else {
+      // Fallback hint if citation is missing
       finalHint = t('hint_template', lang)
         .replace('{n}', targetWord.length.toString())
         .replace('{c}', targetWord[0]);
@@ -99,8 +106,8 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
           </DialogHeader>
           
           <div className="py-2 text-center">
-            <p className="text-lg sm:text-xl font-black leading-relaxed italic text-foreground tracking-tight">
-              "{citation}"
+            <p className="text-lg sm:text-xl font-black leading-relaxed italic text-foreground tracking-tight whitespace-pre-line">
+              {citation}
             </p>
           </div>
 

@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Lexi.AI - Word Connect Puzzle',
-  description: 'An engaging circular word-linking game with AI-powered hints and Yandex SDK integration.',
+  description: 'An engaging circular word-linking game with AI-powered hints and Yandex SDK V2 integration.',
 };
 
 export default function RootLayout({
@@ -15,6 +15,7 @@ export default function RootLayout({
   return (
     <html>
       <head>
+        {/* Yandex Games SDK V2 */}
         <Script 
           src="https://yandex.ru/games/sdk/v2" 
           strategy="beforeInteractive"

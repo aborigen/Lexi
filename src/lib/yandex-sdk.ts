@@ -92,6 +92,9 @@ export function getYandexSDK(): YandexSDK | null {
   return yandexInstance;
 }
 
+/**
+ * Signals to Yandex V2 that the game is ready and loading is complete.
+ */
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
@@ -132,7 +135,6 @@ export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
     };
 
     await storage.set({ stats: updatedStats });
-    console.log('Player statistics updated in Yandex Cloud');
   } catch (e) {
     console.warn('Failed to update player stats:', e);
   }
