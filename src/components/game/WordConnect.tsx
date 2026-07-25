@@ -161,7 +161,7 @@ export function WordConnect({
   return (
     <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none">
       <div 
-        key={level.letters.join('')} // Unique key to re-trigger slide animation on level change
+        key={`grid-${level.letters.join('')}`} 
         className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left"
       >
         {sortedValidWords.map((word, idx) => (
@@ -196,8 +196,9 @@ export function WordConnect({
 
       <div className="flex-1 flex items-center justify-center w-full min-h-0">
         <div 
+          key={`circle-${level.letters.join('')}`}
           ref={containerRef}
-          className="relative select-none touch-none scale-[0.65] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0"
+          className="relative select-none touch-none scale-[0.65] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0 animate-zoom-in"
           style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
