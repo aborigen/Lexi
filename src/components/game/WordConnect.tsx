@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -161,7 +160,10 @@ export function WordConnect({
 
   return (
     <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none">
-      <div className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0">
+      <div 
+        key={level.letters.join('')} // Unique key to re-trigger slide animation on level change
+        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left"
+      >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
             {word.split('').map((char, i) => {
