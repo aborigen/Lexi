@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { CIRCLE_RADIUS, LETTER_RADIUS } from '@/lib/game-constants';
+import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-constants';
 import { WordLevel } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
@@ -39,7 +40,10 @@ export function WordConnect({
   // Use a Ref to keep track of indices for high-performance stable callbacks during interaction
   const selectedIndicesRef = useRef<number[]>([]);
 
-  // Synchronize state to ref
+  // Total canvas size including the radius of the letters and a small buffer
+  const CANVAS_SIZE = (CIRCLE_RADIUS + LETTER_RADIUS + INTERACTION_BUFFER);
+  const OFFSET = CANVAS_SIZE; // Center point
+
   useEffect(() => {
     selectedIndicesRef.current = selectedIndices;
   }, [selectedIndices]);
@@ -49,11 +53,11 @@ export function WordConnect({
     return shuffledLetters.map((_, index) => {
       const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
       return {
-        x: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.cos(angle),
-        y: CIRCLE_RADIUS + CIRCLE_RADIUS * Math.sin(angle)
+        x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
+        y: OFFSET + CIRCLE_RADIUS * Math.sin(angle)
       };
     });
-  }, [shuffledLetters]);
+  }, [shuffledLetters, OFFSET]);
 
   useEffect(() => {
     if (level) {
@@ -94,11 +98,12 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    const x = (clientX - rect.left) / (rect.width / (CIRCLE_RADIUS * 2));
-    const y = (clientY - rect.top) / (rect.height / (CIRCLE_RADIUS * 2));
+    // Map client coordinates to our internal canvas space
+    const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
+    const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
     setDragPath({ x, y });
 
-    // Backtrack Logic: If we move back to the previous letter, deselect the current one
+    // Backtrack Logic
     if (currentIndices.length > 1) {
       const prevIdx = currentIndices[currentIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
@@ -122,7 +127,7 @@ export function WordConnect({
         audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [shuffledLetters, letterPositions]); // selectedIndices state is NOT a dependency to keep handler stable
+  }, [shuffledLetters, letterPositions, CANVAS_SIZE]);
 
   const handleInteractionEnd = () => {
     const currentIndices = selectedIndicesRef.current;
@@ -191,14 +196,14 @@ export function WordConnect({
         <div 
           ref={containerRef}
           className="relative select-none touch-none scale-[0.65] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0"
-          style={{ width: CIRCLE_RADIUS * 2, height: CIRCLE_RADIUS * 2 }}
+          style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
           onMouseUp={handleInteractionEnd}
           onTouchEnd={handleInteractionEnd}
           onMouseLeave={handleInteractionEnd}
         >
-          <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CIRCLE_RADIUS*2} ${CIRCLE_RADIUS*2}`}>
+          <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CANVAS_SIZE*2} ${CANVAS_SIZE*2}`}>
             <defs>
               <filter id="line-glow">
                 <feGaussianBlur stdDeviation="3" result="blur" />

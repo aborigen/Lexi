@@ -1,8 +1,10 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
+import { Leaderboard } from '@/components/game/Leaderboard';
 import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
@@ -14,7 +16,6 @@ import {
   getEnvironmentLanguage, 
   signalGameReady,
   reportScoreToLeaderboard,
-  fetchLeaderboardEntries,
   updatePlayerStats,
   fetchPlayerStats,
   PlayerStats
@@ -40,6 +41,7 @@ export default function WordConnectPage() {
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
@@ -121,18 +123,12 @@ export default function WordConnectPage() {
     toast({ title: t('reset', lang), description: "Game progress cleared." });
   }, [lang]);
 
-  const handleShowLeaderboard = async () => {
+  const handleShowLeaderboard = () => {
     if (!isYandexReady) {
       toast({ title: "SDK Error", description: "Yandex Games SDK is not initialized." });
       return;
     }
-    try {
-      const entries = await fetchLeaderboardEntries();
-      console.log("Leaderboard Data:", entries);
-      toast({ title: t('show_leaderboard', lang), description: "Rankings synchronized." });
-    } catch (e) {
-      toast({ title: "Leaderboard Error", variant: "destructive" });
-    }
+    setIsLeaderboardOpen(true);
   };
 
   const handleShowStats = () => {
@@ -141,7 +137,7 @@ export default function WordConnectPage() {
       return;
     }
     toast({
-      title: "Player Statistics",
+      title: t('player_stats', lang),
       description: `Words Found: ${playerStats.totalWordsFound}\nLevels Cleared: ${playerStats.levelsCleared}\nHints Used: ${playerStats.hintsUsed}`,
     });
   };
@@ -160,7 +156,6 @@ export default function WordConnectPage() {
 
   const handleScoreUpdate = useCallback((newScore: number) => {
     setScore(prev => prev + newScore);
-    // Track each word found for stats
     if (isYandexReady) {
       updatePlayerStats({ totalWordsFound: 1 });
     }
@@ -239,6 +234,12 @@ export default function WordConnectPage() {
           </div>
         </main>
       </div>
+
+      <Leaderboard 
+        isOpen={isLeaderboardOpen} 
+        onOpenChange={setIsLeaderboardOpen} 
+        lang={lang} 
+      />
       <Toaster />
     </div>
   );
