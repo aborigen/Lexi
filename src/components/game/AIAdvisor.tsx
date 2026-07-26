@@ -1,10 +1,13 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, Sparkles } from 'lucide-react';
+import { BrainCircuit, Sparkles, Loader2 } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { WordLevel } from '@/lib/levels';
+import { getWordHint } from '@/ai/flows/strategic-column-suggestion';
+import { toast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
@@ -25,18 +28,19 @@ interface AIAdvisorProps {
 
 /**
  * AIAdvisor Component
- * Displays a hint in a high-visibility centered overlay for better mobile readability.
+ * Connects to Genkit to provide literary citations for any valid word on the board.
  */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Clear citation when level or found words change
   useEffect(() => {
     setCitation(null);
   }, [gameState.foundWords.length, level]);
 
-  const handleGetSuggestion = () => {
+  const handleGetSuggestion = async () => {
     if (!gameState.letters || gameState.letters.length === 0 || !level) return;
 
     const remaining = level.validWords.filter(w => !gameState.foundWords.includes(w));
@@ -47,27 +51,47 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
       return;
     }
 
-    // Pick the longest remaining word for the hint
-    const sorted = [...remaining].sort((a, b) => b.length - a.length);
-    const targetWord = sorted[0];
-    const hint = level.hints[targetWord];
+    setIsLoading(true);
+    try {
+      // First check if we have a static hint in the level data
+      const sorted = [...remaining].sort((a, b) => b.length - a.length);
+      const targetWord = sorted[0];
+      const staticHint = level.hints[targetWord];
 
-    let finalHint = '';
-    if (hint) {
-      finalHint = hint;
-    } else {
-      // Fallback hint if citation is missing
-      finalHint = t('hint_template', lang)
-        .replace('{n}', targetWord.length.toString())
-        .replace('{c}', targetWord[0]);
+      if (staticHint) {
+        setCitation(staticHint);
+        setIsOverlayOpen(true);
+        onSuggestionReceived(staticHint);
+      } else {
+        // Fallback to dynamic AI generation
+        const result = await getWordHint({
+          letters: gameState.letters,
+          foundWords: gameState.foundWords,
+          allValidWords: gameState.validWords,
+          lang: lang as 'en' | 'ru'
+        });
+
+        if (result && result.citation) {
+          setCitation(result.citation);
+          setIsOverlayOpen(true);
+          onSuggestionReceived(result.citation);
+        } else {
+          throw new Error("No citation returned");
+        }
+      }
+    } catch (error) {
+      console.error("AI Hint Error:", error);
+      toast({
+        title: t('ai_failed_title', lang),
+        description: t('ai_failed_desc', lang),
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setCitation(finalHint);
-    setIsOverlayOpen(true);
-    onSuggestionReceived(finalHint);
   };
 
-  const isButtonDisabled = !gameState.letters || gameState.letters.length === 0;
+  const isButtonDisabled = !gameState.letters || gameState.letters.length === 0 || isLoading;
 
   return (
     <>
@@ -87,7 +111,11 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
           onClick={handleGetSuggestion}
           disabled={isButtonDisabled}
         >
-          <BrainCircuit className="w-4 h-4 mr-2" />
+          {isLoading ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <BrainCircuit className="w-4 h-4 mr-2" />
+          )}
           {t('get_hint', lang)}
         </Button>
       </div>
