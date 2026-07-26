@@ -1,28 +1,20 @@
 
 # Changelog
 
+## [2.13.0] - 2024-06-25
+### Added
+- **Literary Masterpiece**: Finalized the Russian library with 112+ high-quality levels based on Pushkin's *Eugene Onegin*.
+- **Comprehensive Hints**: Every single valid word (including sub-words) now has a literary citation or contextual hint available via the AI Advisor.
+### Changed
+- **Static Export Optimization**: Refactored the entire app to remove Server Actions. The game is now 100% compatible with `output: 'export'`, ensuring seamless performance on Yandex Games.
+- **Content Audit**: Completed a full audit of all level data; fixed inconsistencies between letter sets and valid word lists.
+
 ## [2.12.0] - 2024-06-20
 ### Added
 - **Onboarding System**: Implemented a dynamic "Hand Pointer" animation for first-time users. It demonstrates the core "drag-to-connect" mechanic using the first level's letters.
-- **Persistence**: Onboarding completion status is now saved in `localStorage` to prevent repeat tutorials for returning players.
+- **Persistence**: Onboarding completion status is now saved in `localStorage`.
 
 ## [2.11.0] - 2024-06-18
 ### Added
-- **Literary Content Expansion**: Added 44 new Russian levels based on Alexander Pushkin's *Eugene Onegin*, bringing the total to 53 high-quality literary puzzles.
-- **Verse Formatting**: Enhanced the hint system to support multi-line poetic citations with improved vertical spacing in the high-visibility overlay.
-
-## [2.10.0] - 2024-06-15
-### Changed
-- **Data Architecture**: Refactored game level storage into external JSON files (`en.json` and `ru.json`) to improve maintainability and simplify future content updates.
-- **Level Loading**: Updated the core levels engine to unified imports from localized JSON resources.
-
-## [2.9.0] - 2024-06-12
-### Added
-- **UI Animations**: Implemented "Slide-in-from-left" for the Word Grid and "Zoom-in" for the Interaction Circle to enhance game feel.
-- **Mobile Accessibility**: Hints now appear in a high-visibility centered overlay (Dialog) for better legibility on smaller screens like iPhone 8.
-- **Live Leaderboard**: Fully implemented the `Leaderboard` component, fetching real-time data from Yandex Games SDK V2.
-- **Rich Content**: Added multiple Russian levels featuring classic poetry from Pushkin's *Eugene Onegin*.
-
-### Fixed
-- **Interaction Accuracy**: Audited `WordConnect` component; corrected container sizing to prevent letter clipping and optimized gesture collision detection.
-- **Next.js Stability**: Hardened event registration logic using the Ref-Sync pattern to prevent Next.js framework invariants during rapid dragging.
+- **Literary Content Expansion**: Added initial bulk of Russian levels based on Alexander Pushkin.
+- **Verse Formatting**: Enhanced the hint system to support multi-line poetic citations.
