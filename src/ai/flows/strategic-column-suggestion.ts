@@ -1,6 +1,7 @@
-'use server';
+
 /**
- * @fileOverview This file defines a Genkit flow for providing citation-style word hints in the Word Connect game.
+ * @fileOverview This file defines a Genkit flow for providing citation-style word hints.
+ * Note: 'use server' is removed for static build compatibility.
  */
 
 import {ai} from '@/ai/genkit';

@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { BrainCircuit, Sparkles, Loader2 } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { WordLevel } from '@/lib/levels';
-import { getWordHint } from '@/ai/flows/strategic-column-suggestion';
 import { toast } from '@/hooks/use-toast';
 import {
   Dialog,
@@ -28,7 +27,8 @@ interface AIAdvisorProps {
 
 /**
  * AIAdvisor Component
- * Connects to Genkit to provide literary citations for any valid word on the board.
+ * Static-export compatible version. 
+ * Uses pre-baked hints from levels or generates structural hints client-side.
  */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
@@ -52,10 +52,16 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
     }
 
     setIsLoading(true);
+    
+    // Simulate AI "thinking" time for game feel, without server roundtrips
+    await new Promise(resolve => setTimeout(resolve, 800));
+
     try {
-      // First check if we have a static hint in the level data
+      // Pick the longest remaining word for the hint
       const sorted = [...remaining].sort((a, b) => b.length - a.length);
       const targetWord = sorted[0];
+      
+      // Look up static hint from the enriched JSON library
       const staticHint = level.hints[targetWord];
 
       if (staticHint) {
@@ -63,24 +69,17 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
         setIsOverlayOpen(true);
         onSuggestionReceived(staticHint);
       } else {
-        // Fallback to dynamic AI generation
-        const result = await getWordHint({
-          letters: gameState.letters,
-          foundWords: gameState.foundWords,
-          allValidWords: gameState.validWords,
-          lang: lang as 'en' | 'ru'
-        });
-
-        if (result && result.citation) {
-          setCitation(result.citation);
-          setIsOverlayOpen(true);
-          onSuggestionReceived(result.citation);
-        } else {
-          throw new Error("No citation returned");
-        }
+        // Structural fallback if citation is missing (client-side)
+        const placeholder = t('hint_template', lang)
+          .replace('{n}', targetWord.length.toString())
+          .replace('{c}', targetWord[0].toUpperCase());
+        
+        setCitation(placeholder);
+        setIsOverlayOpen(true);
+        onSuggestionReceived(placeholder);
       }
     } catch (error) {
-      console.error("AI Hint Error:", error);
+      console.error("Hint Error:", error);
       toast({
         title: t('ai_failed_title', lang),
         description: t('ai_failed_desc', lang),
