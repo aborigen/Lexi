@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -50,6 +49,7 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const init = async () => {
+      let sdkInstance = null;
       try {
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
@@ -59,8 +59,8 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
-        const sdk = await initYandexSDK();
-        if (sdk) {
+        sdkInstance = await initYandexSDK();
+        if (sdkInstance) {
           setIsYandexReady(true);
           const envLang = getEnvironmentLanguage();
           setLang(envLang);
@@ -73,11 +73,14 @@ export default function WordConnectPage() {
 
           const stats = await fetchPlayerStats();
           if (stats) setPlayerStats(stats);
-
-          signalGameReady();
         }
       } catch (error) {
         console.error("Initialization error:", error);
+      } finally {
+        // Ensure the Yandex loading screen is dismissed once initial async tasks are done
+        if (sdkInstance) {
+          signalGameReady();
+        }
       }
     };
     init();

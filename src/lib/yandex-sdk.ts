@@ -98,8 +98,14 @@ export function getYandexSDK(): YandexSDK | null {
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
-    sdk.features.LoadingAPI.ready();
-    console.log('Yandex Games V2: LoadingAPI.ready() signaled');
+    try {
+      sdk.features.LoadingAPI.ready();
+      console.log('Yandex Games V2: LoadingAPI.ready() signaled');
+    } catch (e) {
+      console.error('Failed to signal LoadingAPI.ready():', e);
+    }
+  } else {
+    console.warn('Yandex Games V2: LoadingAPI.ready() not available');
   }
 }
 
