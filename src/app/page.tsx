@@ -47,10 +47,12 @@ export default function WordConnectPage() {
     allValidWords: []
   });
 
+  // Initialization: Auto-detect language via Yandex SDK at launch
   useEffect(() => {
     const init = async () => {
       let sdkInstance = null;
       try {
+        // Load local persistence
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -59,33 +61,38 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
+        // SDK Bootstrap
         sdkInstance = await initYandexSDK();
+        
+        // Auto-detect language happens here, at launch
+        const envLang = getEnvironmentLanguage();
+        setLang(envLang);
+
         if (sdkInstance) {
           setIsYandexReady(true);
-          const envLang = getEnvironmentLanguage();
-          setLang(envLang);
-
+          
+          // Sync high scores from cloud
           const yandexHigh = await fetchHighScoreFromYandex();
           if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
             setHighScore(yandexHigh);
             localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
+          // Load stats
           const stats = await fetchPlayerStats();
           if (stats) setPlayerStats(stats);
         }
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
-        // Ensure the Yandex loading screen is dismissed once initial async tasks are done
-        if (sdkInstance) {
-          signalGameReady();
-        }
+        // Signal ready once environment detection and data sync is complete
+        signalGameReady();
       }
     };
     init();
   }, []);
 
+  // Update levels when language changes (initially or via manual switch)
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');

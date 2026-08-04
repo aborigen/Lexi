@@ -43,7 +43,6 @@ export interface YandexSDK {
       onOpen?: () => void;
       onRewarded?: () => void;
       onClose?: () => void;
-      onError?: (error: any) => void;
     }) => void;
   };
   getStorage: () => Promise<YandexStorage>;
@@ -109,9 +108,16 @@ export function signalGameReady() {
   }
 }
 
+/**
+ * Retrieves the language from the Yandex environment.
+ * This is intended to be called once at launch for auto-detection.
+ */
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
-  const rawLang = sdk?.environment?.i18n?.lang || 'en';
+  // Attempt to detect from Yandex environment, fallback to browser, then to 'en'
+  const rawLang = sdk?.environment?.i18n?.lang || 
+                 (typeof navigator !== 'undefined' ? navigator.language : 'en');
+  
   if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
   return 'en';
 }
