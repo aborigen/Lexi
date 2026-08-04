@@ -47,6 +47,17 @@ export default function WordConnectPage() {
     allValidWords: []
   });
 
+  // Global: Disable context menu
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
   // Initialization: Auto-detect language via Yandex SDK at launch
   useEffect(() => {
     const init = async () => {
@@ -187,7 +198,7 @@ export default function WordConnectPage() {
   const currentLevel = activeLevels[levelIndex % (activeLevels.length || 1)];
 
   return (
-    <div className="h-screen w-full text-foreground overflow-hidden flex flex-col">
+    <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none">
       <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden">
         <header className="flex flex-row justify-between items-center py-2 shrink-0">
           <div className="flex items-center space-x-2">
