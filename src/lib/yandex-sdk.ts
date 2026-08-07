@@ -9,6 +9,8 @@ export interface PlayerStats {
   levelsCleared: number;
   hintsUsed: number;
   lastPlayed: number;
+  totalSessions: number;
+  longestWord: number;
 }
 
 export interface YandexStorage {
@@ -46,6 +48,14 @@ export interface YandexSDK {
     }) => void;
   };
   getStorage: () => Promise<YandexStorage>;
+  feedback?: {
+    canReview: () => Promise<{ value: boolean; reason?: string }>;
+    requestReview: () => Promise<{ feedbackSent: boolean }>;
+  };
+  shortcut?: {
+    canShowPrompt: () => Promise<{ canShow: boolean }>;
+    showPrompt: () => Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  };
   features: {
     LoadingAPI?: {
       ready: () => void;
@@ -114,7 +124,6 @@ export function signalGameReady() {
  */
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
-  // Attempt to detect from Yandex environment, fallback to browser, then to 'en'
   const rawLang = sdk?.environment?.i18n?.lang || 
                  (typeof navigator !== 'undefined' ? (navigator.language || (navigator as any).userLanguage) : 'en');
   
@@ -136,6 +145,8 @@ export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
       totalWordsFound: 0,
       levelsCleared: 0,
       hintsUsed: 0,
+      totalSessions: 0,
+      longestWord: 0,
       lastPlayed: Date.now()
     };
 
@@ -143,6 +154,8 @@ export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
       totalWordsFound: stats.totalWordsFound + (newStats.totalWordsFound || 0),
       levelsCleared: stats.levelsCleared + (newStats.levelsCleared || 0),
       hintsUsed: stats.hintsUsed + (newStats.hintsUsed || 0),
+      totalSessions: stats.totalSessions + (newStats.totalSessions || 0),
+      longestWord: Math.max(stats.longestWord, newStats.longestWord || 0),
       lastPlayed: Date.now()
     };
 
@@ -166,6 +179,40 @@ export async function fetchPlayerStats(): Promise<PlayerStats | null> {
   } catch (e) {
     console.warn('Failed to fetch player stats:', e);
     return null;
+  }
+}
+
+/**
+ * Prompts the user to leave a review. This helps promote the game's ranking.
+ */
+export async function requestReview() {
+  const sdk = getYandexSDK();
+  if (!sdk || !sdk.feedback) return;
+
+  try {
+    const { value } = await sdk.feedback.canReview();
+    if (value) {
+      await sdk.feedback.requestReview();
+    }
+  } catch (e) {
+    console.warn('Failed to request review:', e);
+  }
+}
+
+/**
+ * Prompts the user to create a desktop shortcut.
+ */
+export async function createShortcut() {
+  const sdk = getYandexSDK();
+  if (!sdk || !sdk.shortcut) return;
+
+  try {
+    const { canShow } = await sdk.shortcut.canShowPrompt();
+    if (canShow) {
+      await sdk.shortcut.showPrompt();
+    }
+  } catch (e) {
+    console.warn('Failed to show shortcut prompt:', e);
   }
 }
 

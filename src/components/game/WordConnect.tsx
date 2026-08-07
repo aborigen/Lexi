@@ -10,7 +10,7 @@ import { t } from '@/lib/translations';
 
 interface WordConnectProps {
   level: WordLevel;
-  onScoreUpdate: (score: number) => void;
+  onScoreUpdate: (score: number, length: number) => void;
   onLevelComplete: () => void;
   onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
   lang?: string;
@@ -149,7 +149,7 @@ export function WordConnect({
       if (!foundWords.includes(currentWord)) {
         const newFound = [...foundWords, currentWord];
         setFoundWords(newFound);
-        onScoreUpdate(currentWord.length * 10);
+        onScoreUpdate(currentWord.length * 10, currentWord.length);
         if (newFound.length === level.validWords.length) {
           audioManager.playLevelComplete();
           onLevelComplete();
@@ -167,7 +167,6 @@ export function WordConnect({
     setDragPath(null);
   };
 
-  // Generate the onboarding path based on the first word
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
     const firstWord = level.validWords.find(w => w.length >= 3) || level.validWords[0];
@@ -244,7 +243,6 @@ export function WordConnect({
               </filter>
             </defs>
 
-            {/* Onboarding Path Hint */}
             {showOnboarding && onboardingPath && (
               <path 
                 d={`M ${onboardingPath.map(p => `${p.x},${p.y}`).join(' L ')}`}
@@ -316,7 +314,6 @@ export function WordConnect({
             );
           })}
 
-          {/* Onboarding Hand Animation */}
           {showOnboarding && onboardingPath && (
             <div 
               className="absolute pointer-events-none z-50 animate-onboarding-hand"

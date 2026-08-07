@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3 } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -17,7 +17,9 @@ import {
   reportScoreToLeaderboard,
   updatePlayerStats,
   fetchPlayerStats,
-  PlayerStats
+  PlayerStats,
+  requestReview,
+  createShortcut
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
@@ -47,7 +49,6 @@ export default function WordConnectPage() {
     allValidWords: []
   });
 
-  // Global: Disable context menu for better immersive experience on Yandex Games
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -58,11 +59,9 @@ export default function WordConnectPage() {
     };
   }, []);
 
-  // Initialization: Perform environment detection and sync at launch (before signalGameReady)
   useEffect(() => {
     const init = async () => {
       try {
-        // 1. Load local persistence immediately
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -71,37 +70,39 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
-        // 2. Bootstrap Yandex SDK
         const sdkInstance = await initYandexSDK();
         
-        // 3. Auto-detect language via SDK during launch (not during gameplay)
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
 
         if (sdkInstance) {
           setIsYandexReady(true);
           
-          // 4. Sync cloud high scores and stats
           const yandexHigh = await fetchHighScoreFromYandex();
           if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
             setHighScore(yandexHigh);
             localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
+          // Update session count and fetch latest stats
+          await updatePlayerStats({ totalSessions: 1 });
           const stats = await fetchPlayerStats();
           if (stats) setPlayerStats(stats);
+
+          // Occasionally offer to create a shortcut
+          if (Math.random() > 0.7) {
+            createShortcut();
+          }
         }
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
-        // 5. Signal game ready to dismiss the Yandex loading screen
         signalGameReady();
       }
     };
     init();
   }, []);
 
-  // Update level library when language is initialized or manually changed
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -157,7 +158,7 @@ export default function WordConnectPage() {
     }
     toast({
       title: t('player_stats', lang),
-      description: `Words Found: ${playerStats.totalWordsFound}\nLevels Cleared: ${playerStats.levelsCleared}\nHints Used: ${playerStats.hintsUsed}`,
+      description: `Words Found: ${playerStats.totalWordsFound}\nLevels Cleared: ${playerStats.levelsCleared}\nHints Used: ${playerStats.hintsUsed}\nSessions: ${playerStats.totalSessions}\nLongest Word: ${playerStats.longestWord}`,
     });
   };
 
@@ -168,15 +169,20 @@ export default function WordConnectPage() {
       reportScoreToLeaderboard(score);
       updatePlayerStats({ levelsCleared: 1 });
       fetchPlayerStats().then(s => s && setPlayerStats(s));
+
+      // Promote the game with a review prompt after clearing a few levels
+      if ((levelIndex + 1) % 3 === 0) {
+        requestReview();
+      }
     }
     
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
-  }, [lang, isYandexReady, score]);
+  }, [lang, isYandexReady, score, levelIndex]);
 
-  const handleScoreUpdate = useCallback((newScore: number) => {
+  const handleScoreUpdate = useCallback((newScore: number, wordLength: number) => {
     setScore(prev => prev + newScore);
     if (isYandexReady) {
-      updatePlayerStats({ totalWordsFound: 1 });
+      updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
     }
   }, [isYandexReady]);
 
@@ -211,6 +217,9 @@ export default function WordConnectPage() {
             </div>
             
             <div className="flex gap-0.5">
+              <Button variant="ghost" size="icon" onClick={() => requestReview()} title="Review" className="rounded-full w-8 h-8">
+                <Star className="w-4 h-4 text-primary" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={handleShowStats} className="rounded-full w-8 h-8">
                 <BarChart3 className="w-4 h-4 text-muted-foreground" />
               </Button>
