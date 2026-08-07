@@ -1,6 +1,12 @@
 
 # Lexi.AI - Version History
 
+## v2.14.0 (2024-06-27)
+### Promotion & Retention
+- **Yandex SDK V2**: Full integration of Review (Feedback) and Shortcut APIs.
+- **Session Stats**: Added tracking for total sessions and longest words discovered.
+- **Launch Stability**: Guaranteed language auto-detection and SDK readiness before game start.
+
 ## v2.13.0 (2024-06-25)
 ### Performance & Content
 - **Zero-Latency**: Removed all server round-trips for hints. The game now runs entirely on the client, optimized for Yandex Games static hosting.

@@ -1,6 +1,15 @@
 
 # Changelog
 
+## [2.14.0] - 2024-06-27
+### Added
+- **Promotion Toolkit**: Integrated Yandex Games Feedback API and Shortcut API to boost game ranking and player retention.
+- **Enhanced Analytics**: New stats tracking for `Total Sessions` and `Longest Word Found`, synchronized with Yandex Cloud Storage.
+- **Engagement Prompts**: Intelligent review requests and shortcut suggestions triggered after level completion milestones.
+### Changed
+- **Launch Optimization**: Refined initialization flow with precise `LoadingAPI.ready()` signaling only after all cloud data is synced.
+- **Player Immersion**: Disabled global browser context menu to prevent accidental interruptions during gameplay.
+
 ## [2.13.0] - 2024-06-25
 ### Added
 - **Literary Masterpiece**: Finalized the Russian library with 112+ high-quality levels based on Pushkin's *Eugene Onegin*.
