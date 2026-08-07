@@ -1,3 +1,4 @@
+
 'use client';
 
 /**
@@ -33,7 +34,7 @@ export interface YandexSDK {
     getPlayerData: () => Promise<any>;
     openAuthDialog: () => Promise<void>;
   };
-  getLeaderboards: () => Promise<YandexLeaderboards>;
+  leaderboards: YandexLeaderboards;
   adv: {
     showFullscreenAdv: (callbacks?: {
       onOpen?: () => void;
@@ -238,8 +239,7 @@ export async function reportScoreToLeaderboard(score: number) {
   if (!sdk) return;
 
   try {
-    const lb = await sdk.getLeaderboards();
-    await lb.setLeaderboardScore('leaders', score);
+    await sdk.leaderboards.setLeaderboardScore('leaders', score);
   } catch (e) {
     console.warn('Failed to report score:', e);
   }
@@ -250,8 +250,7 @@ export async function fetchLeaderboardEntries(limit = 10) {
   if (!sdk) return null;
 
   try {
-    const lb = await sdk.getLeaderboards();
-    return await lb.getLeaderboardEntries('leaders', { 
+    return await sdk.leaderboards.getLeaderboardEntries('leaders', { 
       includeUser: true, 
       quantityTop: limit 
     });
