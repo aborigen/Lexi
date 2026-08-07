@@ -47,7 +47,7 @@ export default function WordConnectPage() {
     allValidWords: []
   });
 
-  // Global: Disable context menu
+  // Global: Disable context menu for better immersive experience on Yandex Games
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -58,12 +58,11 @@ export default function WordConnectPage() {
     };
   }, []);
 
-  // Initialization: Auto-detect language via Yandex SDK at launch
+  // Initialization: Perform environment detection and sync at launch (before signalGameReady)
   useEffect(() => {
     const init = async () => {
-      let sdkInstance = null;
       try {
-        // Load local persistence
+        // 1. Load local persistence immediately
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
@@ -72,38 +71,37 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
-        // SDK Bootstrap
-        sdkInstance = await initYandexSDK();
+        // 2. Bootstrap Yandex SDK
+        const sdkInstance = await initYandexSDK();
         
-        // Auto-detect language happens here, at launch
+        // 3. Auto-detect language via SDK during launch (not during gameplay)
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
 
         if (sdkInstance) {
           setIsYandexReady(true);
           
-          // Sync high scores from cloud
+          // 4. Sync cloud high scores and stats
           const yandexHigh = await fetchHighScoreFromYandex();
           if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
             setHighScore(yandexHigh);
             localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
-          // Load stats
           const stats = await fetchPlayerStats();
           if (stats) setPlayerStats(stats);
         }
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
-        // Signal ready once environment detection and data sync is complete
+        // 5. Signal game ready to dismiss the Yandex loading screen
         signalGameReady();
       }
     };
     init();
   }, []);
 
-  // Update levels when language changes (initially or via manual switch)
+  // Update level library when language is initialized or manually changed
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');

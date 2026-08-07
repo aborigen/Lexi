@@ -116,7 +116,7 @@ export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
   // Attempt to detect from Yandex environment, fallback to browser, then to 'en'
   const rawLang = sdk?.environment?.i18n?.lang || 
-                 (typeof navigator !== 'undefined' ? navigator.language : 'en');
+                 (typeof navigator !== 'undefined' ? (navigator.language || (navigator as any).userLanguage) : 'en');
   
   if (rawLang.toLowerCase().startsWith('ru')) return 'ru';
   return 'en';
