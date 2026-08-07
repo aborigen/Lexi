@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
+    <html lang="en">
       <head>
         {/* Yandex Games SDK V2 */}
         <Script 

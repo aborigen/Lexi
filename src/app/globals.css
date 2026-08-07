@@ -67,7 +67,6 @@
     background: linear-gradient(180deg, #0F172A 0%, #1E1B4B 40%, #020617 100%);
   }
 
-  /* The Animated Sun / Moon */
   body::before {
     content: "";
     position: fixed;
@@ -89,7 +88,6 @@
     opacity: 0.4;
   }
 
-  /* Decorative Light Rays / Stars */
   body::after {
     content: "";
     position: fixed;
@@ -122,45 +120,47 @@
   }
 }
 
-.glass {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
-  transition: background-color 0.5s ease, border-color 0.5s ease;
-}
-
-.dark .glass {
-  background-color: rgba(15, 23, 42, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+@layer components {
   .glass {
-    background-color: rgba(255, 255, 255, 0.35);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    transition: background-color 0.5s ease, border-color 0.5s ease;
   }
+
   .dark .glass {
-    background-color: rgba(15, 23, 42, 0.4);
+    background-color: rgba(15, 23, 42, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
   }
-}
 
-.sunny-gradient {
-  background: linear-gradient(135deg, #FFD600 0%, #FFAB00 100%);
-}
+  @supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    .glass {
+      background-color: rgba(255, 255, 255, 0.35);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .dark .glass {
+      background-color: rgba(15, 23, 42, 0.4);
+    }
+  }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-}
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  .sunny-gradient {
+    background: linear-gradient(135deg, #FFD600 0%, #FFAB00 100%);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
 
 @keyframes sun-glow {
@@ -179,25 +179,13 @@
 }
 
 @keyframes slide-in-left {
-  from {
-    transform: translateX(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes zoom-in-fade {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 @keyframes onboarding-hand {
