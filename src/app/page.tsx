@@ -28,7 +28,7 @@ function shuffleArray<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
+    [result[j], result[i]] = [result[j], result[i]];
   }
   return result;
 }
@@ -196,11 +196,11 @@ export default function WordConnectPage() {
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
-  const currentLevel = activeLevels[levelIndex % (activeLevels.length || 1)];
+  const currentLevel = activeLevels.length > 0 ? activeLevels[levelIndex % activeLevels.length] : null;
 
   return (
-    <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative">
+    <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
         <header className="flex flex-row justify-between items-center py-2 shrink-0 z-50">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
@@ -237,7 +237,7 @@ export default function WordConnectPage() {
         </header>
 
         <main className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
-          {currentLevel && (
+          {currentLevel ? (
             <WordConnect 
               level={currentLevel}
               onScoreUpdate={handleScoreUpdate}
@@ -245,19 +245,23 @@ export default function WordConnectPage() {
               onStateUpdate={handleStateUpdate}
               lang={lang}
             />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <RefreshCcw className="w-8 h-8 animate-spin text-primary opacity-20" />
+            </div>
           )}
         </main>
 
-        <div className="absolute bottom-6 right-4 z-50">
-          {currentLevel && (
+        {currentLevel && (
+          <div className="absolute bottom-6 right-4 z-[100]">
             <AIAdvisor 
               onSuggestionReceived={handleHintUsed}
               gameState={gameState}
               lang={lang}
               level={currentLevel}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <Leaderboard 

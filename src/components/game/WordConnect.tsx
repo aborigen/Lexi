@@ -5,7 +5,7 @@ import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-con
 import { WordLevel } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
-import { HandMetal as Pointer } from 'lucide-react';
+import { Hand } from 'lucide-react';
 import { t } from '@/lib/translations';
 
 interface WordConnectProps {
@@ -59,7 +59,7 @@ export function WordConnect({
   }, [shuffledLetters, OFFSET]);
 
   useEffect(() => {
-    const isFirstTime = !localStorage.getItem('lexi_onboarding_complete');
+    const isFirstTime = typeof window !== 'undefined' ? !localStorage.getItem('lexi_onboarding_complete') : false;
     if (isFirstTime) {
       setShowOnboarding(true);
     }
@@ -104,8 +104,6 @@ export function WordConnect({
 
     let clientX, clientY;
     if ('touches' in e) {
-      // Prevent scrolling while dragging
-      if (e.cancelable) e.preventDefault();
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
@@ -113,12 +111,11 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    // Map visual coordinates to logical CANVAS coordinates, accounting for CSS scaling
-    const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
-    const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
+    const scale = rect.width / (CANVAS_SIZE * 2);
+    const x = (clientX - rect.left) / scale;
+    const y = (clientY - rect.top) / scale;
     setDragPath({ x, y });
 
-    // Handle backtracking (removing the last letter if dragging back to the previous one)
     if (currentIndices.length > 1) {
       const prevIdx = currentIndices[currentIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
@@ -132,7 +129,6 @@ export function WordConnect({
       }
     }
 
-    // Check for collision with other letters
     letterPositions.forEach((pos, idx) => {
       if (currentIndices.includes(idx)) return;
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
@@ -200,10 +196,11 @@ export function WordConnect({
       onTouchMove={handleInteractionMove}
       onMouseUp={handleInteractionEnd}
       onTouchEnd={handleInteractionEnd}
+      onMouseLeave={handleInteractionEnd}
     >
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[25%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
+        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[30%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
       >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -213,7 +210,7 @@ export function WordConnect({
                 <div 
                   key={i} 
                   className={cn(
-                    "w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center border rounded-md font-black text-[9px] sm:text-xs transition-all duration-500",
+                    "w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-sm transition-all duration-500",
                     isFound 
                       ? "sunny-gradient text-white border-white shadow-[0_2px_4px_rgba(255,171,0,0.3)] word-slot-found" 
                       : "bg-white/5 border-white/20 text-transparent"
@@ -227,19 +224,19 @@ export function WordConnect({
         ))}
       </div>
 
-      <div className="h-12 flex items-center justify-center shrink-0 z-10">
+      <div className="h-14 flex items-center justify-center shrink-0 z-10">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-4 py-1.5 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
+          <div className="sunny-gradient px-5 py-2 rounded-full text-lg sm:text-xl font-black text-white animate-in zoom-in-95 duration-300 shadow-xl border-2 border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
       </div>
 
-      <div className="flex-1 flex items-end justify-center w-full min-h-0 relative z-0 pb-12 sm:pb-20">
+      <div className="flex-1 flex items-end justify-center w-full min-h-0 relative z-0 pb-16 sm:pb-24">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
-          className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 lg:scale-100 transition-transform duration-300 shrink-0 animate-zoom-in"
+          className="relative select-none touch-none scale-[0.65] xs:scale-[0.75] sm:scale-85 md:scale-95 lg:scale-100 transition-transform duration-300 shrink-0 animate-zoom-in"
           style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
         >
           <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CANVAS_SIZE*2} ${CANVAS_SIZE*2}`}>
@@ -272,9 +269,9 @@ export function WordConnect({
                   x1={start.x} y1={start.y} 
                   x2={end.x} y2={end.y} 
                   stroke="hsl(var(--primary))" 
-                  strokeWidth="12" 
+                  strokeWidth="14" 
                   strokeLinecap="round"
-                  className="opacity-80"
+                  className="opacity-90"
                   filter="url(#line-glow)"
                 />
               );
@@ -285,9 +282,9 @@ export function WordConnect({
                 y1={letterPositions[selectedIndices[selectedIndices.length-1]].y} 
                 x2={dragPath.x} y2={dragPath.y} 
                 stroke="hsl(var(--primary))" 
-                strokeWidth="12" 
+                strokeWidth="14" 
                 strokeLinecap="round"
-                className="opacity-40"
+                className="opacity-50"
               />
             )}
           </svg>
@@ -298,16 +295,19 @@ export function WordConnect({
             return (
               <div
                 key={i}
-                onMouseDown={() => handleInteractionStart(i)}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  handleInteractionStart(i);
+                }}
                 onTouchStart={(e) => {
-                  if (e.cancelable) e.preventDefault();
+                  e.stopPropagation();
                   handleInteractionStart(i);
                 }}
                 className={cn(
-                  "absolute flex items-center justify-center font-black text-2xl rounded-full cursor-pointer transition-all duration-200 select-none",
+                  "absolute flex items-center justify-center font-black text-3xl rounded-full cursor-pointer transition-all duration-200 select-none",
                   isSelected 
-                    ? "sunny-gradient text-white scale-125 z-10 shadow-[0_8px_16px_rgba(255,171,0,0.5)] border-2 border-white" 
-                    : "glass hover:bg-white/90 hover:scale-105 border-2 border-white/60 shadow-lg"
+                    ? "sunny-gradient text-white scale-125 z-10 shadow-[0_8px_20px_rgba(255,171,0,0.6)] border-2 border-white" 
+                    : "glass hover:bg-white/90 hover:scale-105 border-2 border-white/60 shadow-xl"
                 )}
                 style={{
                   left: pos.x - LETTER_RADIUS,
@@ -327,12 +327,11 @@ export function WordConnect({
               style={{
                 left: onboardingPath[0].x - 12,
                 top: onboardingPath[0].y - 12,
-                transition: 'all 4s linear'
               }}
             >
               <div className="flex flex-col items-center">
-                <Pointer className="w-8 h-8 text-primary drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]" fill="currentColor" />
-                <span className="text-[10px] font-black uppercase text-primary bg-white/80 px-2 py-0.5 rounded-full shadow-sm mt-1 whitespace-nowrap">
+                <Hand className="w-10 h-10 text-primary drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" fill="currentColor" />
+                <span className="text-[11px] font-black uppercase text-primary bg-white/90 px-3 py-1 rounded-full shadow-lg mt-2 whitespace-nowrap border border-primary/20">
                   {t('guide_draw', lang)}
                 </span>
               </div>
