@@ -200,37 +200,37 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
-      <div className="max-w-xl landscape:max-w-4xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
-        <header className="flex flex-row justify-between items-center py-2 shrink-0 z-50">
+      <div className="max-w-2xl landscape:max-w-5xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
+        <header className="flex flex-row justify-between items-center h-12 shrink-0 z-50">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
-            <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
+            <h1 className="text-lg font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
-          <div className="flex gap-1.5 items-center">
-            <div className="flex items-center gap-1 glass px-2 py-1 rounded-full border-primary/20">
-               <Trophy className="w-3.5 h-3.5 text-primary" />
-               <span className="text-xs font-black">{score.toLocaleString()}</span>
+          <div className="flex gap-1 items-center">
+            <div className="flex items-center gap-1 glass px-2 py-0.5 rounded-full border-primary/20">
+               <Trophy className="w-3 h-3 text-primary" />
+               <span className="text-[10px] sm:text-xs font-black">{score.toLocaleString()}</span>
             </div>
             
             <div className="flex gap-0.5">
-              <Button variant="ghost" size="icon" onClick={() => requestReview()} title="Review" className="rounded-full w-8 h-8">
-                <Star className="w-4 h-4 text-primary" />
+              <Button variant="ghost" size="icon" onClick={() => requestReview()} className="rounded-full w-7 h-7">
+                <Star className="w-3.5 h-3.5 text-primary" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShowStats} className="rounded-full w-8 h-8">
-                <BarChart3 className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={handleShowStats} className="rounded-full w-7 h-7">
+                <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full w-8 h-8">
-                <ListOrdered className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full w-7 h-7">
+                <ListOrdered className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-8 h-8">
-                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-7 h-7">
+                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-muted-foreground" /> : <Sun className="w-3.5 h-3.5 text-muted-foreground" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full w-8 h-8">
-                <Languages className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full w-7 h-7">
+                <Languages className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full w-8 h-8">
-                <RefreshCcw className="w-4 h-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full w-7 h-7">
+                <RefreshCcw className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
             </div>
           </div>
@@ -253,7 +253,7 @@ export default function WordConnectPage() {
         </main>
 
         {currentLevel && (
-          <div className="absolute bottom-6 right-4 z-[100]">
+          <div className="absolute bottom-4 right-4 z-[100]">
             <AIAdvisor 
               onSuggestionReceived={handleHintUsed}
               gameState={gameState}

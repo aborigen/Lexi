@@ -38,6 +38,7 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   
   const selectedIndicesRef = useRef<number[]>([]);
   const CANVAS_SIZE = (CIRCLE_RADIUS + LETTER_RADIUS + INTERACTION_BUFFER);
@@ -51,7 +52,7 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      // -90 is 12 o'clock. Adding 30 degrees rotates it clockwise.
+      // Rotation: -60 is 1 o'clock.
       const angle = (index * (360 / shuffledLetters.length) - 60) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
@@ -113,11 +114,10 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    const scaleX = rect.width / COORDINATE_BASE;
-    const scaleY = rect.height / COORDINATE_BASE;
+    const scale = rect.width / COORDINATE_BASE;
     
-    const x = (clientX - rect.left) / scaleX;
-    const y = (clientY - rect.top) / scaleY;
+    const x = (clientX - rect.left) / scale;
+    const y = (clientY - rect.top) / scale;
     
     setDragPath({ x, y });
 
@@ -196,6 +196,7 @@ export function WordConnect({
 
   return (
     <div 
+      ref={rootRef}
       className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden"
       onMouseMove={handleInteractionMove}
       onTouchMove={handleInteractionMove}
@@ -204,7 +205,7 @@ export function WordConnect({
     >
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full landscape:w-1/3 portrait:max-h-[25%] landscape:h-full p-2 glass rounded-2xl flex flex-wrap justify-center content-start gap-1 sm:gap-1.5 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
+        className="w-full landscape:w-1/4 portrait:max-h-[30%] landscape:h-full p-2 glass rounded-2xl flex flex-wrap justify-center content-start gap-1 sm:gap-1.5 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left z-10"
       >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -214,7 +215,7 @@ export function WordConnect({
                 <div 
                   key={i} 
                   className={cn(
-                    "w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-sm transition-all duration-500",
+                    "w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-xs transition-all duration-500",
                     isFound 
                       ? "sunny-gradient text-white border-white shadow-[0_2px_4px_rgba(255,171,0,0.3)] word-slot-found" 
                       : "bg-white/5 border-white/20 text-transparent"
@@ -228,20 +229,20 @@ export function WordConnect({
         ))}
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 relative z-0">
-        <div className="h-14 flex items-center justify-center shrink-0 z-10">
+      <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
+        <div className="h-10 sm:h-12 flex items-center justify-center shrink-0 w-full mt-2">
           {selectedIndices.length > 0 && (
-            <div className="sunny-gradient px-5 py-2 rounded-full text-lg sm:text-xl font-black text-white animate-in zoom-in-95 duration-300 shadow-xl border-2 border-white/80">
+            <div className="sunny-gradient px-4 py-1.5 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-200 shadow-xl border-2 border-white/80">
               {selectedIndices.map(i => shuffledLetters[i]).join('')}
             </div>
           )}
         </div>
 
-        <div className="flex-1 flex items-center justify-center w-full min-h-0 relative portrait:pb-12 landscape:pb-4">
+        <div className="flex-1 w-full flex items-center justify-center min-h-0 relative portrait:pb-16 landscape:pb-8">
           <div 
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
-            className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-85 md:scale-95 lg:scale-100 landscape:scale-[0.55] sm:landscape:scale-[0.75] transition-transform duration-300 shrink-0 animate-zoom-in"
+            className="relative select-none touch-none aspect-square scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 landscape:scale-[0.6] sm:landscape:scale-75 transition-transform duration-300 shrink-0 animate-zoom-in"
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
             <svg 
