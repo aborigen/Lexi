@@ -51,7 +51,8 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
+      // -90 is 12 o'clock. Adding 30 degrees rotates it clockwise.
+      const angle = (index * (360 / shuffledLetters.length) - 60) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
         y: OFFSET + CIRCLE_RADIUS * Math.sin(angle)
@@ -112,7 +113,6 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    // Precise coordinate mapping back to the viewBox space (0 to COORDINATE_BASE)
     const scaleX = rect.width / COORDINATE_BASE;
     const scaleY = rect.height / COORDINATE_BASE;
     
@@ -202,7 +202,6 @@ export function WordConnect({
       onMouseUp={handleInteractionEnd}
       onTouchEnd={handleInteractionEnd}
     >
-      {/* Word Grid Section */}
       <div 
         key={`grid-${level.letters.join('')}`} 
         className="w-full landscape:w-1/3 portrait:max-h-[25%] landscape:h-full p-2 glass rounded-2xl flex flex-wrap justify-center content-start gap-1 sm:gap-1.5 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
@@ -229,7 +228,6 @@ export function WordConnect({
         ))}
       </div>
 
-      {/* Interaction Section */}
       <div className="flex-1 flex flex-col items-center justify-center w-full min-h-0 relative z-0">
         <div className="h-14 flex items-center justify-center shrink-0 z-10">
           {selectedIndices.length > 0 && (
