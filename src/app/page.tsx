@@ -200,7 +200,7 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
+      <div className="max-w-xl landscape:max-w-4xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
         <header className="flex flex-row justify-between items-center py-2 shrink-0 z-50">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
