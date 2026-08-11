@@ -84,12 +84,10 @@ export default function WordConnectPage() {
             localStorage.setItem('word_high_score', yandexHigh.toString());
           }
 
-          // Update session count and fetch latest stats
           await updatePlayerStats({ totalSessions: 1 });
           const stats = await fetchPlayerStats();
           if (stats) setPlayerStats(stats);
 
-          // Occasionally offer to create a shortcut
           if (Math.random() > 0.7) {
             createShortcut();
           }
@@ -170,7 +168,6 @@ export default function WordConnectPage() {
       updatePlayerStats({ levelsCleared: 1 });
       fetchPlayerStats().then(s => s && setPlayerStats(s));
 
-      // Promote the game with a review prompt after clearing a few levels
       if ((levelIndex + 1) % 3 === 0) {
         requestReview();
       }
@@ -203,8 +200,8 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none">
-      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden">
-        <header className="flex flex-row justify-between items-center py-2 shrink-0">
+      <div className="max-w-xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative">
+        <header className="flex flex-row justify-between items-center py-2 shrink-0 z-50">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
             <h1 className="text-lg sm:text-xl font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
@@ -239,7 +236,7 @@ export default function WordConnectPage() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col min-h-0 pb-4 overflow-hidden">
+        <main className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
           {currentLevel && (
             <WordConnect 
               level={currentLevel}
@@ -249,18 +246,19 @@ export default function WordConnectPage() {
               lang={lang}
             />
           )}
-          
-          <div className="mt-auto pt-2 shrink-0">
-            {currentLevel && (
-              <AIAdvisor 
-                onSuggestionReceived={handleHintUsed}
-                gameState={gameState}
-                lang={lang}
-                level={currentLevel}
-              />
-            )}
-          </div>
         </main>
+
+        {/* FAB Style AI Advisor - Absolute position to avoid layout shifts */}
+        <div className="absolute bottom-6 right-4 z-50">
+          {currentLevel && (
+            <AIAdvisor 
+              onSuggestionReceived={handleHintUsed}
+              gameState={gameState}
+              lang={lang}
+              level={currentLevel}
+            />
+          )}
+        </div>
       </div>
 
       <Leaderboard 

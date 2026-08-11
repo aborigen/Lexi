@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -27,15 +26,13 @@ interface AIAdvisorProps {
 
 /**
  * AIAdvisor Component
- * Static-export compatible version. 
- * Refactored to a compact floating button in the bottom right.
+ * FAB (Floating Action Button) implementation for maximum screen space.
  */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Clear citation when level or found words change
   useEffect(() => {
     setCitation(null);
   }, [gameState.foundWords.length, level]);
@@ -52,16 +49,11 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
     }
 
     setIsLoading(true);
-    
-    // Simulate AI "thinking" time for game feel
     await new Promise(resolve => setTimeout(resolve, 800));
 
     try {
-      // Pick the longest remaining word for the hint
       const sorted = [...remaining].sort((a, b) => b.length - a.length);
       const targetWord = sorted[0];
-      
-      // Look up static hint from the enriched JSON library
       const staticHint = level.hints[targetWord];
 
       if (staticHint) {
@@ -69,7 +61,6 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
         setIsOverlayOpen(true);
         onSuggestionReceived(staticHint);
       } else {
-        // Structural fallback if citation is missing (client-side)
         const placeholder = t('hint_template', lang)
           .replace('{n}', targetWord.length.toString())
           .replace('{c}', targetWord[0].toUpperCase());
@@ -94,29 +85,26 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
 
   return (
     <>
-      <div className="flex justify-end pb-4 pr-2">
-        <Button 
-          size="icon" 
-          className="w-14 h-14 rounded-full shadow-2xl sunny-gradient border-4 border-white/80 active:scale-95 transition-all group relative z-40"
-          onClick={handleGetSuggestion}
-          disabled={isButtonDisabled}
-          title={t('get_hint', lang)}
-        >
-          {isLoading ? (
-            <Loader2 className="w-6 h-6 text-white animate-spin" />
-          ) : (
-            <BrainCircuit className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-          )}
-          
-          {/* Notification dot to indicate hint availability */}
-          {!isLoading && !isButtonDisabled && (
-            <span className="absolute -top-1 -right-1 flex h-4 w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-accent border-2 border-white"></span>
-            </span>
-          )}
-        </Button>
-      </div>
+      <Button 
+        size="icon" 
+        className="w-14 h-14 rounded-full shadow-2xl sunny-gradient border-4 border-white/80 active:scale-95 transition-all group relative"
+        onClick={handleGetSuggestion}
+        disabled={isButtonDisabled}
+        title={t('get_hint', lang)}
+      >
+        {isLoading ? (
+          <Loader2 className="w-6 h-6 text-white animate-spin" />
+        ) : (
+          <BrainCircuit className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
+        )}
+        
+        {!isLoading && !isButtonDisabled && (
+          <span className="absolute -top-1 -right-1 flex h-4 w-4">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-accent border-2 border-white"></span>
+          </span>
+        )}
+      </Button>
 
       <Dialog open={isOverlayOpen} onOpenChange={setIsOverlayOpen}>
         <DialogContent className="w-[92vw] max-w-[400px] rounded-[2.5rem] p-8 glass border-white/80 shadow-2xl animate-in zoom-in-95 duration-300">

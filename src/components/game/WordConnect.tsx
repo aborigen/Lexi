@@ -112,7 +112,6 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    // Scale coordinates back to canvas space
     const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
     const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
     setDragPath({ x, y });
@@ -189,11 +188,11 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center w-full flex-1 min-h-0 touch-none relative overflow-hidden">
-      {/* Found Words Grid - Compacted */}
+    <div className="flex flex-col items-center w-full h-full min-h-0 touch-none relative overflow-hidden">
+      {/* Found Words Grid - Using Scroll Area to handle large levels without pushing content down */}
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[25%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2"
+        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[30%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
       >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -217,21 +216,21 @@ export function WordConnect({
         ))}
       </div>
 
-      {/* Current Selection Indicator */}
-      <div className="h-10 flex items-center justify-center shrink-0 my-1">
+      {/* Current Selection Indicator - Fixed height to avoid jumps */}
+      <div className="h-12 flex items-center justify-center shrink-0 z-10">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-4 py-1 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
+          <div className="sunny-gradient px-4 py-1.5 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
       </div>
 
-      {/* Letter Circle Interaction Area - Responsive scaling */}
-      <div className="flex-1 flex items-center justify-center w-full min-h-0 relative">
+      {/* Letter Circle Interaction Area - Centered in remaining space with dynamic scaling */}
+      <div className="flex-1 flex items-center justify-center w-full min-h-0 relative z-0">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
-          className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0 animate-zoom-in"
+          className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 lg:scale-100 transition-transform duration-300 shrink-0 animate-zoom-in"
           style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
