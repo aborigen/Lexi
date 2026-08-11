@@ -41,6 +41,7 @@ export function WordConnect({
   
   const selectedIndicesRef = useRef<number[]>([]);
   const CANVAS_SIZE = (CIRCLE_RADIUS + LETTER_RADIUS + INTERACTION_BUFFER);
+  const COORDINATE_BASE = CANVAS_SIZE * 2;
   const OFFSET = CANVAS_SIZE;
 
   useEffect(() => {
@@ -111,9 +112,13 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    const scale = rect.width / (CANVAS_SIZE * 2);
-    const x = (clientX - rect.left) / scale;
-    const y = (clientY - rect.top) / scale;
+    // Precise coordinate mapping back to the viewBox space (0 to COORDINATE_BASE)
+    const scaleX = rect.width / COORDINATE_BASE;
+    const scaleY = rect.height / COORDINATE_BASE;
+    
+    const x = (clientX - rect.left) / scaleX;
+    const y = (clientY - rect.top) / scaleY;
+    
     setDragPath({ x, y });
 
     if (currentIndices.length > 1) {
@@ -138,7 +143,7 @@ export function WordConnect({
         audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [shuffledLetters, letterPositions, CANVAS_SIZE]);
+  }, [shuffledLetters, letterPositions, COORDINATE_BASE]);
 
   const handleInteractionEnd = useCallback(() => {
     const currentIndices = selectedIndicesRef.current;
@@ -239,9 +244,13 @@ export function WordConnect({
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
             className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-85 md:scale-95 lg:scale-100 landscape:scale-[0.55] sm:landscape:scale-[0.75] transition-transform duration-300 shrink-0 animate-zoom-in"
-            style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
+            style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
-            <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CANVAS_SIZE*2} ${CANVAS_SIZE*2}`}>
+            <svg 
+              className="absolute inset-0 pointer-events-none" 
+              viewBox={`0 0 ${COORDINATE_BASE} ${COORDINATE_BASE}`}
+              preserveAspectRatio="xMidYMid meet"
+            >
               <defs>
                 <filter id="line-glow">
                   <feGaussianBlur stdDeviation="3" result="blur" />
@@ -327,8 +336,8 @@ export function WordConnect({
               <div 
                 className="absolute pointer-events-none z-50 animate-onboarding-hand"
                 style={{
-                  left: onboardingPath[0].x - 12,
-                  top: onboardingPath[0].y - 12,
+                  left: onboardingPath[0].x - 20,
+                  top: onboardingPath[0].y - 20,
                 }}
               >
                 <div className="flex flex-col items-center">
