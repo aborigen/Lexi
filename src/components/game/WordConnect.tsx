@@ -104,6 +104,7 @@ export function WordConnect({
 
     let clientX, clientY;
     if ('touches' in e) {
+      // Prevent scrolling while dragging
       if (e.cancelable) e.preventDefault();
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
@@ -112,10 +113,12 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
+    // Map visual coordinates to logical CANVAS coordinates, accounting for CSS scaling
     const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
     const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
     setDragPath({ x, y });
 
+    // Handle backtracking (removing the last letter if dragging back to the previous one)
     if (currentIndices.length > 1) {
       const prevIdx = currentIndices[currentIndices.length - 2];
       const prevPos = letterPositions[prevIdx];
@@ -129,6 +132,7 @@ export function WordConnect({
       }
     }
 
+    // Check for collision with other letters
     letterPositions.forEach((pos, idx) => {
       if (currentIndices.includes(idx)) return;
       const dist = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
@@ -140,9 +144,10 @@ export function WordConnect({
     });
   }, [shuffledLetters, letterPositions, CANVAS_SIZE]);
 
-  const handleInteractionEnd = () => {
+  const handleInteractionEnd = useCallback(() => {
     const currentIndices = selectedIndicesRef.current;
     if (currentIndices.length === 0 || !level || shuffledLetters.length === 0) return;
+    
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
     if (level.validWords.includes(currentWord)) {
@@ -162,10 +167,11 @@ export function WordConnect({
     } else if (currentIndices.length > 1) {
       audioManager.playError();
     }
+    
     setSelectedIndices([]);
     selectedIndicesRef.current = [];
     setDragPath(null);
-  };
+  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete]);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
@@ -188,7 +194,13 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center w-full h-full min-h-0 touch-none relative overflow-hidden">
+    <div 
+      className="flex flex-col items-center w-full h-full min-h-0 touch-none relative overflow-hidden"
+      onMouseMove={handleInteractionMove}
+      onTouchMove={handleInteractionMove}
+      onMouseUp={handleInteractionEnd}
+      onTouchEnd={handleInteractionEnd}
+    >
       <div 
         key={`grid-${level.letters.join('')}`} 
         className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[25%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
@@ -223,18 +235,12 @@ export function WordConnect({
         )}
       </div>
 
-      {/* Circle Container: Changed items-center to items-end with padding-bottom to move it lower */}
       <div className="flex-1 flex items-end justify-center w-full min-h-0 relative z-0 pb-12 sm:pb-20">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
           className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 lg:scale-100 transition-transform duration-300 shrink-0 animate-zoom-in"
           style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
-          onMouseMove={handleInteractionMove}
-          onTouchMove={handleInteractionMove}
-          onMouseUp={handleInteractionEnd}
-          onTouchEnd={handleInteractionEnd}
-          onMouseLeave={handleInteractionEnd}
         >
           <svg className="absolute inset-0 pointer-events-none" viewBox={`0 0 ${CANVAS_SIZE*2} ${CANVAS_SIZE*2}`}>
             <defs>
