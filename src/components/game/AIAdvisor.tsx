@@ -28,7 +28,7 @@ interface AIAdvisorProps {
 /**
  * AIAdvisor Component
  * Static-export compatible version. 
- * Uses pre-baked hints from levels or generates structural hints client-side.
+ * Refactored to a compact floating button in the bottom right.
  */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
 
     setIsLoading(true);
     
-    // Simulate AI "thinking" time for game feel, without server roundtrips
+    // Simulate AI "thinking" time for game feel
     await new Promise(resolve => setTimeout(resolve, 800));
 
     try {
@@ -94,28 +94,27 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
 
   return (
     <>
-      <div className="glass p-3 rounded-2xl border-white/60 bg-white/40 flex items-center justify-between gap-4 shadow-md shrink-0 mb-2">
-        <div className="flex flex-col">
-          <p className="text-[10px] font-black text-primary uppercase tracking-widest leading-none mb-1">
-            {t('ai_advisor', lang)}
-          </p>
-          <p className="text-[11px] font-bold text-foreground/60 leading-tight max-w-[180px]">
-            {t('wait_ai', lang)}
-          </p>
-        </div>
-
+      <div className="flex justify-end pb-4 pr-2">
         <Button 
-          size="sm" 
-          className="h-11 px-5 text-xs font-black sunny-gradient hover:opacity-90 text-white rounded-xl shadow-lg shrink-0 border-b-4 border-black/20 active:border-b-0 active:translate-y-1 transition-all"
+          size="icon" 
+          className="w-14 h-14 rounded-full shadow-2xl sunny-gradient border-4 border-white/80 active:scale-95 transition-all group relative z-40"
           onClick={handleGetSuggestion}
           disabled={isButtonDisabled}
+          title={t('get_hint', lang)}
         >
           {isLoading ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="w-6 h-6 text-white animate-spin" />
           ) : (
-            <BrainCircuit className="w-4 h-4 mr-2" />
+            <BrainCircuit className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
           )}
-          {t('get_hint', lang)}
+          
+          {/* Notification dot to indicate hint availability */}
+          {!isLoading && !isButtonDisabled && (
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-accent border-2 border-white"></span>
+            </span>
+          )}
         </Button>
       </div>
 
