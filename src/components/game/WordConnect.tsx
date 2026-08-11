@@ -223,7 +223,8 @@ export function WordConnect({
         )}
       </div>
 
-      <div className="flex-1 flex items-center justify-center w-full min-h-0 relative z-0">
+      {/* Circle Container: Changed items-center to items-end with padding-bottom to move it lower */}
+      <div className="flex-1 flex items-end justify-center w-full min-h-0 relative z-0 pb-12 sm:pb-20">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
