@@ -112,6 +112,7 @@ export function WordConnect({
       clientY = (e as React.MouseEvent).clientY;
     }
 
+    // Scale coordinates back to canvas space
     const x = (clientX - rect.left) / (rect.width / (CANVAS_SIZE * 2));
     const y = (clientY - rect.top) / (rect.height / (CANVAS_SIZE * 2));
     setDragPath({ x, y });
@@ -188,10 +189,11 @@ export function WordConnect({
   const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
-    <div className="flex flex-col items-center gap-2 py-2 flex-1 min-h-0 overflow-hidden touch-none relative">
+    <div className="flex flex-col items-center w-full flex-1 min-h-0 touch-none relative overflow-hidden">
+      {/* Found Words Grid - Compacted */}
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1.5 sm:gap-2 max-h-[140px] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left"
+        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[25%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2"
       >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -201,10 +203,10 @@ export function WordConnect({
                 <div 
                   key={i} 
                   className={cn(
-                    "w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-xs transition-all duration-500",
+                    "w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center border rounded-md font-black text-[9px] sm:text-xs transition-all duration-500",
                     isFound 
-                      ? "sunny-gradient text-white border-white shadow-[0_2px_6px_rgba(255,171,0,0.3)] word-slot-found" 
-                      : "bg-white/10 border-white/40 text-transparent"
+                      ? "sunny-gradient text-white border-white shadow-[0_2px_4px_rgba(255,171,0,0.3)] word-slot-found" 
+                      : "bg-white/5 border-white/20 text-transparent"
                   )}
                 >
                   {isFound ? char : ''}
@@ -215,19 +217,21 @@ export function WordConnect({
         ))}
       </div>
 
-      <div className="h-8 flex items-center justify-center shrink-0">
+      {/* Current Selection Indicator */}
+      <div className="h-10 flex items-center justify-center shrink-0 my-1">
         {selectedIndices.length > 0 && (
-          <div className="sunny-gradient px-4 py-1 rounded-full text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
+          <div className="sunny-gradient px-4 py-1 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
             {selectedIndices.map(i => shuffledLetters[i]).join('')}
           </div>
         )}
       </div>
 
+      {/* Letter Circle Interaction Area - Responsive scaling */}
       <div className="flex-1 flex items-center justify-center w-full min-h-0 relative">
         <div 
           key={`circle-${level.letters.join('')}`}
           ref={containerRef}
-          className="relative select-none touch-none scale-[0.65] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0 animate-zoom-in"
+          className="relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 transition-transform duration-300 shrink-0 animate-zoom-in"
           style={{ width: CANVAS_SIZE * 2, height: CANVAS_SIZE * 2 }}
           onMouseMove={handleInteractionMove}
           onTouchMove={handleInteractionMove}
