@@ -248,7 +248,6 @@ export default function WordConnectPage() {
           )}
         </main>
 
-        {/* FAB Style AI Advisor - Absolute position to avoid layout shifts */}
         <div className="absolute bottom-6 right-4 z-50">
           {currentLevel && (
             <AIAdvisor 

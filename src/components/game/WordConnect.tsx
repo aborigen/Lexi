@@ -189,10 +189,9 @@ export function WordConnect({
 
   return (
     <div className="flex flex-col items-center w-full h-full min-h-0 touch-none relative overflow-hidden">
-      {/* Found Words Grid - Using Scroll Area to handle large levels without pushing content down */}
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[30%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
+        className="w-full p-2 glass rounded-2xl flex flex-wrap justify-center gap-1 sm:gap-1.5 max-h-[25%] overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left mt-2 z-10"
       >
         {sortedValidWords.map((word, idx) => (
           <div key={`${word}-${idx}`} className="flex gap-0.5">
@@ -216,7 +215,6 @@ export function WordConnect({
         ))}
       </div>
 
-      {/* Current Selection Indicator - Fixed height to avoid jumps */}
       <div className="h-12 flex items-center justify-center shrink-0 z-10">
         {selectedIndices.length > 0 && (
           <div className="sunny-gradient px-4 py-1.5 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-300 shadow-md border border-white/80">
@@ -225,7 +223,6 @@ export function WordConnect({
         )}
       </div>
 
-      {/* Letter Circle Interaction Area - Centered in remaining space with dynamic scaling */}
       <div className="flex-1 flex items-center justify-center w-full min-h-0 relative z-0">
         <div 
           key={`circle-${level.letters.join('')}`}
