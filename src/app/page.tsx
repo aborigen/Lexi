@@ -204,7 +204,6 @@ export default function WordConnectPage() {
         <header className="flex flex-row justify-between items-center h-12 shrink-0 z-50">
           <div className="flex items-center space-x-2">
             <Gamepad2 className="w-5 h-5 text-primary" />
-            <h1 className="text-lg font-black italic tracking-tighter uppercase leading-none">LEXI<span className="text-primary">.AI</span></h1>
           </div>
 
           <div className="flex gap-1 items-center">
