@@ -93,10 +93,9 @@ export async function initYandexSDK(): Promise<YandexSDK | null> {
       window.YaGames.init().then(async (sdk: YandexSDK) => {
         yandexInstance = sdk;
         try {
-          // Initialize player silently to enable data features
           playerInstance = await sdk.getPlayer({ scopes: false });
         } catch (e) {
-          console.warn('Yandex Player init failed (common in local or private modes):', e);
+          console.warn('Yandex Player init failed:', e);
         }
         console.log('Yandex SDK V2 initialized successfully');
         resolve(sdk);
@@ -119,9 +118,6 @@ export function getPlayerInstance(): YandexPlayer | null {
   return playerInstance;
 }
 
-/**
- * Signals to Yandex V2 that the game is ready and loading is complete.
- */
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
@@ -133,9 +129,6 @@ export function signalGameReady() {
   }
 }
 
-/**
- * Retrieves the language from the Yandex environment.
- */
 export function getEnvironmentLanguage(): string {
   const sdk = getYandexSDK();
   const rawLang = sdk?.environment?.i18n?.lang || 
@@ -145,9 +138,6 @@ export function getEnvironmentLanguage(): string {
   return 'en';
 }
 
-/**
- * Updates player statistics in Yandex Cloud Storage using the Player object.
- */
 export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
   if (!playerInstance) return;
 
@@ -168,9 +158,6 @@ export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
   }
 }
 
-/**
- * Fetches player statistics from Yandex Cloud Storage.
- */
 export async function fetchPlayerStats(): Promise<PlayerStats | null> {
   if (!playerInstance) return null;
 
@@ -190,9 +177,6 @@ export async function fetchPlayerStats(): Promise<PlayerStats | null> {
   }
 }
 
-/**
- * Prompts the user to leave a review.
- */
 export async function requestReview() {
   const sdk = getYandexSDK();
   if (!sdk || !sdk.feedback) return;
@@ -207,9 +191,6 @@ export async function requestReview() {
   }
 }
 
-/**
- * Prompts the user to create a desktop shortcut.
- */
 export async function createShortcut() {
   const sdk = getYandexSDK();
   if (!sdk || !sdk.shortcut) return;
@@ -239,6 +220,10 @@ export async function syncHighScoreToYandex(score: number) {
   }
 }
 
+/**
+ * Reports the player's high score to the global leaderboard.
+ * Note: Uses getLeaderboards() async method to avoid type errors.
+ */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
   if (!sdk) return;
@@ -248,6 +233,7 @@ export async function reportScoreToLeaderboard(score: number) {
       lbInstance = await sdk.getLeaderboards();
     }
     await lbInstance.setLeaderboardScore('leaders', score);
+    console.log('Score reported to leaderboard:', score);
   } catch (e) {
     console.warn('Failed to report score to leaderboard:', e);
   }

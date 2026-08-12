@@ -4,6 +4,7 @@
 ## [2.15.1] - 2024-07-03
 ### Fixed
 - **Leaderboard API**: Corrected the Yandex SDK integration to use the asynchronous `getLeaderboards()` method, resolving a `TypeError` when accessing leaderboard entries.
+- **Scoring Logic**: Ensured that leaderboard updates are triggered immediately upon achieving a new high score.
 
 ## [2.15.0] - 2024-07-02
 ### Added
