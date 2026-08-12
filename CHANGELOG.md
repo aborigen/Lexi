@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.15.2] - 2024-07-04
+### Fixed
+- **Yandex SDK Deprecation**: Migrated from `ysdk.getLeaderboards()` to `ysdk.leaderboards` property to resolve console warnings and align with V2 API standards.
+- **Scoring Documentation**: Updated `docs/SCORING_LOGIC.md` to reflect the new API property usage.
+
 ## [2.15.1] - 2024-07-03
 ### Fixed
 - **Leaderboard API**: Corrected the Yandex SDK integration to use the asynchronous `getLeaderboards()` method, resolving a `TypeError` when accessing leaderboard entries.

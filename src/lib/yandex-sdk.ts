@@ -39,7 +39,8 @@ export interface YandexSDK {
     getPlayerData: () => Promise<any>;
     openAuthDialog: () => Promise<void>;
   };
-  getLeaderboards: () => Promise<YandexLeaderboards>;
+  getLeaderboards: () => Promise<YandexLeaderboards>; // Deprecated
+  leaderboards: Promise<YandexLeaderboards>; // Modern V2 property
   adv: {
     showFullscreenAdv: (callbacks?: {
       onOpen?: () => void;
@@ -77,7 +78,6 @@ export interface YandexSDK {
 
 let yandexInstance: YandexSDK | null = null;
 let playerInstance: YandexPlayer | null = null;
-let lbInstance: YandexLeaderboards | null = null;
 
 /**
  * Initializes the Yandex Games SDK V2 and the Player object.
@@ -222,17 +222,17 @@ export async function syncHighScoreToYandex(score: number) {
 
 /**
  * Reports the player's high score to the global leaderboard.
- * Note: Uses getLeaderboards() async method to avoid type errors.
+ * Note: Uses ysdk.leaderboards property to avoid deprecation warnings.
  */
 export async function reportScoreToLeaderboard(score: number) {
   const sdk = getYandexSDK();
   if (!sdk) return;
 
   try {
-    if (!lbInstance) {
-      lbInstance = await sdk.getLeaderboards();
-    }
-    await lbInstance.setLeaderboardScore('leaders', score);
+    const lb = await sdk.leaderboards;
+    if (!lb) throw new Error('Leaderboards property not available');
+    
+    await lb.setLeaderboardScore('leaders', score);
     console.log('Score reported to leaderboard:', score);
   } catch (e) {
     console.warn('Failed to report score to leaderboard:', e);
@@ -244,10 +244,10 @@ export async function fetchLeaderboardEntries(limit = 10) {
   if (!sdk) return null;
 
   try {
-    if (!lbInstance) {
-      lbInstance = await sdk.getLeaderboards();
-    }
-    return await lbInstance.getLeaderboardEntries('leaders', { 
+    const lb = await sdk.leaderboards;
+    if (!lb) throw new Error('Leaderboards property not available');
+
+    return await lb.getLeaderboardEntries('leaders', { 
       includeUser: true, 
       quantityTop: limit 
     });

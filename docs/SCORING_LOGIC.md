@@ -1,3 +1,4 @@
+
 # Scoring & Leaderboard Logic - Lexi.AI / Логика подсчета очков и таблицы лидеров
 
 The score in Lexi.AI is calculated dynamically based on the complexity of the words discovered and is synchronized with the Yandex Games platform for global competition.
@@ -20,7 +21,7 @@ The `page.tsx` component monitors the `score` state in real-time. If the current
 
 ### 3. Yandex SDK V2 Integration
 The leaderboard integration follows the modern Yandex Games SDK V2 patterns:
-- **Async Initialization**: We use `sdk.getLeaderboards()` (asynchronous) to obtain the leaderboard service instance. This prevents blocking the main thread during initial load.
+- **Leaderboard Property**: We use `sdk.leaderboards` (a Promise) to obtain the leaderboard service instance. This is the recommended non-deprecated method.
 - **Leaderboard Identifier**: All scores are reported to the technical leaderboard named `'leaders'`.
 - **Public Rankings**: The `Leaderboard.tsx` component fetches the top 20 entries to display ranks, player avatars (via `getAvatarSrc`), and scores, creating a sense of community and competition.
 
@@ -42,6 +43,6 @@ The leaderboard integration follows the modern Yandex Games SDK V2 patterns:
 
 ### 3. Интеграция с Yandex SDK V2
 Интеграция таблицы лидеров соответствует современным паттернам Yandex Games SDK V2:
-- **Асинхронная инициализация**: Мы используем асинхронный метод `sdk.getLeaderboards()` для получения экземпляра сервиса таблиц лидеров. Это предотвращает блокировку основного потока во время начальной загрузки.
+- **Свойство Leaderboard**: Мы используем `sdk.leaderboards` (Promise) для получения экземпляра сервиса таблиц лидеров. Это рекомендуемый современный метод вместо устаревшего `getLeaderboards()`.
 - **Идентификатор таблицы**: Все результаты отправляются в техническую таблицу лидеров с названием `'leaders'`.
 - **Публичный рейтинг**: Компонент `Leaderboard.tsx` запрашивает 20 лучших записей для отображения рангов, аватаров игроков (через `getAvatarSrc`) и очков, создавая атмосферу сообщества и конкуренции.
