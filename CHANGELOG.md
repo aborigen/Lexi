@@ -1,29 +1,23 @@
-
 # Changelog
+
+## [2.15.0] - 2024-07-02
+### Added
+- **Responsive Layout Engine**: Implemented adaptive layouts that intelligently shift components between portrait and landscape modes to avoid cutoffs.
+- **FAB Advisor**: Refactored the AI Advisor into a compact Floating Action Button (FAB) for better ergonomics and more screen real estate.
+### Fixed
+- **SVG Drawing Correction**: Resolved a critical coordinate mapping bug that caused connection lines to draw incorrectly or disappear on scaled mobile screens.
+- **Yandex SDK Stability**: Fixed `TypeError: _.get is not a function` by refactoring the SDK bridge to use modern `Player` and `Leaderboards` V2 objects.
+### Changed
+- **Visual Refinement**: Rotated the letter circle by 30 degrees clockwise and reduced its radius for a more balanced aesthetic.
+- **Minimalist Branding**: Simplified the global header by removing the text logotype, leaving only the primary icon.
 
 ## [2.14.0] - 2024-06-27
 ### Added
 - **Promotion Toolkit**: Integrated Yandex Games Feedback API and Shortcut API to boost game ranking and player retention.
 - **Enhanced Analytics**: New stats tracking for `Total Sessions` and `Longest Word Found`, synchronized with Yandex Cloud Storage.
 - **Engagement Prompts**: Intelligent review requests and shortcut suggestions triggered after level completion milestones.
-### Changed
-- **Launch Optimization**: Refined initialization flow with precise `LoadingAPI.ready()` signaling only after all cloud data is synced.
-- **Player Immersion**: Disabled global browser context menu to prevent accidental interruptions during gameplay.
 
 ## [2.13.0] - 2024-06-25
 ### Added
 - **Literary Masterpiece**: Finalized the Russian library with 112+ high-quality levels based on Pushkin's *Eugene Onegin*.
 - **Comprehensive Hints**: Every single valid word (including sub-words) now has a literary citation or contextual hint available via the AI Advisor.
-### Changed
-- **Static Export Optimization**: Refactored the entire app to remove Server Actions. The game is now 100% compatible with `output: 'export'`, ensuring seamless performance on Yandex Games.
-- **Content Audit**: Completed a full audit of all level data; fixed inconsistencies between letter sets and valid word lists.
-
-## [2.12.0] - 2024-06-20
-### Added
-- **Onboarding System**: Implemented a dynamic "Hand Pointer" animation for first-time users. It demonstrates the core "drag-to-connect" mechanic using the first level's letters.
-- **Persistence**: Onboarding completion status is now saved in `localStorage`.
-
-## [2.11.0] - 2024-06-18
-### Added
-- **Literary Content Expansion**: Added initial bulk of Russian levels based on Alexander Pushkin.
-- **Verse Formatting**: Enhanced the hint system to support multi-line poetic citations.

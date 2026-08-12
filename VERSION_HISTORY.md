@@ -1,5 +1,11 @@
-
 # Lexi.AI - Version History
+
+## v2.15.0 (2024-07-02)
+### Adaptive UX & Stability
+- **Orientation Awareness**: Dynamic repositioning of the word grid and interaction circle for portrait/landscape.
+- **Compact Interaction**: AI Advisor moved to FAB style to prevent overlap with the puzzle board.
+- **SDK V2 Fix**: Completely resolved the `_.get` runtime error in Yandex environment.
+- **Precision Drawing**: Corrected SVG path logic to ensure lines always track exactly with user input.
 
 ## v2.14.0 (2024-06-27)
 ### Promotion & Retention
@@ -12,13 +18,3 @@
 - **Zero-Latency**: Removed all server round-trips for hints. The game now runs entirely on the client, optimized for Yandex Games static hosting.
 - **Pushkin Collection**: Completed the massive 112-level Russian literary expansion.
 - **Total Word Coverage**: Audited and added citations for every single valid word in the game.
-
-## v2.12.0 (2024-06-20)
-### UX
-- **Interactive Tutorial**: Added an animated finger guide that shows new players how to connect letters.
-- **Context-Aware**: The guide intelligently picks a word from the current level to demonstrate.
-
-## v2.11.0 (2024-06-18)
-### Content
-- **Massive Update**: Integrated 44 new Russian levels featuring iconic verses from *Eugene Onegin*.
-- **Hint Refinement**: Optimized citation display for multi-line poetry in the mobile overlay.
