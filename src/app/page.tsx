@@ -214,22 +214,58 @@ export default function WordConnectPage() {
             </div>
             
             <div className="flex gap-0.5">
-              <Button variant="ghost" size="icon" onClick={() => requestReview()} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => requestReview()} 
+                className="rounded-full w-7 h-7"
+                aria-label="Rate Game"
+              >
                 <Star className="w-3.5 h-3.5 text-primary" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShowStats} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleShowStats} 
+                className="rounded-full w-7 h-7"
+                aria-label="Player Statistics"
+              >
                 <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShowLeaderboard} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleShowLeaderboard} 
+                className="rounded-full w-7 h-7"
+                aria-label="Leaderboard"
+              >
                 <ListOrdered className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleTheme} 
+                className="rounded-full w-7 h-7"
+                aria-label={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
+              >
                 {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-muted-foreground" /> : <Sun className="w-3.5 h-3.5 text-muted-foreground" />}
               </Button>
-              <Button variant="ghost" size="icon" onClick={toggleLang} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleLang} 
+                className="rounded-full w-7 h-7"
+                aria-label="Toggle Language"
+              >
                 <Languages className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleReset} className="rounded-full w-7 h-7">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleReset} 
+                className="rounded-full w-7 h-7"
+                aria-label="Reset Progress"
+              >
                 <RefreshCcw className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
             </div>
