@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-constants';
 import { WordLevel } from '@/lib/levels';
-import { cn } from '@/lib/utils';
+import { cn, shuffleArray } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
 import { Hand } from 'lucide-react';
 import { t } from '@/lib/translations';
@@ -14,15 +14,6 @@ interface WordConnectProps {
   onLevelComplete: () => void;
   onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
   lang?: string;
-}
-
-function shuffleArray<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
 }
 
 export function WordConnect({ 
@@ -52,7 +43,7 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      // Rotation: -60 is 1 o'clock.
+      // Rotation: -60 is 1 o'clock. We add -30 degrees as requested for 30 deg clockwise.
       const angle = (index * (360 / shuffledLetters.length) - 60) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),

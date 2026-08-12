@@ -23,15 +23,7 @@ import {
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
-
-function shuffleArray<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[j], result[i]] = [result[j], result[i]];
-  }
-  return result;
-}
+import { shuffleArray } from '@/lib/utils';
 
 export default function WordConnectPage() {
   const [score, setScore] = useState(0);
@@ -74,6 +66,11 @@ export default function WordConnectPage() {
         
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
+        
+        // Explicitly load and shuffle levels for the initial language
+        const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
+        const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
+        setActiveLevels(shuffleArray(base));
 
         if (sdkInstance) {
           setIsYandexReady(true);
@@ -101,6 +98,7 @@ export default function WordConnectPage() {
     init();
   }, []);
 
+  // When language is toggled, reshuffle levels
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -137,8 +135,8 @@ export default function WordConnectPage() {
     setLevelIndex(0);
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    setActiveLevels(shuffleArray(base));
-    toast({ title: t('reset', lang), description: "Game progress cleared." });
+    setActiveLevels(shuffleArray(base)); // Shuffling levels on reset
+    toast({ title: t('reset', lang), description: "Game progress cleared and levels shuffled." });
   }, [lang]);
 
   const handleShowLeaderboard = () => {
