@@ -4,9 +4,9 @@
  */
 
 // Word Connect Constants
-export const CIRCLE_RADIUS = 120;
+export const CIRCLE_RADIUS = 105;
 export const LETTER_RADIUS = 30;
-export const INTERACTION_BUFFER = 40; // Buffer to prevent letter clipping
+export const INTERACTION_BUFFER = 30; // Buffer to prevent letter clipping
 
 // Columns Game Constants
 export const GRID_WIDTH = 6;
