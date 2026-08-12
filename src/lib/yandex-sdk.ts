@@ -39,7 +39,7 @@ export interface YandexSDK {
     getPlayerData: () => Promise<any>;
     openAuthDialog: () => Promise<void>;
   };
-  leaderboards: YandexLeaderboards;
+  getLeaderboards: () => Promise<YandexLeaderboards>;
   adv: {
     showFullscreenAdv: (callbacks?: {
       onOpen?: () => void;
@@ -77,6 +77,7 @@ export interface YandexSDK {
 
 let yandexInstance: YandexSDK | null = null;
 let playerInstance: YandexPlayer | null = null;
+let lbInstance: YandexLeaderboards | null = null;
 
 /**
  * Initializes the Yandex Games SDK V2 and the Player object.
@@ -243,8 +244,10 @@ export async function reportScoreToLeaderboard(score: number) {
   if (!sdk) return;
 
   try {
-    // V2 uses sdk.leaderboards property directly
-    await sdk.leaderboards.setLeaderboardScore('leaders', score);
+    if (!lbInstance) {
+      lbInstance = await sdk.getLeaderboards();
+    }
+    await lbInstance.setLeaderboardScore('leaders', score);
   } catch (e) {
     console.warn('Failed to report score to leaderboard:', e);
   }
@@ -255,7 +258,10 @@ export async function fetchLeaderboardEntries(limit = 10) {
   if (!sdk) return null;
 
   try {
-    return await sdk.leaderboards.getLeaderboardEntries('leaders', { 
+    if (!lbInstance) {
+      lbInstance = await sdk.getLeaderboards();
+    }
+    return await lbInstance.getLeaderboardEntries('leaders', { 
       includeUser: true, 
       quantityTop: limit 
     });

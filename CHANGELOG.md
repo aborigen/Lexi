@@ -1,4 +1,9 @@
+
 # Changelog
+
+## [2.15.1] - 2024-07-03
+### Fixed
+- **Leaderboard API**: Corrected the Yandex SDK integration to use the asynchronous `getLeaderboards()` method, resolving a `TypeError` when accessing leaderboard entries.
 
 ## [2.15.0] - 2024-07-02
 ### Added
@@ -10,14 +15,3 @@
 ### Changed
 - **Visual Refinement**: Rotated the letter circle by 30 degrees clockwise and reduced its radius for a more balanced aesthetic.
 - **Minimalist Branding**: Simplified the global header by removing the text logotype, leaving only the primary icon.
-
-## [2.14.0] - 2024-06-27
-### Added
-- **Promotion Toolkit**: Integrated Yandex Games Feedback API and Shortcut API to boost game ranking and player retention.
-- **Enhanced Analytics**: New stats tracking for `Total Sessions` and `Longest Word Found`, synchronized with Yandex Cloud Storage.
-- **Engagement Prompts**: Intelligent review requests and shortcut suggestions triggered after level completion milestones.
-
-## [2.13.0] - 2024-06-25
-### Added
-- **Literary Masterpiece**: Finalized the Russian library with 112+ high-quality levels based on Pushkin's *Eugene Onegin*.
-- **Comprehensive Hints**: Every single valid word (including sub-words) now has a literary citation or contextual hint available via the AI Advisor.
