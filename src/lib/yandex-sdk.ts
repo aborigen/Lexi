@@ -1,4 +1,3 @@
-
 'use client';
 
 /**
@@ -211,18 +210,20 @@ export async function createShortcut() {
   }
 }
 
+/**
+ * Synchronizes the high score to Yandex Cloud immediately.
+ * Uses flush: true to ensure the write is committed right away.
+ */
 export async function syncHighScoreToYandex(score: number) {
   if (!playerInstance) return;
 
   try {
-    const data = await playerInstance.getData(['highScore']);
-    const currentHigh = Number(data?.highScore) || 0;
-
-    if (score > currentHigh) {
-      await playerInstance.setData({ highScore: score });
-    }
+    // We assume the caller has already verified this is a high score.
+    // flush: true forces an immediate sync to the cloud storage.
+    await playerInstance.setData({ highScore: score }, true);
+    console.log('High score synchronized to cloud:', score);
   } catch (e) {
-    console.warn('Failed to sync high score:', e);
+    console.warn('Failed to sync high score to cloud:', e);
   }
 }
 

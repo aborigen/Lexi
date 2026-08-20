@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, Star } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, Star, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -67,7 +67,6 @@ export default function WordConnectPage() {
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
         
-        // Explicitly load and shuffle levels for the initial language
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
         const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
         setActiveLevels(shuffleArray(base));
@@ -98,7 +97,6 @@ export default function WordConnectPage() {
     init();
   }, []);
 
-  // When language is toggled, reshuffle levels
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -117,6 +115,7 @@ export default function WordConnectPage() {
     }
   }, [theme]);
 
+  // Reactive high score sync
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
@@ -135,9 +134,26 @@ export default function WordConnectPage() {
     setLevelIndex(0);
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    setActiveLevels(shuffleArray(base)); // Shuffling levels on reset
+    setActiveLevels(shuffleArray(base));
     toast({ title: t('reset', lang), description: "Game progress cleared and levels shuffled." });
   }, [lang]);
+
+  const handleSave = useCallback(async () => {
+    if (!isYandexReady) {
+      toast({ title: "Offline", description: "Progress saved locally. Cloud sync requires connection." });
+      return;
+    }
+    
+    try {
+      await syncHighScoreToYandex(highScore);
+      await reportScoreToLeaderboard(highScore);
+      const stats = await fetchPlayerStats();
+      if (stats) setPlayerStats(stats);
+      toast({ title: "Progress Saved", description: "Your high score and stats are synced to Yandex Cloud." });
+    } catch (e) {
+      toast({ title: "Sync Failed", description: "Could not sync to cloud. Try again later.", variant: "destructive" });
+    }
+  }, [highScore, isYandexReady]);
 
   const handleShowLeaderboard = () => {
     if (!isYandexReady) {
@@ -175,11 +191,24 @@ export default function WordConnectPage() {
   }, [lang, isYandexReady, score, levelIndex]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number) => {
-    setScore(prev => prev + newScore);
+    setScore(prev => {
+      const updated = prev + newScore;
+      // Immediate local check and persistence triggers
+      if (updated > highScore) {
+        setHighScore(updated);
+        localStorage.setItem('word_high_score', updated.toString());
+        if (isYandexReady) {
+          syncHighScoreToYandex(updated);
+          reportScoreToLeaderboard(updated);
+        }
+      }
+      return updated;
+    });
+
     if (isYandexReady) {
       updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
     }
-  }, [isYandexReady]);
+  }, [isYandexReady, highScore]);
 
   const handleHintUsed = useCallback(() => {
     if (isYandexReady) {
@@ -211,6 +240,15 @@ export default function WordConnectPage() {
             </div>
             
             <div className="flex gap-0.5">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleSave} 
+                className="rounded-full w-7 h-7"
+                aria-label="Save Progress"
+              >
+                <Save className="w-3.5 h-3.5 text-primary" />
+              </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
