@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.15.3] - 2024-07-05
+### Verified
+- **Game Ready Signal**: Confirmed and reinforced that `LoadingAPI.ready()` is called after all asynchronous assets and cloud data are synchronized.
+- **Initialization Sequence**: Added console logging to track the readiness signal for easier platform verification.
+
 ## [2.15.2] - 2024-07-04
 ### Fixed
 - **Yandex SDK Deprecation**: Migrated from `ysdk.getLeaderboards()` to `ysdk.leaderboards` property to resolve console warnings and align with V2 API standards.

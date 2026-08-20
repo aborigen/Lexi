@@ -118,14 +118,20 @@ export function getPlayerInstance(): YandexPlayer | null {
   return playerInstance;
 }
 
+/**
+ * Signals to Yandex that the game has finished loading and is ready for the user.
+ */
 export function signalGameReady() {
   const sdk = getYandexSDK();
   if (sdk?.features?.LoadingAPI) {
     try {
       sdk.features.LoadingAPI.ready();
+      console.log('Yandex Games SDK: LoadingAPI.ready() signaled.');
     } catch (e) {
       console.error('Failed to signal LoadingAPI.ready():', e);
     }
+  } else {
+    console.warn('Yandex Games SDK: LoadingAPI not available to signal ready.');
   }
 }
 
