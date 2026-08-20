@@ -1,6 +1,19 @@
 
 # Changelog
 
+## [2.16.0] - 2024-07-08
+### Added
+- **Atomic Persistence**: Implemented `flush: true` in Yandex Cloud Storage sync to ensure immediate data commitment.
+- **Manual Save Button**: Added a dedicated Save action to the global header for explicit user-triggered cloud synchronization.
+- **Bilingual Documentation**: Created `docs/SCORING_LOGIC.md` and `docs/HOW_TO_PLAY.md` with full English and Russian support.
+### Fixed
+- **SDK Stability**: Resolved `TypeError: _.get is not a function` by refactoring the player initialization sequence.
+- **Leaderboard API**: Switched from deprecated `getLeaderboards()` to the modern `ysdk.leaderboards` property.
+### Changed
+- **Minimalist Header**: Removed the "LEXI.AI" text logotype to provide more space for game controls.
+- **Enhanced Randomization**: Centralized shuffle logic to ensure unique level and letter layouts on every reset.
+- **Layout Precision**: Refined SVG coordinate mapping and dynamic scaling to prevent UI cutoffs on narrow mobile screens.
+
 ## [2.15.3] - 2024-07-05
 ### Verified
 - **Game Ready Signal**: Confirmed and reinforced that `LoadingAPI.ready()` is called after all asynchronous assets and cloud data are synchronized.
