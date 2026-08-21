@@ -193,7 +193,6 @@ export default function WordConnectPage() {
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number) => {
     setScore(prev => {
       const updated = prev + newScore;
-      // Immediate local check and persistence triggers
       if (updated > highScore) {
         setHighScore(updated);
         localStorage.setItem('word_high_score', updated.toString());
@@ -228,80 +227,74 @@ export default function WordConnectPage() {
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
       <div className="max-w-2xl landscape:max-w-5xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
-        <header className="flex flex-row justify-between items-center h-12 shrink-0 z-50">
+        <header className="flex flex-row justify-between items-center h-16 shrink-0 z-50">
           <div className="flex items-center space-x-2">
-            <Gamepad2 className="w-5 h-5 text-primary" />
+            <div className="w-8 h-8 sunny-gradient rounded-xl flex items-center justify-center shadow-lg transform -rotate-12 border-2 border-white/50">
+              <Gamepad2 className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-black italic tracking-tighter text-primary drop-shadow-sm hidden sm:block">LEXI.AI</span>
           </div>
 
-          <div className="flex gap-1 items-center">
-            <div className="flex items-center gap-1 glass px-2 py-0.5 rounded-full border-primary/20">
-               <Trophy className="w-3 h-3 text-primary" />
-               <span className="text-[10px] sm:text-xs font-black">{score.toLocaleString()}</span>
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2 glass px-4 py-1.5 rounded-2xl border-primary/20">
+               <Trophy className="w-4 h-4 text-primary animate-pulse" />
+               <span className="text-sm sm:text-base font-black tracking-tight">{score.toLocaleString()}</span>
             </div>
             
-            <div className="flex gap-0.5">
+            <div className="flex gap-1">
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={handleSave} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Save Progress"
               >
-                <Save className="w-3.5 h-3.5 text-primary" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => requestReview()} 
-                className="rounded-full w-7 h-7"
-                aria-label="Rate Game"
-              >
-                <Star className="w-3.5 h-3.5 text-primary" />
+                <Save className="w-4 h-4 text-primary" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={handleShowStats} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Player Statistics"
               >
-                <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
+                <BarChart3 className="w-4 h-4 text-muted-foreground" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={handleShowLeaderboard} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Leaderboard"
               >
-                <ListOrdered className="w-3.5 h-3.5 text-muted-foreground" />
+                <ListOrdered className="w-4 h-4 text-muted-foreground" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={toggleTheme} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
               >
-                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-muted-foreground" /> : <Sun className="w-3.5 h-3.5 text-muted-foreground" />}
+                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={toggleLang} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Toggle Language"
               >
-                <Languages className="w-3.5 h-3.5 text-muted-foreground" />
+                <Languages className="w-4 h-4 text-muted-foreground" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={handleReset} 
-                className="rounded-full w-7 h-7"
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Reset Progress"
               >
-                <RefreshCcw className="w-3.5 h-3.5 text-muted-foreground" />
+                <RefreshCcw className="w-4 h-4 text-muted-foreground" />
               </Button>
             </div>
           </div>
@@ -318,13 +311,13 @@ export default function WordConnectPage() {
             />
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <RefreshCcw className="w-8 h-8 animate-spin text-primary opacity-20" />
+              <RefreshCcw className="w-10 h-10 animate-spin text-primary opacity-30" />
             </div>
           )}
         </main>
 
         {currentLevel && (
-          <div className="absolute bottom-4 right-4 z-[100]">
+          <div className="absolute bottom-6 right-6 z-[100] animate-float">
             <AIAdvisor 
               onSuggestionReceived={handleHintUsed}
               gameState={gameState}

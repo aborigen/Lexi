@@ -43,7 +43,6 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      // Rotation: -60 is 1 o'clock. We add -30 degrees as requested for 30 deg clockwise.
       const angle = (index * (360 / shuffledLetters.length) - 60) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
@@ -188,7 +187,7 @@ export function WordConnect({
   return (
     <div 
       ref={rootRef}
-      className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden"
+      className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-4 sm:pb-8"
       onMouseMove={handleInteractionMove}
       onTouchMove={handleInteractionMove}
       onMouseUp={handleInteractionEnd}
@@ -196,20 +195,20 @@ export function WordConnect({
     >
       <div 
         key={`grid-${level.letters.join('')}`} 
-        className="w-full landscape:w-1/4 portrait:max-h-[30%] landscape:h-full p-2 glass rounded-2xl flex flex-wrap justify-center content-start gap-1 sm:gap-1.5 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left z-10"
+        className="w-full landscape:w-[220px] portrait:max-h-[25%] landscape:h-full p-4 glass rounded-3xl flex flex-wrap justify-center content-start gap-2 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left z-10"
       >
         {sortedValidWords.map((word, idx) => (
-          <div key={`${word}-${idx}`} className="flex gap-0.5">
+          <div key={`${word}-${idx}`} className="flex gap-1">
             {word.split('').map((char, i) => {
               const isFound = foundWords.includes(word);
               return (
                 <div 
                   key={i} 
                   className={cn(
-                    "w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center border rounded-md font-black text-[10px] sm:text-xs transition-all duration-500",
+                    "w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border-2 rounded-xl font-black text-xs sm:text-sm transition-all duration-700",
                     isFound 
-                      ? "sunny-gradient text-white border-white shadow-[0_2px_4px_rgba(255,171,0,0.3)] word-slot-found" 
-                      : "bg-white/5 border-white/20 text-transparent"
+                      ? "sunny-gradient text-white border-white/40 shadow-md word-slot-found" 
+                      : "bg-white/10 border-white/20 text-transparent"
                   )}
                 >
                   {isFound ? char : ''}
@@ -221,19 +220,19 @@ export function WordConnect({
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
-        <div className="h-10 sm:h-12 flex items-center justify-center shrink-0 w-full mt-2">
+        <div className="h-14 sm:h-16 flex items-center justify-center shrink-0 w-full">
           {selectedIndices.length > 0 && (
-            <div className="sunny-gradient px-4 py-1.5 rounded-full text-base sm:text-lg font-black text-white animate-in zoom-in-95 duration-200 shadow-xl border-2 border-white/80">
+            <div className="sunny-gradient px-8 py-2.5 rounded-2xl text-xl sm:text-2xl font-black text-white animate-in zoom-in-95 duration-200 shadow-2xl border-4 border-white/60 tracking-widest uppercase italic">
               {selectedIndices.map(i => shuffledLetters[i]).join('')}
             </div>
           )}
         </div>
 
-        <div className="flex-1 w-full flex items-center justify-center min-h-0 relative portrait:pb-16 landscape:pb-8">
+        <div className="flex-1 w-full flex items-center justify-center min-h-0 relative">
           <div 
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
-            className="relative select-none touch-none aspect-square scale-[0.6] xs:scale-[0.7] sm:scale-75 md:scale-90 landscape:scale-[0.6] sm:landscape:scale-75 transition-transform duration-300 shrink-0 animate-zoom-in"
+            className="relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-transform duration-500 shrink-0 animate-zoom-in"
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
             <svg 
@@ -243,9 +242,13 @@ export function WordConnect({
             >
               <defs>
                 <filter id="line-glow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feGaussianBlur stdDeviation="4" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
+                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" />
+                  <stop offset="100%" stopColor="hsl(var(--accent))" />
+                </linearGradient>
               </defs>
 
               {showOnboarding && onboardingPath && (
@@ -253,9 +256,9 @@ export function WordConnect({
                   d={`M ${onboardingPath.map(p => `${p.x},${p.y}`).join(' L ')}`}
                   fill="none"
                   stroke="hsl(var(--primary))"
-                  strokeWidth="8"
+                  strokeWidth="10"
                   strokeLinecap="round"
-                  strokeDasharray="1000"
+                  strokeDasharray="1500"
                   className="opacity-20 animate-onboarding-path"
                 />
               )}
@@ -269,8 +272,8 @@ export function WordConnect({
                     key={i} 
                     x1={start.x} y1={start.y} 
                     x2={end.x} y2={end.y} 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth="14" 
+                    stroke="url(#line-gradient)" 
+                    strokeWidth="18" 
                     strokeLinecap="round"
                     className="opacity-90"
                     filter="url(#line-glow)"
@@ -283,9 +286,9 @@ export function WordConnect({
                   y1={letterPositions[selectedIndices[selectedIndices.length-1]].y} 
                   x2={dragPath.x} y2={dragPath.y} 
                   stroke="hsl(var(--primary))" 
-                  strokeWidth="14" 
+                  strokeWidth="18" 
                   strokeLinecap="round"
-                  className="opacity-50"
+                  className="opacity-40"
                 />
               )}
             </svg>
@@ -305,16 +308,16 @@ export function WordConnect({
                     handleInteractionStart(i);
                   }}
                   className={cn(
-                    "absolute flex items-center justify-center font-black text-3xl rounded-full cursor-pointer transition-all duration-200 select-none",
+                    "absolute flex items-center justify-center font-black text-4xl rounded-3xl cursor-pointer transition-all duration-300 select-none border-4",
                     isSelected 
-                      ? "sunny-gradient text-white scale-125 z-10 shadow-[0_8px_20px_rgba(255,171,0,0.6)] border-2 border-white" 
-                      : "glass hover:bg-white/90 hover:scale-105 border-2 border-white/60 shadow-xl"
+                      ? "sunny-gradient text-white scale-125 z-10 shadow-2xl border-white" 
+                      : "glass hover:bg-white/80 hover:scale-105 border-white/60 shadow-xl"
                   )}
                   style={{
-                    left: pos.x - LETTER_RADIUS,
-                    top: pos.y - LETTER_RADIUS,
-                    width: LETTER_RADIUS * 2,
-                    height: LETTER_RADIUS * 2,
+                    left: pos.x - LETTER_RADIUS * 1.2,
+                    top: pos.y - LETTER_RADIUS * 1.2,
+                    width: LETTER_RADIUS * 2.4,
+                    height: LETTER_RADIUS * 2.4,
                   }}
                 >
                   {char}
@@ -326,13 +329,13 @@ export function WordConnect({
               <div 
                 className="absolute pointer-events-none z-50 animate-onboarding-hand"
                 style={{
-                  left: onboardingPath[0].x - 20,
-                  top: onboardingPath[0].y - 20,
+                  left: onboardingPath[0].x - 25,
+                  top: onboardingPath[0].y - 25,
                 }}
               >
                 <div className="flex flex-col items-center">
-                  <Hand className="w-10 h-10 text-primary drop-shadow-[0_4px_12px_rgba(0,0,0,0.4)]" fill="currentColor" />
-                  <span className="text-[11px] font-black uppercase text-primary bg-white/90 px-3 py-1 rounded-full shadow-lg mt-2 whitespace-nowrap border border-primary/20">
+                  <Hand className="w-12 h-12 text-primary drop-shadow-2xl" fill="currentColor" />
+                  <span className="text-xs font-black uppercase text-primary bg-white/90 px-4 py-1.5 rounded-2xl shadow-2xl mt-3 whitespace-nowrap border-2 border-primary/20">
                     {t('guide_draw', lang)}
                   </span>
                 </div>
