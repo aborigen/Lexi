@@ -1,6 +1,11 @@
 
 # Lexi.AI - Version History
 
+## v2.19.0 (2024-07-11)
+### Localized Visual Identity
+- **Russian Cover & Icon**: Dedicated localized vector assets for the Russian storefront.
+- **Marketing Compliance**: Updated promotional documentation with full asset manifests.
+
 ## v2.18.0 (2024-07-10)
 ### Marketing Localization
 - **Russian Promo Materials**: Expanded and polished Russian descriptions in `docs/PROMO_MATERIALS.md` for better store conversion.

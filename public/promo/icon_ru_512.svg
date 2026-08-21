@@ -1,0 +1,29 @@
+<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradIconRU" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4FC3F7" />
+      <stop offset="100%" stop-color="#E1F5FE" />
+    </linearGradient>
+    <filter id="glowIconRU" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" rx="128" fill="url(#skyGradIconRU)" />
+  
+  <!-- Minimalist 'L' with glow -->
+  <text 
+    x="256" 
+    y="340" 
+    font-family="system-ui, sans-serif" 
+    font-weight="900" 
+    font-style="italic"
+    font-size="320" 
+    fill="hsl(45 100% 50%)" 
+    text-anchor="middle" 
+    filter="url(#glowIconRU)"
+  >L</text>
+  
+  <path d="M160 420 C 120 300, 390 200, 350 380" stroke="white" stroke-width="16" stroke-opacity="0.4" stroke-linecap="round" fill="none" />
+</svg>

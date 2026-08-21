@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.19.0] - 2024-07-11
+### Added
+- **Localized Russian Promo Assets**: Created `public/promo/cover_ru.svg` and `public/promo/icon_ru_512.svg` with Russian branding.
+- **Asset Documentation**: Updated `docs/PROMO_MATERIALS.md` with links to localized Russian visual assets.
+
 ## [2.18.0] - 2024-07-10
 ### Added
 - **Localized Marketing Assets**: Enhanced `docs/PROMO_MATERIALS.md` with polished Russian marketing copy and metadata.

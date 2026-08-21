@@ -5,8 +5,14 @@ This document provides localized descriptions, metadata, and asset references fo
 
 ## 1. Visual Assets (SVG)
 The following source files are available in `public/promo/`:
-- **Cover Image** (`cover.svg`): 800x470 banner featuring the core mechanics and branding.
+
+### Universal / English Assets
+- **Cover Image** (`cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
 - **Game Icon** (`icon_512.svg`): 512x512 high-contrast icon optimized for the store grid.
+
+### Russian Localized Assets
+- **Russian Cover Image** (`cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
+- **Russian Store Icon** (`icon_ru_512.svg`): 512x512 localized icon.
 
 ## 2. Localized Descriptions
 
