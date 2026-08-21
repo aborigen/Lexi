@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.18.0] - 2024-07-10
+### Added
+- **Localized Marketing Assets**: Enhanced `docs/PROMO_MATERIALS.md` with polished Russian marketing copy and metadata.
+- **Store Readiness**: Optimized short and full descriptions for the Yandex Games Russian locale.
+
 ## [2.17.0] - 2024-07-09
 ### Added
 - **SVG Promo Assets**: Generated `public/promo/cover.svg` (800x470) and `public/promo/icon_512.svg` (512x512) for platform publishing.
