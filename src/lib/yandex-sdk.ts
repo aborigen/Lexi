@@ -38,7 +38,6 @@ export interface YandexSDK {
     getPlayerData: () => Promise<any>;
     openAuthDialog: () => Promise<void>;
   };
-  getLeaderboards: () => Promise<YandexLeaderboards>; // Deprecated
   leaderboards: Promise<YandexLeaderboards>; // Modern V2 property
   adv: {
     showFullscreenAdv: (callbacks?: {
@@ -126,22 +125,14 @@ async function getLeaderboardService(): Promise<YandexLeaderboards | null> {
   
   try {
     // Modern V2 property: returns a Promise<YandexLeaderboards>
-    if (sdk.leaderboards) {
-      const lb = await sdk.leaderboards;
-      if (lb && typeof lb.getLeaderboardEntries === 'function') {
-        return lb;
-      }
-    }
-    
-    // Only use deprecated method as an absolute fallback if modern property is missing
-    if (!sdk.leaderboards && typeof sdk.getLeaderboards === 'function') {
-      const lb = await sdk.getLeaderboards();
-      if (lb && typeof lb.getLeaderboardEntries === 'function') {
-        return lb;
-      }
+    // We strictly use the modern property and avoid accessing the deprecated one 
+    // to prevent Proxy-triggered warnings.
+    const lb = await sdk.leaderboards;
+    if (lb && typeof lb.getLeaderboardEntries === 'function') {
+      return lb;
     }
   } catch (e) {
-    console.warn('Yandex SDK: Failed to access leaderboard service:', e);
+    console.warn('Yandex SDK: Failed to access modern leaderboard service:', e);
   }
   
   return null;
