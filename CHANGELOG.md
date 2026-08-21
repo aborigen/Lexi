@@ -1,5 +1,9 @@
-
 # Changelog
+
+## [2.20.0] - 2024-07-12
+### Added
+- **Gameplay Screenshots**: Generated vector SVG screenshots for both orientations (Portrait/Landscape) and languages (EN/RU).
+- **Asset Manifest**: Updated promotional documentation to include all mandatory store visual assets.
 
 ## [2.19.0] - 2024-07-11
 ### Added

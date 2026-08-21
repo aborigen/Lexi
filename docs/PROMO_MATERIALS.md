@@ -1,4 +1,3 @@
-
 # Lexi.AI - Yandex Games Promotional Materials
 
 This document provides localized descriptions, metadata, and asset references for publishing Lexi.AI on the Yandex Games platform.
@@ -9,10 +8,14 @@ The following source files are available in `public/promo/`:
 ### Universal / English Assets
 - **Cover Image** (`cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
 - **Game Icon** (`icon_512.svg`): 512x512 high-contrast icon optimized for the store grid.
+- **Portrait Screenshot** (`screenshot_portrait_en.svg`): 1080x1920 (9:16) gameplay view for English locale.
+- **Landscape Screenshot** (`screenshot_landscape_en.svg`): 1920x1080 (16:9) gameplay view for English locale.
 
 ### Russian Localized Assets
 - **Russian Cover Image** (`cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
 - **Russian Store Icon** (`icon_ru_512.svg`): 512x512 localized icon.
+- **Russian Portrait Screenshot** (`screenshot_portrait_ru.svg`): 1080x1920 (9:16) localized gameplay view.
+- **Russian Landscape Screenshot** (`screenshot_landscape_ru.svg`): 1920x1080 (16:9) localized gameplay view.
 
 ## 2. Localized Descriptions
 
@@ -43,7 +46,7 @@ Feeling stuck? Use our unique **Lexical AI Advisor** to receive clever, cryptic 
 
 Lexi.AI — это интуитивно понятная головоломка, которая проверит ваш словарный запас и смекалку. Соединяйте буквы круговыми движениями, чтобы находить скрытые слова и проходить уровни. 
 
-Застряли на сложном слове? Воспользуйтесь нашим уникальным **Лингво-ИИ**, который подберет для вас глубокую литературную цитату с пропущенным словом. Это не просто подсказка, а возможность догадаться до решения с помощью контекста и эрудиции!
+Застряли на сложном слове? Воспользуйтесь нашим уникавым **Лингво-ИИ**, который подберет для вас глубокую литературную цитату с пропущенным словом. Это не просто подсказка, а возможность догадаться до решения с помощью контекста и эрудиции!
 
 Игра идеально подходит для любителей кроссвордов, филвордов и интеллектуальных игр.
 

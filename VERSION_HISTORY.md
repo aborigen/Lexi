@@ -1,5 +1,9 @@
-
 # Lexi.AI - Version History
+
+## v2.20.0 (2024-07-12)
+### Enhanced Marketing Assets
+- **Localized Screenshots**: Created 9:16 portrait and 16:9 landscape SVG screenshots for English and Russian locales.
+- **Promo Documentation**: Updated `docs/PROMO_MATERIALS.md` with the new screenshot manifest.
 
 ## v2.19.0 (2024-07-11)
 ### Localized Visual Identity

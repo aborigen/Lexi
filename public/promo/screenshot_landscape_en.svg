@@ -1,0 +1,32 @@
+<svg viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyL" x1="960" y1="0" x2="960" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4FC3F7" />
+      <stop offset="100%" stop-color="#E1F5FE" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#skyL)" />
+  
+  <!-- Left Side: Grid -->
+  <rect x="100" y="150" width="600" height="800" rx="40" fill="white" fill-opacity="0.3" stroke="white" stroke-width="4" />
+  <text x="400" y="100" font-family="sans-serif" font-weight="900" font-size="50" fill="white" text-anchor="middle" filter="url(#glow)">WORDS FOUND</text>
+  
+  <!-- Right Side: Circle -->
+  <circle cx="1300" cy="540" r="350" fill="white" fill-opacity="0.2" stroke="white" stroke-width="4" />
+  <g filter="url(#glow)">
+    <circle cx="1300" cy="190" r="70" fill="white" stroke="#FFB300" stroke-width="4" />
+    <text x="1300" y="205" font-family="sans-serif" font-weight="900" font-size="40" fill="#333" text-anchor="middle">S</text>
+    <circle cx="1650" cy="540" r="70" fill="white" stroke="#FFB300" stroke-width="4" />
+    <text x="1650" y="555" font-family="sans-serif" font-weight="900" font-size="40" fill="#333" text-anchor="middle">T</text>
+    <circle cx="1475" cy="843" r="70" fill="white" stroke="#FFB300" stroke-width="4" />
+    <text x="1475" y="858" font-family="sans-serif" font-weight="900" font-size="40" fill="#333" text-anchor="middle">A</text>
+    <circle cx="1125" cy="843" r="70" fill="white" stroke="#FFB300" stroke-width="4" />
+    <text x="1125" y="858" font-family="sans-serif" font-weight="900" font-size="40" fill="#333" text-anchor="middle">R</text>
+    <circle cx="950" cy="540" r="70" fill="white" stroke="#FFB300" stroke-width="4" />
+    <text x="950" y="555" font-family="sans-serif" font-weight="900" font-size="40" fill="#333" text-anchor="middle">E</text>
+  </g>
+</svg>
