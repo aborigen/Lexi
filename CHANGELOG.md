@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.22.0] - 2024-07-14
+### Fixed
+- **Yandex SDK Deprecation**: Resolved `ysdk.getLeaderboards()` deprecation by fully migrating to the modern `ysdk.leaderboards` property.
+- **Resilient API Handling**: Updated `getLeaderboardService` to strictly prioritize the Promise-based property and avoid triggering Proxy-based deprecation warnings.
+
 ## [2.21.0] - 2024-07-13
 ### Fixed
 - **Leaderboard API**: Resolved `TypeError: _.getLeaderboardEntries is not a function` by implementing a robust service retrieval helper with fallback logic for older SDK environments.

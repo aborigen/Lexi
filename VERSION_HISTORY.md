@@ -1,5 +1,10 @@
 # Lexi.AI - Version History
 
+## v2.22.0 (2024-07-14)
+### Yandex SDK Standard Compliance
+- **Deprecation Fix**: Migrated from `ysdk.getLeaderboards()` to `ysdk.leaderboards` to comply with modern V2 standards.
+- **Resilience**: Improved safety checks for the leaderboard service to prevent Proxy-triggered warnings.
+
 ## v2.21.0 (2024-07-13)
 ### SDK Stability Fix
 - **Leaderboard Resilience**: Fixed a critical `TypeError` when fetching leaderboard entries by adding a robust service retrieval helper.
