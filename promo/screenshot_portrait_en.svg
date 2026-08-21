@@ -1,0 +1,7 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="1920" fill="#64B5F6"/>
+  <rect x="50" y="100" width="980" height="400" rx="40" fill="white" fill-opacity="0.2"/>
+  <circle cx="540" cy="1400" r="400" stroke="white" stroke-width="4" stroke-opacity="0.3"/>
+  <text x="540" y="1400" font-family="system-ui" font-weight="900" font-size="60" fill="white" text-anchor="middle">S T A R E</text>
+  <text x="540" y="300" font-family="system-ui" font-weight="700" font-size="40" fill="white" text-anchor="middle">Level 1</text>
+</svg>

@@ -3,19 +3,19 @@
 This document provides localized descriptions, metadata, and asset references for publishing Lexi.AI on the Yandex Games platform.
 
 ## 1. Visual Assets (SVG)
-The following source files are available in `public/promo/`:
+The following source files are available in the root `promo/` directory:
 
 ### Universal / English Assets
-- **Cover Image** (`cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
-- **Game Icon** (`icon_512.svg`): 512x512 high-contrast icon optimized for the store grid.
-- **Portrait Screenshot** (`screenshot_portrait_en.svg`): 1080x1920 (9:16) gameplay view for English locale.
-- **Landscape Screenshot** (`screenshot_landscape_en.svg`): 1920x1080 (16:9) gameplay view for English locale.
+- **Cover Image** (`promo/cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
+- **Game Icon** (`promo/icon_512.svg`): 512x512 high-contrast icon optimized for the store grid.
+- **Portrait Screenshot** (`promo/screenshot_portrait_en.svg`): 1080x1920 (9:16) gameplay view for English locale.
+- **Landscape Screenshot** (`promo/screenshot_landscape_en.svg`): 1920x1080 (16:9) gameplay view for English locale.
 
 ### Russian Localized Assets
-- **Russian Cover Image** (`cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
-- **Russian Store Icon** (`icon_ru_512.svg`): 512x512 localized icon.
-- **Russian Portrait Screenshot** (`screenshot_portrait_ru.svg`): 1080x1920 (9:16) localized gameplay view.
-- **Russian Landscape Screenshot** (`screenshot_landscape_ru.svg`): 1920x1080 (16:9) localized gameplay view.
+- **Russian Cover Image** (`promo/cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
+- **Russian Store Icon** (`promo/icon_ru_512.svg`): 512x512 localized icon.
+- **Russian Portrait Screenshot** (`promo/screenshot_portrait_ru.svg`): 1080x1920 (9:16) localized gameplay view.
+- **Russian Landscape Screenshot** (`promo/screenshot_landscape_ru.svg`): 1920x1080 (16:9) localized gameplay view.
 
 ## 2. Localized Descriptions
 
@@ -54,7 +54,7 @@ Lexi.AI — это интуитивно понятная головоломка,
 - ✨ **Круговое управление**: Интуитивно понятная механика соединения букв.
 - 🤖 **Помощник ИИ**: Умные цитаты-подсказки, вдохновленные классической литературой.
 - ☀️ **Эстетика "Голубого неба"**: Расслабляющий визуальный стиль и приятная атмосфера.
-- 🏆 **Таблица лидеров**: Соревнуйтесь с игроками со всего мира и бейте рекорды.
+- 🏆 **Таблица лидеров**: Соревновайтесь с игроками со всего мира и бейте рекорды.
 - 🌍 **Полная локализация**: Игра полностью переведена на русский и английский языки.
 
 ## 3. Keywords & Tags
