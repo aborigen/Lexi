@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.21.0] - 2024-07-13
+### Fixed
+- **Leaderboard API**: Resolved `TypeError: _.getLeaderboardEntries is not a function` by implementing a robust service retrieval helper with fallback logic for older SDK environments.
+
 ## [2.20.0] - 2024-07-12
 ### Added
 - **Gameplay Screenshots**: Generated vector SVG screenshots for both orientations (Portrait/Landscape) and languages (EN/RU).

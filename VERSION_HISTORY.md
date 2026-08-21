@@ -1,5 +1,9 @@
 # Lexi.AI - Version History
 
+## v2.21.0 (2024-07-13)
+### SDK Stability Fix
+- **Leaderboard Resilience**: Fixed a critical `TypeError` when fetching leaderboard entries by adding a robust service retrieval helper.
+
 ## v2.20.0 (2024-07-12)
 ### Enhanced Marketing Assets
 - **Localized Screenshots**: Created 9:16 portrait and 16:9 landscape SVG screenshots for English and Russian locales.

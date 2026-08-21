@@ -38,7 +38,7 @@ export interface YandexSDK {
     getPlayerData: () => Promise<any>;
     openAuthDialog: () => Promise<void>;
   };
-  getLeaderboards: () => Promise<YandexLeaderboards>; // Deprecated
+  getLeaderboards: () => Promise<YandexLeaderboards>; // Deprecated but stable fallback
   leaderboards: Promise<YandexLeaderboards>; // Modern V2 property
   adv: {
     showFullscreenAdv: (callbacks?: {
@@ -115,6 +115,36 @@ export function getYandexSDK(): YandexSDK | null {
 
 export function getPlayerInstance(): YandexPlayer | null {
   return playerInstance;
+}
+
+/**
+ * Helper to safely get the leaderboard service, providing fallbacks for different SDK environments.
+ */
+async function getLeaderboardService(): Promise<YandexLeaderboards | null> {
+  const sdk = getYandexSDK();
+  if (!sdk) return null;
+  
+  try {
+    // Try the modern V2 property first
+    if (sdk.leaderboards) {
+      const lb = await sdk.leaderboards;
+      if (lb && typeof lb.getLeaderboardEntries === 'function') {
+        return lb;
+      }
+    }
+    
+    // Fallback to the method if the property is missing or invalid
+    if (typeof sdk.getLeaderboards === 'function') {
+      const lb = await sdk.getLeaderboards();
+      if (lb && typeof lb.getLeaderboardEntries === 'function') {
+        return lb;
+      }
+    }
+  } catch (e) {
+    console.warn('Yandex SDK: Failed to access leaderboard service:', e);
+  }
+  
+  return null;
 }
 
 /**
@@ -218,8 +248,6 @@ export async function syncHighScoreToYandex(score: number) {
   if (!playerInstance) return;
 
   try {
-    // We assume the caller has already verified this is a high score.
-    // flush: true forces an immediate sync to the cloud storage.
     await playerInstance.setData({ highScore: score }, true);
     console.log('High score synchronized to cloud:', score);
   } catch (e) {
@@ -229,15 +257,15 @@ export async function syncHighScoreToYandex(score: number) {
 
 /**
  * Reports the player's high score to the global leaderboard.
- * Note: Uses ysdk.leaderboards property to avoid deprecation warnings.
+ * Note: Uses getLeaderboardService helper to ensure the method exists.
  */
 export async function reportScoreToLeaderboard(score: number) {
-  const sdk = getYandexSDK();
-  if (!sdk) return;
-
   try {
-    const lb = await sdk.leaderboards;
-    if (!lb) throw new Error('Leaderboards property not available');
+    const lb = await getLeaderboardService();
+    if (!lb) {
+      console.warn('Leaderboard service not available.');
+      return;
+    }
     
     await lb.setLeaderboardScore('leaders', score);
     console.log('Score reported to leaderboard:', score);
@@ -246,13 +274,13 @@ export async function reportScoreToLeaderboard(score: number) {
   }
 }
 
+/**
+ * Fetches entries from the global leaderboard.
+ */
 export async function fetchLeaderboardEntries(limit = 10) {
-  const sdk = getYandexSDK();
-  if (!sdk) return null;
-
   try {
-    const lb = await sdk.leaderboards;
-    if (!lb) throw new Error('Leaderboards property not available');
+    const lb = await getLeaderboardService();
+    if (!lb) return null;
 
     return await lb.getLeaderboardEntries('leaders', { 
       includeUser: true, 
