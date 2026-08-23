@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.26.0] - 2024-07-18
+### Changed
+- **UI Refinement**: Updated the `Toast` component with glassmorphic styles and better positioning (shifted down) to avoid overlapping the score and global header.
+
 ## [2.25.0] - 2024-07-17
 ### Added
 - **Level Skipping**: Added a "Next Level" button in the header to allow players to manually advance levels.
@@ -14,8 +18,3 @@
 ### Changed
 - **Yandex SDK Standard Compliance**: Fully migrated to `ysdk.leaderboards` and removed all references to the deprecated `getLeaderboards()` method.
 - **Refined Service Access**: Improved the `getLeaderboardService` helper to be more direct and efficient.
-
-## [2.22.0] - 2024-07-14
-### Fixed
-- **Yandex SDK Deprecation**: Resolved `ysdk.getLeaderboards()` deprecation by fully migrating to the modern `ysdk.leaderboards` property.
-- **Resilient API Handling**: Updated `getLeaderboardService` to strictly prioritize the Promise-based property and avoid triggering Proxy-based deprecation warnings.
