@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, Star, Save } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -136,6 +136,11 @@ export default function WordConnectPage() {
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
     setActiveLevels(shuffleArray(base));
     toast({ title: t('reset', lang), description: "Game progress cleared and levels shuffled." });
+  }, [lang]);
+
+  const handleNextLevel = useCallback(() => {
+    setLevelIndex(prev => prev + 1);
+    toast({ title: t('next_level', lang) });
   }, [lang]);
 
   const handleSave = useCallback(async () => {
@@ -286,6 +291,15 @@ export default function WordConnectPage() {
                 aria-label="Toggle Language"
               >
                 <Languages className="w-4 h-4 text-muted-foreground" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleNextLevel} 
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
+                aria-label="Next Level"
+              >
+                <SkipForward className="w-4 h-4 text-muted-foreground" />
               </Button>
               <Button 
                 variant="ghost" 

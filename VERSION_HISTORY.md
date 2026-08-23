@@ -1,5 +1,9 @@
 # Lexi.AI - Version History
 
+## v2.25.0 (2024-07-17)
+### New Features
+- **Level Navigation**: Added a "Skip Level" button (`SkipForward` icon) to the header for easier testing and gameplay.
+
 ## v2.24.0 (2024-07-16)
 ### Project Reorganization
 - **Asset Cleanup**: Removed the `public/promo` folder.

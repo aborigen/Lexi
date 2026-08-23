@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.25.0] - 2024-07-17
+### Added
+- **Level Skipping**: Added a "Next Level" button in the header to allow players to manually advance levels.
+- **Improved UX**: Users can now bypass difficult levels using the skip icon.
+
 ## [2.24.0] - 2024-07-16
 ### Removed
 - **Redundant Assets**: Deleted the `public/promo` directory.
