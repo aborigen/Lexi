@@ -1,4 +1,11 @@
+
 # Lexi.AI - Version History
+
+## v2.27.0 (2024-07-19)
+### Social & Competitive Refinement
+- **Leaderboard 2.0**: Completely refactored the leaderboard data algorithm for better performance and accuracy.
+- **Self-Identity**: The ranking system now clearly highlights the player's own position using secure ID matching.
+- **Resilience**: Added automated retries and better error boundaries for SDK network requests.
 
 ## v2.26.0 (2024-07-18)
 ### UI/UX Polish
@@ -8,8 +15,3 @@
 ## v2.25.0 (2024-07-17)
 ### New Features
 - **Level Navigation**: Added a "Skip Level" button (`SkipForward` icon) to the header for easier testing and gameplay.
-
-## v2.24.0 (2024-07-16)
-### Project Reorganization
-- **Asset Cleanup**: Removed the `public/promo` folder.
-- **Source Management**: Moved all SVG promotional materials to the root `promo/` directory to separate store assets from runtime public assets.

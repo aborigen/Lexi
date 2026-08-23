@@ -1,4 +1,11 @@
+
 # Changelog
+
+## [2.27.0] - 2024-07-19
+### Changed
+- **Leaderboard Refactor**: Implemented a more robust data processing algorithm with client-side deduplication, explicit sorting, and unique keying based on player IDs.
+- **Player Highlighting**: Added specific UI logic to identify and highlight the current user's entry in global rankings.
+- **Enhanced UX**: Added error handling with retry capability and improved loading/empty states for the leaderboard.
 
 ## [2.26.0] - 2024-07-18
 ### Changed
@@ -8,13 +15,3 @@
 ### Added
 - **Level Skipping**: Added a "Next Level" button in the header to allow players to manually advance levels.
 - **Improved UX**: Users can now bypass difficult levels using the skip icon.
-
-## [2.24.0] - 2024-07-16
-### Removed
-- **Redundant Assets**: Deleted the `public/promo` directory.
-- **Cleanup**: Reorganized all store promotional materials to the root `promo/` folder for better source management.
-
-## [2.23.0] - 2024-07-15
-### Changed
-- **Yandex SDK Standard Compliance**: Fully migrated to `ysdk.leaderboards` and removed all references to the deprecated `getLeaderboards()` method.
-- **Refined Service Access**: Improved the `getLeaderboardService` helper to be more direct and efficient.
