@@ -18,19 +18,26 @@ The core game logic uses a "collision detection" model for letter selection:
 - **Polar Positioning**: Letters are calculated using `CIRCLE_RADIUS` and `angle` math to form a perfect ring.
 - **Gesture Layer**: A dedicated SVG overlay draws line segments between the selected indices.
 - **State-Ref Sync**: Uses a `useRef` to track active indices, ensuring high-performance dragging without re-registering DOM listeners.
-- **Word Slots**: A flexible grid at the top that reveals found words with a "Pop-and-Glow" animation.
 
 ### 3. AI Advisor (AIAdvisor.tsx)
 A Genkit-powered (or level-provided) hint system.
 - **Contextual Clues**: Provides citations with missing words.
-- **Readability Overlay**: Hints are displayed in a centered `Dialog` (Modal) to ensure maximum legibility on smartphone screens (e.g., iPhone 8).
+- **Readability Overlay**: Hints are displayed in a centered `Dialog` (Modal) to ensure maximum legibility on smartphone screens.
+
+## Hosting & Environment Notes (Yandex Games)
+
+### Content Security Policy (CSP) Warnings
+You may encounter the following warning in the console:
+`Unrecognized Content-Security-Policy directive 'report-to'`
+- **Cause**: The Yandex Games hosting environment injects a modern CSP directive that some browser versions or integrated webviews do not yet support.
+- **Impact**: **Non-fatal**. The browser safely ignores this directive while enforcing the rest of the security policy. It does not affect SDK initialization or gameplay.
 
 ## Theme: Blue Sky
 The visual aesthetic is controlled via `src/app/globals.css`:
-- **Animated Backgrounds**: Fixed gradients that change based on theme (Light vs Dark).
+- **Animated Backgrounds**: Fixed gradients that change based on theme.
 - **Glassmorphism**: A custom `.glass` utility class providing backdrop-blur and semi-transparent backgrounds.
 - **Dynamic Icons**: Uses `lucide-react` for a consistent, clean UI.
 
 ## Performance Optimization
 - **Audio Synthesis**: Sound effects are generated via Web Audio API (`audio-manager.ts`) to avoid loading heavy MP3/WAV files.
-- **Zero-Regrid**: The WordConnect component avoids layout shifts by using a fixed container size and absolute positioning for letters.
+- **Zero-Regrid**: The WordConnect component avoids layout shifts by using a fixed container size and absolute positioning.

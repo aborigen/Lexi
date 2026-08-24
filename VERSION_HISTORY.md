@@ -1,6 +1,10 @@
 
 # Lexi.AI - Version History
 
+## v2.28.0 (2024-07-20)
+### Documentation & Maintenance
+- **Environment Documentation**: Added troubleshooting notes regarding non-fatal CSP `report-to` warnings encountered on Yandex Games hosting.
+
 ## v2.27.0 (2024-07-19)
 ### Social & Competitive Refinement
 - **Leaderboard 2.0**: Completely refactored the leaderboard data algorithm for better performance and accuracy.
