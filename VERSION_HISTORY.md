@@ -2,8 +2,8 @@
 # Lexi.AI - Version History
 
 ## v2.28.0 (2024-07-20)
-### Documentation & Maintenance
-- **Environment Documentation**: Added troubleshooting notes regarding non-fatal CSP `report-to` warnings encountered on Yandex Games hosting.
+### UI Refinement
+- **Letter Ring Alignment**: Optimized the circular letter interaction by rotating the ring to a 45-degree start, providing a cleaner geometric layout for the interaction engines.
 
 ## v2.27.0 (2024-07-19)
 ### Social & Competitive Refinement

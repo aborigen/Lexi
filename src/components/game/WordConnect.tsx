@@ -43,7 +43,8 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      const angle = (index * (360 / shuffledLetters.length) - 60) * (Math.PI / 180);
+      // Adjusted starting angle to -45 degrees for better circular alignment
+      const angle = (index * (360 / shuffledLetters.length) - 45) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
         y: OFFSET + CIRCLE_RADIUS * Math.sin(angle)
