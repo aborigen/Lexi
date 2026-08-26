@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -24,6 +24,14 @@ import {
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
 import { shuffleArray } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 
 export default function WordConnectPage() {
   const [score, setScore] = useState(0);
@@ -274,24 +282,36 @@ export default function WordConnectPage() {
               >
                 <ListOrdered className="w-4 h-4 text-muted-foreground" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleTheme} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label={theme === 'light' ? "Switch to Dark Mode" : "Switch to Light Mode"}
-              >
-                {theme === 'light' ? <Moon className="w-4 h-4 text-muted-foreground" /> : <Sun className="w-4 h-4 text-muted-foreground" />}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleLang} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Toggle Language"
-              >
-                <Languages className="w-4 h-4 text-muted-foreground" />
-              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
+                    aria-label="Settings"
+                  >
+                    <Settings className="w-4 h-4 text-muted-foreground" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="glass border-white/40 min-w-[160px] rounded-2xl">
+                  <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40">Preferences</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={toggleTheme} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer">
+                    <span className="text-xs font-bold">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                    {theme === 'light' ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={toggleLang} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer">
+                    <span className="text-xs font-bold">{lang === 'en' ? 'Русский Язык' : 'English Language'}</span>
+                    <Languages className="w-4 h-4 text-primary" />
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/20" />
+                  <DropdownMenuItem onClick={handleReset} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer text-destructive">
+                    <span className="text-xs font-bold">Reset Progress</span>
+                    <RefreshCcw className="w-4 h-4" />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -300,15 +320,6 @@ export default function WordConnectPage() {
                 aria-label="Next Level"
               >
                 <SkipForward className="w-4 h-4 text-muted-foreground" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleReset} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Reset Progress"
-              >
-                <RefreshCcw className="w-4 h-4 text-muted-foreground" />
               </Button>
             </div>
           </div>
