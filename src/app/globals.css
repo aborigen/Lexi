@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    /* Blue Sky Theme - Refined Light Mode */
-    --background: 198 100% 96%;
+    /* Blue Sky Theme - Refined Light Mode (Slightly Darker) */
+    --background: 198 85% 90%;
     --foreground: 200 60% 12%;
     --card: 0 0% 100%;
     --card-foreground: 200 60% 12%;
@@ -13,16 +13,16 @@
     --popover-foreground: 200 60% 12%;
     --primary: 45 100% 50%;
     --primary-foreground: 0 0% 10%;
-    --secondary: 198 70% 90%;
+    --secondary: 198 60% 85%;
     --secondary-foreground: 200 60% 15%;
-    --muted: 198 30% 94%;
+    --muted: 198 30% 88%;
     --muted-foreground: 200 30% 35%;
     --accent: 35 100% 60%;
     --accent-foreground: 0 0% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 198 40% 88%;
-    --input: 198 40% 88%;
+    --border: 198 40% 82%;
+    --input: 198 40% 82%;
     --ring: 45 100% 50%;
     --radius: 1.5rem;
   }
@@ -58,7 +58,7 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased overflow-x-hidden transition-colors duration-700;
-    background: linear-gradient(180deg, #64B5F6 0%, #BBDEFB 50%, #E3F2FD 100%);
+    background: linear-gradient(180deg, #42A5F5 0%, #90CAF9 50%, #BBDEFB 100%);
     background-attachment: fixed;
     touch-action: manipulation;
     position: relative;
