@@ -10,7 +10,7 @@ import { t } from '@/lib/translations';
 
 interface WordConnectProps {
   level: WordLevel;
-  onScoreUpdate: (score: number, length: number) => void;
+  onScoreUpdate: (score: number, length: number, pos: { x: number, y: number }) => void;
   onLevelComplete: () => void;
   onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
   lang?: string;
@@ -43,7 +43,6 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      // Adjusted starting angle to -45 degrees for better circular alignment
       const angle = (index * (360 / shuffledLetters.length) - 45) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
@@ -144,9 +143,17 @@ export function WordConnect({
     
     if (level.validWords.includes(currentWord)) {
       if (!foundWords.includes(currentWord)) {
+        // Calculate emission point (center of the interaction area)
+        const rect = containerRef.current?.getBoundingClientRect();
+        const startPos = rect ? {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
         const newFound = [...foundWords, currentWord];
         setFoundWords(newFound);
-        onScoreUpdate(currentWord.length * 10, currentWord.length);
+        onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
+        
         if (newFound.length === level.validWords.length) {
           audioManager.playLevelComplete();
           onLevelComplete();

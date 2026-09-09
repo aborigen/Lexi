@@ -121,6 +121,7 @@
 
 @layer components {
   .glass {
+    @apply backdrop-blur-xl;
     background-color: rgba(255, 255, 255, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.5);
     box-shadow: 
@@ -133,17 +134,6 @@
     background-color: rgba(15, 23, 42, 0.45);
     border-color: rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
-  }
-
-  @supports ((-webkit-backdrop-filter: blur(25px)) or (backdrop-filter: blur(25px))) {
-    .glass {
-      background-color: rgba(255, 255, 255, 0.3);
-      -webkit-backdrop-filter: blur(25px);
-      backdrop-filter: blur(25px);
-    }
-    .dark .glass {
-      background-color: rgba(15, 23, 42, 0.4);
-    }
   }
 
   .sunny-gradient {
@@ -197,6 +187,12 @@
   100% { transform: scale(1); }
 }
 
+@keyframes score-impact {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); filter: brightness(1.2); }
+  100% { transform: scale(1); }
+}
+
 .animate-float {
   animation: float 5s ease-in-out infinite;
 }
@@ -207,6 +203,10 @@
 
 .animate-zoom-in {
   animation: zoom-in-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-score-pulse {
+  animation: score-impact 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .word-slot-found {

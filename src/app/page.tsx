@@ -1,11 +1,11 @@
-
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
 import { StatsDialog } from '@/components/game/StatsDialog';
+import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
 import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
@@ -24,6 +24,7 @@ import {
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
 import { shuffleArray } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,11 +44,15 @@ export default function WordConnectPage() {
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [isScoreImpact, setIsScoreImpact] = useState(false);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
     allValidWords: []
   });
+
+  const scoreBadgeRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useRef<ScoreParticlesHandle>(null);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -137,14 +142,6 @@ export default function WordConnectPage() {
     toast({ title: "Progress Saved", description: "Your local progress has been recorded." });
   }, [highScore]);
 
-  const handleShowLeaderboard = () => {
-    setIsLeaderboardOpen(true);
-  };
-
-  const handleShowStats = () => {
-    setIsStatsOpen(true);
-  };
-
   const handleLevelComplete = useCallback(() => {
     toast({ title: t('game_over_title', lang), description: t('game_over_desc', lang) });
     
@@ -155,12 +152,22 @@ export default function WordConnectPage() {
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
   }, [lang, score]);
 
-  const handleScoreUpdate = useCallback((newScore: number, wordLength: number) => {
-    setScore(prev => {
-      const updated = prev + newScore;
-      return updated;
-    });
+  const handleScoreUpdate = useCallback((newScore: number, wordLength: number, pos: { x: number, y: number }) => {
+    // Emit particles from game area to score badge
+    if (particlesRef.current && scoreBadgeRef.current) {
+      const targetRect = scoreBadgeRef.current.getBoundingClientRect();
+      const targetX = targetRect.left + targetRect.width / 2;
+      const targetY = targetRect.top + targetRect.height / 2;
+      particlesRef.current.emit(pos.x, pos.y, targetX, targetY);
 
+      // Trigger score impact animation slightly after emission
+      setTimeout(() => {
+        setIsScoreImpact(true);
+        setTimeout(() => setIsScoreImpact(false), 500);
+      }, 600);
+    }
+
+    setScore(prev => prev + newScore);
     updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
   }, []);
 
@@ -179,6 +186,8 @@ export default function WordConnectPage() {
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
+      <ScoreParticles ref={particlesRef} />
+
       <div className="max-w-2xl landscape:max-w-5xl w-full mx-auto px-4 flex flex-col h-full overflow-hidden relative z-10">
         <header className="flex flex-row justify-between items-center h-16 shrink-0 z-50">
           <div className="flex items-center space-x-2">
@@ -196,7 +205,13 @@ export default function WordConnectPage() {
                </span>
             </div>
 
-            <div className="flex items-center gap-2 glass px-4 py-1.5 rounded-2xl border-primary/20">
+            <div 
+              ref={scoreBadgeRef}
+              className={cn(
+                "flex items-center gap-2 glass px-4 py-1.5 rounded-2xl border-primary/20 transition-all",
+                isScoreImpact && "animate-score-pulse border-primary shadow-[0_0_20px_rgba(255,179,0,0.4)]"
+              )}
+            >
                <Trophy className="w-4 h-4 text-primary animate-pulse" />
                <span className="text-sm sm:text-base font-black tracking-tight">{score.toLocaleString()}</span>
             </div>
@@ -223,7 +238,7 @@ export default function WordConnectPage() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={handleShowLeaderboard} 
+                onClick={() => setIsLeaderboardOpen(true)} 
                 className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Leaderboard"
               >
