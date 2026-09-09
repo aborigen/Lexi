@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -14,6 +13,7 @@ import { t } from '@/lib/translations';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface LeaderboardProps {
   isOpen: boolean;
@@ -21,15 +21,6 @@ interface LeaderboardProps {
   lang: string;
 }
 
-/**
- * Leaderboard Component
- * 
- * Refactored algorithm:
- * 1. Fetches top entries and current player context.
- * 2. Deduplicates and sorts data on the client.
- * 3. Highlights the current player's record.
- * 4. Handles state transitions (loading, error, empty).
- */
 export function Leaderboard({ isOpen, onOpenChange, lang }: LeaderboardProps) {
   const [entries, setEntries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +40,6 @@ export function Leaderboard({ isOpen, onOpenChange, lang }: LeaderboardProps) {
     try {
       const data = await fetchLeaderboardEntries(20);
       if (data && data.entries) {
-        // Algorithm: Deduplicate by player ID and sort descending by score
         const processed = data.entries
           .filter((e: any) => e.player && e.score !== undefined)
           .reduce((acc: any[], current: any) => {
@@ -202,11 +192,4 @@ export function Leaderboard({ isOpen, onOpenChange, lang }: LeaderboardProps) {
       </DialogContent>
     </Dialog>
   );
-}
-
-/**
- * Utility function to merge tailwind classes
- */
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
 }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
@@ -10,6 +9,7 @@ import {
   DROP_STAGING_HEIGHT,
   GAME_OVER_LINE_Y
 } from '@/lib/game-constants';
+import { LayoutDashboard, RefreshCcw } from 'lucide-react';
 
 interface MatterSceneProps {
   nextFruitIndex: number;

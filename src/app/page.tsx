@@ -153,14 +153,12 @@ export default function WordConnectPage() {
   }, [lang, score]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number, pos: { x: number, y: number }) => {
-    // Emit particles from game area to score badge
     if (particlesRef.current && scoreBadgeRef.current) {
       const targetRect = scoreBadgeRef.current.getBoundingClientRect();
       const targetX = targetRect.left + targetRect.width / 2;
       const targetY = targetRect.top + targetRect.height / 2;
       particlesRef.current.emit(pos.x, pos.y, targetX, targetY);
 
-      // Trigger score impact animation slightly after emission
       setTimeout(() => {
         setIsScoreImpact(true);
         setTimeout(() => setIsScoreImpact(false), 500);
@@ -171,7 +169,7 @@ export default function WordConnectPage() {
     updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
   }, []);
 
-  const handleHintUsed = useCallback(() => {
+  const handleHintUsed = useCallback((hint: string) => {
     updatePlayerStats({ hintsUsed: 1 });
   }, []);
 
