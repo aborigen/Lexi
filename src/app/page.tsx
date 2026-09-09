@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings } from 'lucide-react';
+import { StatsDialog } from '@/components/game/StatsDialog';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Star, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -43,6 +44,7 @@ export default function WordConnectPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
@@ -177,14 +179,11 @@ export default function WordConnectPage() {
   };
 
   const handleShowStats = () => {
-    if (!playerStats) {
-      toast({ title: "No Data", description: "Statistics are not yet available." });
+    if (!playerStats && isYandexReady) {
+      toast({ title: "Loading", description: "Statistics are synchronizing..." });
       return;
     }
-    toast({
-      title: t('player_stats', lang),
-      description: `Words Found: ${playerStats.totalWordsFound}\nLevels Cleared: ${playerStats.levelsCleared}\nHints Used: ${playerStats.hintsUsed}\nSessions: ${playerStats.totalSessions}\nLongest Word: ${playerStats.longestWord}`,
-    });
+    setIsStatsOpen(true);
   };
 
   const handleLevelComplete = useCallback(() => {
@@ -249,6 +248,13 @@ export default function WordConnectPage() {
           </div>
 
           <div className="flex gap-2 items-center">
+            <div className="hidden xs:flex items-center gap-2 glass px-3 py-1.5 rounded-2xl border-primary/20">
+               <Award className="w-4 h-4 text-primary" />
+               <span className="text-xs font-black tracking-tighter uppercase opacity-80">
+                 {lang === 'ru' ? 'Ур' : 'Lvl'} {playerStats?.levelsCleared || 0}
+               </span>
+            </div>
+
             <div className="flex items-center gap-2 glass px-4 py-1.5 rounded-2xl border-primary/20">
                <Trophy className="w-4 h-4 text-primary animate-pulse" />
                <span className="text-sm sm:text-base font-black tracking-tight">{score.toLocaleString()}</span>
@@ -356,6 +362,12 @@ export default function WordConnectPage() {
       <Leaderboard 
         isOpen={isLeaderboardOpen} 
         onOpenChange={setIsLeaderboardOpen} 
+        lang={lang} 
+      />
+      <StatsDialog 
+        isOpen={isStatsOpen} 
+        onOpenChange={setIsStatsOpen} 
+        stats={playerStats} 
         lang={lang} 
       />
       <Toaster />
