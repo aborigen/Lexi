@@ -11,18 +11,18 @@ The root layout is located in `src/app/page.tsx` and follows a strict vertical s
 Manages the application state for localization, scoring, and level resets.
 - **Score Persistence**: Synchronized with `localStorage` and Yandex Cloud Storage via `src/lib/yandex-sdk.ts`.
 - **Stat Tracking**: A dedicated button to view "Total Words Found" and "Hints Used."
-- **Theme Switching**: Toggle between "Blue Sky" (Light) and "Starry Night" (Dark) modes.
+- **Settings Dropdown**: Consolidates Theme Switching and Language toggles.
 
 ### 2. Interaction Engine (WordConnect.tsx)
 The core game logic uses a "collision detection" model for letter selection:
 - **Polar Positioning**: Letters are calculated using `CIRCLE_RADIUS` and `angle` math to form a perfect ring.
+- **Rotation**: The ring is rotated 45 degrees for better ergonomic access.
 - **Gesture Layer**: A dedicated SVG overlay draws line segments between the selected indices.
-- **State-Ref Sync**: Uses a `useRef` to track active indices, ensuring high-performance dragging without re-registering DOM listeners.
 
-### 3. AI Advisor (AIAdvisor.tsx)
-A Genkit-powered (or level-provided) hint system.
-- **Contextual Clues**: Provides citations with missing words.
-- **Readability Overlay**: Hints are displayed in a centered `Dialog` (Modal) to ensure maximum legibility on smartphone screens.
+### 3. Audio Synthesis (audio-manager.ts)
+Lexi.AI generates all SFX at runtime using the Web Audio API.
+- **Tuning**: You can modify pitch (Hz), waveform ('sine', 'square', 'triangle'), and volume directly in `src/lib/audio-manager.ts`.
+- **No Assets**: This system ensures 100% offline compatibility and zero-latency feedback without loading external MP3 files.
 
 ## Hosting & Environment Notes (Yandex Games)
 
@@ -30,14 +30,9 @@ A Genkit-powered (or level-provided) hint system.
 You may encounter the following warning in the console:
 `Unrecognized Content-Security-Policy directive 'report-to'`
 - **Cause**: The Yandex Games hosting environment injects a modern CSP directive that some browser versions or integrated webviews do not yet support.
-- **Impact**: **Non-fatal**. The browser safely ignores this directive while enforcing the rest of the security policy. It does not affect SDK initialization or gameplay.
+- **Impact**: **Non-fatal**. The browser safely ignores this directive while enforcing the rest of the security policy.
 
 ## Theme: Blue Sky
 The visual aesthetic is controlled via `src/app/globals.css`:
 - **Animated Backgrounds**: Fixed gradients that change based on theme.
 - **Glassmorphism**: A custom `.glass` utility class providing backdrop-blur and semi-transparent backgrounds.
-- **Dynamic Icons**: Uses `lucide-react` for a consistent, clean UI.
-
-## Performance Optimization
-- **Audio Synthesis**: Sound effects are generated via Web Audio API (`audio-manager.ts`) to avoid loading heavy MP3/WAV files.
-- **Zero-Regrid**: The WordConnect component avoids layout shifts by using a fixed container size and absolute positioning.
