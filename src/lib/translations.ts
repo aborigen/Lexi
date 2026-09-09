@@ -23,7 +23,8 @@ type TranslationKeys =
   | 'hint_template'
   | 'show_leaderboard'
   | 'toggle_theme'
-  | 'player_stats';
+  | 'player_stats'
+  | 'next';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -49,7 +50,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     hint_template: 'Hmm... Try a {n}-letter word starting with "{c}"',
     show_leaderboard: 'Leaderboard',
     toggle_theme: 'Toggle Theme',
-    player_stats: 'Statistics'
+    player_stats: 'Statistics',
+    next: 'Next'
   },
   ru: {
     high_score: 'Рекорд',
@@ -74,7 +76,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     hint_template: 'Хм... Попробуйте слово из {n} букв на "{c}"',
     show_leaderboard: 'Лидеры',
     toggle_theme: 'Сменить тему',
-    player_stats: 'Статистика'
+    player_stats: 'Статистика',
+    next: 'След.'
   }
 };
 
