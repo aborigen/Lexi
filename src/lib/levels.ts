@@ -9,6 +9,6 @@ export type { WordLevel };
  */
 
 export const LEVELS: WordLevel[] = [
-  ...(enLevels as WordLevel[]),
-  ...(ruLevels as WordLevel[])
+  ...(enLevels as unknown as WordLevel[]),
+  ...(ruLevels as unknown as WordLevel[])
 ];
