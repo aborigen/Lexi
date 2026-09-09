@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -5,7 +6,7 @@ import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
 import { StatsDialog } from '@/components/game/StatsDialog';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Star, Award } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -18,9 +19,7 @@ import {
   reportScoreToLeaderboard,
   updatePlayerStats,
   fetchPlayerStats,
-  PlayerStats,
-  requestReview,
-  createShortcut
+  PlayerStats
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
@@ -39,7 +38,6 @@ export default function WordConnectPage() {
   const [highScore, setHighScore] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
   const [activeLevels, setActiveLevels] = useState<WordLevel[]>([]);
-  const [isYandexReady, setIsYandexReady] = useState(false);
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
@@ -64,7 +62,7 @@ export default function WordConnectPage() {
   useEffect(() => {
     const init = async () => {
       try {
-        const savedScore = typeof window !== 'undefined' ? localStorage.getItem('word_high_score') : null;
+        const savedScore = typeof window !== 'undefined' ? localStorage.getItem('lexi_high_score') : null;
         if (savedScore && !isNaN(parseInt(savedScore))) {
           setHighScore(parseInt(savedScore));
         }
@@ -72,8 +70,7 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
-        const sdkInstance = await initYandexSDK();
-        
+        await initYandexSDK();
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
         
@@ -81,23 +78,9 @@ export default function WordConnectPage() {
         const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
         setActiveLevels(shuffleArray(base));
 
-        if (sdkInstance) {
-          setIsYandexReady(true);
-          
-          const yandexHigh = await fetchHighScoreFromYandex();
-          if (yandexHigh !== null && yandexHigh > (parseInt(savedScore || '0'))) {
-            setHighScore(yandexHigh);
-            localStorage.setItem('word_high_score', yandexHigh.toString());
-          }
-
-          await updatePlayerStats({ totalSessions: 1 });
-          const stats = await fetchPlayerStats();
-          if (stats) setPlayerStats(stats);
-
-          if (Math.random() > 0.7) {
-            createShortcut();
-          }
-        }
+        await updatePlayerStats({ totalSessions: 1 });
+        const stats = await fetchPlayerStats();
+        if (stats) setPlayerStats(stats);
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
@@ -125,19 +108,13 @@ export default function WordConnectPage() {
     }
   }, [theme]);
 
-  // Reactive high score sync
   useEffect(() => {
     if (score > highScore) {
       setHighScore(score);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('word_high_score', score.toString());
-      }
-      if (isYandexReady) {
-        syncHighScoreToYandex(score);
-        reportScoreToLeaderboard(score);
-      }
+      syncHighScoreToYandex(score);
+      reportScoreToLeaderboard(score);
     }
-  }, [score, highScore, isYandexReady]);
+  }, [score, highScore]);
 
   const handleReset = useCallback(() => {
     setScore(0);
@@ -154,78 +131,42 @@ export default function WordConnectPage() {
   }, [lang]);
 
   const handleSave = useCallback(async () => {
-    if (!isYandexReady) {
-      toast({ title: "Offline", description: "Progress saved locally. Cloud sync requires connection." });
-      return;
-    }
-    
-    try {
-      await syncHighScoreToYandex(highScore);
-      await reportScoreToLeaderboard(highScore);
-      const stats = await fetchPlayerStats();
-      if (stats) setPlayerStats(stats);
-      toast({ title: "Progress Saved", description: "Your high score and stats are synced to Yandex Cloud." });
-    } catch (e) {
-      toast({ title: "Sync Failed", description: "Could not sync to cloud. Try again later.", variant: "destructive" });
-    }
-  }, [highScore, isYandexReady]);
+    await syncHighScoreToYandex(highScore);
+    const stats = await fetchPlayerStats();
+    if (stats) setPlayerStats(stats);
+    toast({ title: "Progress Saved", description: "Your local progress has been recorded." });
+  }, [highScore]);
 
   const handleShowLeaderboard = () => {
-    if (!isYandexReady) {
-      toast({ title: "SDK Error", description: "Yandex Games SDK is not initialized." });
-      return;
-    }
     setIsLeaderboardOpen(true);
   };
 
   const handleShowStats = () => {
-    if (!playerStats && isYandexReady) {
-      toast({ title: "Loading", description: "Statistics are synchronizing..." });
-      return;
-    }
     setIsStatsOpen(true);
   };
 
   const handleLevelComplete = useCallback(() => {
     toast({ title: t('game_over_title', lang), description: t('game_over_desc', lang) });
     
-    if (isYandexReady) {
-      reportScoreToLeaderboard(score);
-      updatePlayerStats({ levelsCleared: 1 });
-      fetchPlayerStats().then(s => s && setPlayerStats(s));
-
-      if ((levelIndex + 1) % 3 === 0) {
-        requestReview();
-      }
-    }
+    reportScoreToLeaderboard(score);
+    updatePlayerStats({ levelsCleared: 1 });
+    fetchPlayerStats().then(s => s && setPlayerStats(s));
     
     setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
-  }, [lang, isYandexReady, score, levelIndex]);
+  }, [lang, score]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number) => {
     setScore(prev => {
       const updated = prev + newScore;
-      if (updated > highScore) {
-        setHighScore(updated);
-        localStorage.setItem('word_high_score', updated.toString());
-        if (isYandexReady) {
-          syncHighScoreToYandex(updated);
-          reportScoreToLeaderboard(updated);
-        }
-      }
       return updated;
     });
 
-    if (isYandexReady) {
-      updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
-    }
-  }, [isYandexReady, highScore]);
+    updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
+  }, []);
 
   const handleHintUsed = useCallback(() => {
-    if (isYandexReady) {
-      updatePlayerStats({ hintsUsed: 1 });
-    }
-  }, [isYandexReady]);
+    updatePlayerStats({ hintsUsed: 1 });
+  }, []);
 
   const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
     setGameState({ letters, foundWords, allValidWords });
