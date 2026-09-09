@@ -179,6 +179,10 @@ export default function WordConnectPage() {
     setGameState({ letters, foundWords, allValidWords });
   }, []);
 
+  const handleShowStats = useCallback(() => {
+    setIsStatsOpen(true);
+  }, []);
+
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
