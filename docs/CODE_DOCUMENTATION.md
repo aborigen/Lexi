@@ -14,10 +14,11 @@ Manages the application state for localization, scoring, and level resets.
 - **Settings Dropdown**: Consolidates Theme Switching and Language toggles.
 
 ### 2. Interaction Engine (WordConnect.tsx)
-The core game logic uses a "collision detection" model for letter selection:
+The core game logic uses a "collision detection" model for letter selection.
 - **Polar Positioning**: Letters are calculated using `CIRCLE_RADIUS` and `angle` math to form a perfect ring.
 - **Rotation**: The ring is rotated 45 degrees for better ergonomic access.
 - **Gesture Layer**: A dedicated SVG overlay draws line segments between the selected indices.
+- **Detailed Mechanics**: See [INTERACTION_MECHANICS.md](./INTERACTION_MECHANICS.md) for the gesture math.
 
 ### 3. Audio Synthesis (audio-manager.ts)
 Lexi.AI generates all SFX at runtime using the Web Audio API.
