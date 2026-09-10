@@ -1,7 +1,7 @@
 
-# Interaction Mechanics: Drawing Logic - Lexi.AI
+# Interaction Mechanics: Drawing & Visual Feedback - Lexi.AI
 
-This document explains the technical implementation of the circular line-drawing interaction in the `WordConnect.tsx` component.
+This document explains the technical implementation of the circular line-drawing interaction and the visual feedback system in the `WordConnect.tsx` component.
 
 ## 1. Gesture Tracking Lifecycle
 The drawing process is managed via three main event handlers attached to the root game container:
@@ -15,16 +15,28 @@ As the user drags their finger/mouse, the app performs high-frequency distance c
 - **Proximity Check**: The system calculates the Euclidean distance between the pointer and every letter's center point.
 - **Selection**: If the distance is less than `LETTER_RADIUS * 1.5` and the letter isn't already in the chain, it's added to `selectedIndices`.
 
-## 3. The "Undo" (Backtrack) Mechanic
+## 3. Visual Feedback Mechanics
+
+### 3.1 The "Elastic" Path
+To make the game feel responsive, Lexi.AI uses a two-tier line rendering system:
+- **Committed Segments**: Solid lines (with `url(#line-gradient)`) connect letters that have already been selected.
+- **Dynamic Drag Path**: A semi-transparent "elastic" line segment is drawn from the center of the last selected letter directly to the user's current pointer position (`dragPath`). This provides immediate feedback that the system is active and tracking.
+
+### 3.2 Reactive Letter Scaling
+When a letter is added to the selection chain, it undergoes a transformation:
+- **Scale Jump**: The letter bubble scales from `1.0` to `1.25` using CSS transitions.
+- **Z-Index Elevation**: Selected letters are brought to the front (`z-10`) to overlap the SVG lines.
+- **Theme Shift**: The background changes from a transparent glass effect to the `sunny-gradient`, indicating an active state.
+
+### 3.3 SVG Glow & Filtering
+The lines are not just flat colors; they use advanced SVG definitions:
+- **`#line-glow`**: A Gaussian blur filter applied to a duplicate stroke layer to create a soft neon effect.
+- **`#line-gradient`**: A linear gradient that transitions between the `primary` and `accent` theme colors, giving the path a sense of energy and direction.
+
+## 4. The "Undo" (Backtrack) Mechanic
 To make the game feel fluid, Lexi.AI supports un-drawing:
 - If the pointer moves back toward the **previously** selected letter (the one before the current head of the chain), the last index is popped from the array.
-- This allows players to correct mistakes without releasing their touch.
-
-## 4. Visual Rendering (SVG Layer)
-The lines are rendered using a dedicated SVG overlay:
-- **Connected Segments**: A set of `<line>` elements (or a single `<path>`) connects the centers of all letters in `selectedIndices`.
-- **The "Elastic" Path**: A final `<line>` segment is drawn from the center of the last selected letter to the current pointer position (`dragPath`). This provides immediate visual feedback that the game is tracking the user's movement.
-- **Glow Effects**: A CSS filter (`#line-glow`) is applied to the lines to match the glassmorphic aesthetic.
+- This allows players to correct mistakes without releasing their touch, reducing frustration.
 
 ## 5. Optimization
 - **`useRef` for Indices**: We mirror the `selectedIndices` state in a `useRef` (`selectedIndicesRef`). This allows the `handleInteractionMove` callback (which is wrapped in `useCallback`) to access the latest state without being re-created on every single pixel of movement, ensuring 60fps interaction even on mobile devices.
