@@ -36,6 +36,7 @@ import {
 
 export default function WordConnectPage() {
   const [score, setScore] = useState(0);
+  const [displayScore, setDisplayScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
   const [activeLevels, setActiveLevels] = useState<WordLevel[]>([]);
@@ -53,6 +54,26 @@ export default function WordConnectPage() {
 
   const scoreBadgeRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<ScoreParticlesHandle>(null);
+
+  // Animated score counter effect
+  useEffect(() => {
+    if (displayScore === score) return;
+    
+    const diff = score - displayScore;
+    const stepSize = 10;
+    
+    const timeout = setTimeout(() => {
+      setDisplayScore(prev => {
+        if (diff > 0) {
+          return Math.min(prev + stepSize, score);
+        } else {
+          return Math.max(prev - stepSize, score);
+        }
+      });
+    }, 40); // Approx 25fps counting speed
+
+    return () => clearTimeout(timeout);
+  }, [score, displayScore]);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -123,6 +144,7 @@ export default function WordConnectPage() {
 
   const handleReset = useCallback(() => {
     setScore(0);
+    setDisplayScore(0);
     setLevelIndex(0);
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
@@ -215,7 +237,9 @@ export default function WordConnectPage() {
               )}
             >
                <Trophy className="w-4 h-4 text-primary animate-pulse" />
-               <span className="text-sm sm:text-base font-black tracking-tight">{score.toLocaleString()}</span>
+               <span className="text-sm sm:text-base font-black tracking-tight min-w-[3ch] text-center">
+                 {displayScore.toLocaleString()}
+               </span>
             </div>
             
             <div className="flex gap-1">
