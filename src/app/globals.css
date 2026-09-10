@@ -193,6 +193,12 @@
   100% { transform: scale(1); }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
 .animate-float {
   animation: float 5s ease-in-out infinite;
 }
@@ -207,6 +213,10 @@
 
 .animate-score-pulse {
   animation: score-impact 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out 2;
 }
 
 .word-slot-found {

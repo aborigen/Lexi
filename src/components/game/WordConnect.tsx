@@ -30,6 +30,7 @@ export function WordConnect({
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   
@@ -68,6 +69,7 @@ export function WordConnect({
       setSelectedIndices([]);
       selectedIndicesRef.current = [];
       setDragPath(null);
+      setIsInvalid(false);
     }
   }, [level]);
 
@@ -86,6 +88,7 @@ export function WordConnect({
 
   const handleInteractionStart = (index: number) => {
     completeOnboarding();
+    setIsInvalid(false);
     setSelectedIndices([index]);
     audioManager.playSelect(0);
   };
@@ -166,6 +169,8 @@ export function WordConnect({
       }
     } else if (currentIndices.length > 1) {
       audioManager.playError();
+      setIsInvalid(true);
+      setTimeout(() => setIsInvalid(false), 400);
     }
     
     setSelectedIndices([]);
@@ -252,7 +257,8 @@ export function WordConnect({
             ref={containerRef}
             className={cn(
               "relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-all duration-500 shrink-0 animate-zoom-in",
-              isShuffling && "scale-[0.45] opacity-50"
+              isShuffling && "scale-[0.45] opacity-50",
+              isInvalid && "animate-shake"
             )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
