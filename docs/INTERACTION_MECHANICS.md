@@ -28,7 +28,13 @@ When a letter is added to the selection chain, it undergoes a transformation:
 - **Z-Index Elevation**: Selected letters are brought to the front (`z-10`) to overlap the SVG lines.
 - **Theme Shift**: The background changes from a transparent glass effect to the `sunny-gradient`, indicating an active state.
 
-### 3.3 SVG Glow & Filtering
+### 3.3 The Current Word Preview
+As letters are added, a real-time preview appears above the ring:
+- **Visual Style**: A glassmorphic "pill" with the `sunny-gradient` background.
+- **Animation**: Uses `animate-in zoom-in-95` to pop into existence as soon as the first letter is selected.
+- **Typography**: Features uppercase, bold, italicized text to emphasize the "construction" phase of the word.
+
+### 3.4 SVG Glow & Filtering
 The lines are not just flat colors; they use advanced SVG definitions:
 - **`#line-glow`**: A Gaussian blur filter applied to a duplicate stroke layer to create a soft neon effect.
 - **`#line-gradient`**: A linear gradient that transitions between the `primary` and `accent` theme colors, giving the path a sense of energy and direction.
