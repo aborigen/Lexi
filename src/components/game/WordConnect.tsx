@@ -5,8 +5,9 @@ import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-con
 import { WordLevel } from '@/lib/levels';
 import { cn, shuffleArray } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
-import { Hand } from 'lucide-react';
+import { Hand, Shuffle } from 'lucide-react';
 import { t } from '@/lib/translations';
+import { Button } from '@/components/ui/button';
 
 interface WordConnectProps {
   level: WordLevel;
@@ -28,6 +29,7 @@ export function WordConnect({
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isShuffling, setIsShuffling] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   
@@ -143,7 +145,6 @@ export function WordConnect({
     
     if (level.validWords.includes(currentWord)) {
       if (!foundWords.includes(currentWord)) {
-        // Calculate emission point (center of the interaction area)
         const rect = containerRef.current?.getBoundingClientRect();
         const startPos = rect ? {
           x: rect.left + rect.width / 2,
@@ -171,6 +172,15 @@ export function WordConnect({
     selectedIndicesRef.current = [];
     setDragPath(null);
   }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete]);
+
+  const handleShuffle = useCallback(() => {
+    setIsShuffling(true);
+    audioManager.playSelect(0);
+    setTimeout(() => {
+      setShuffledLetters(prev => shuffleArray(prev));
+      setIsShuffling(false);
+    }, 200);
+  }, []);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
@@ -240,7 +250,10 @@ export function WordConnect({
           <div 
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
-            className="relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-transform duration-500 shrink-0 animate-zoom-in"
+            className={cn(
+              "relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-all duration-500 shrink-0 animate-zoom-in",
+              isShuffling && "scale-[0.45] opacity-50"
+            )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
             <svg 
@@ -301,6 +314,27 @@ export function WordConnect({
               )}
             </svg>
 
+            {/* Shuffle Button in Center */}
+            <div 
+              className="absolute z-50 flex items-center justify-center transition-all"
+              style={{
+                left: OFFSET - LETTER_RADIUS,
+                top: OFFSET - LETTER_RADIUS,
+                width: LETTER_RADIUS * 2,
+                height: LETTER_RADIUS * 2,
+              }}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleShuffle}
+                className="w-12 h-12 rounded-2xl glass border-white/60 text-primary hover:bg-white/50 active:scale-90 shadow-lg"
+                title={t('shuffle', lang)}
+              >
+                <Shuffle className={cn("w-6 h-6 transition-transform duration-500", isShuffling && "rotate-180")} />
+              </Button>
+            </div>
+
             {shuffledLetters.map((char, i) => {
               const pos = letterPositions[i];
               const isSelected = selectedIndices.includes(i);
@@ -335,7 +369,7 @@ export function WordConnect({
 
             {showOnboarding && onboardingPath && (
               <div 
-                className="absolute pointer-events-none z-50 animate-onboarding-hand"
+                className="absolute pointer-events-none z-[60] animate-onboarding-hand"
                 style={{
                   left: onboardingPath[0].x - 25,
                   top: onboardingPath[0].y - 25,
