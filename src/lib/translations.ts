@@ -25,7 +25,8 @@ type TranslationKeys =
   | 'toggle_theme'
   | 'player_stats'
   | 'next'
-  | 'shuffle';
+  | 'shuffle'
+  | 'level_list';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -53,7 +54,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     toggle_theme: 'Toggle Theme',
     player_stats: 'Statistics',
     next: 'Next',
-    shuffle: 'Shuffle'
+    shuffle: 'Shuffle',
+    level_list: 'Levels'
   },
   ru: {
     high_score: 'Рекорд',
@@ -80,7 +82,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     toggle_theme: 'Сменить тему',
     player_stats: 'Статистика',
     next: 'След.',
-    shuffle: 'Перемешать'
+    shuffle: 'Перемешать',
+    level_list: 'Уровни'
   }
 };
 

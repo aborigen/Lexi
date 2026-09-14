@@ -5,8 +5,9 @@ import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { Leaderboard } from '@/components/game/Leaderboard';
 import { StatsDialog } from '@/components/game/StatsDialog';
+import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
-import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, ListOrdered, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -45,6 +46,7 @@ export default function WordConnectPage() {
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [isLevelListOpen, setIsLevelListOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
@@ -157,6 +159,11 @@ export default function WordConnectPage() {
     toast({ title: t('next_level', lang) });
   }, [lang]);
 
+  const handleSelectLevel = useCallback((index: number) => {
+    setLevelIndex(index);
+    toast({ title: `${t('level_list', lang)} ${index + 1}` });
+  }, [lang]);
+
   const handleSave = useCallback(async () => {
     await syncHighScoreToYandex(highScore);
     const stats = await fetchPlayerStats();
@@ -243,6 +250,15 @@ export default function WordConnectPage() {
             </div>
             
             <div className="flex gap-1">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsLevelListOpen(true)} 
+                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
+                aria-label="Level List"
+              >
+                <LayoutGrid className="w-4 h-4 text-primary" />
+              </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -351,6 +367,14 @@ export default function WordConnectPage() {
         onOpenChange={setIsStatsOpen} 
         stats={playerStats} 
         lang={lang} 
+      />
+      <LevelList
+        isOpen={isLevelListOpen}
+        onOpenChange={setIsLevelListOpen}
+        levels={activeLevels}
+        currentIndex={levelIndex % activeLevels.length}
+        onSelectLevel={handleSelectLevel}
+        lang={lang}
       />
       <Toaster />
     </div>
