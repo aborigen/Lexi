@@ -60,7 +60,7 @@ export default function WordConnectPage() {
     if (displayScore === score) return;
     
     const diff = score - displayScore;
-    const stepSize = 10;
+    const stepSize = 5; // Refined step size
     
     const timeout = setTimeout(() => {
       setDisplayScore(prev => {
@@ -70,7 +70,7 @@ export default function WordConnectPage() {
           return Math.max(prev - stepSize, score);
         }
       });
-    }, 40); // Approx 25fps counting speed
+    }, 20); // Faster interval for smoother flow at smaller steps
 
     return () => clearTimeout(timeout);
   }, [score, displayScore]);
