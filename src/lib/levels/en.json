@@ -1,3 +1,4 @@
+
 [
   {
     "lang": "en",
@@ -20,52 +21,118 @@
   },
   {
     "lang": "en",
-    "letters": ["P", "L", "A", "T", "E"],
-    "validWords": ["PLATE", "LEAP", "PALE", "PLEA", "TALE", "APE", "TAP", "TEA", "EAT", "PET", "LET"],
+    "letters": ["F", "E", "A", "T", "U", "R", "E"],
+    "validWords": ["FEATURE", "FEAR", "TRUE", "TEAR", "FARE", "RATE", "FEAT"],
     "hints": {
-      "PLATE": "She served the main course on a large ceramic _____.",
-      "LEAP": "One small step for man, one giant _____ for mankind.",
-      "PALE": "The moon looked _____ in the morning sky.",
-      "PLEA": "The prisoner made a final _____ for mercy.",
-      "TALE": "It was a classic _____ of mystery and adventure.",
-      "APE": "The great _____ climbed the tree with incredible speed.",
-      "TAP": "Please _____ the screen to start the game.",
-      "TEA": "Freshly brewed _____ smells wonderful in the morning.",
-      "EAT": "Let's go out to _____ at that new Italian restaurant.",
-      "PET": "The little girl asked for a _____ rabbit for her birthday.",
-      "LET": "_____ the sunshine in and open the windows."
+      "FEATURE": "This software has a unique _____ that distinguishes it from others.",
+      "FEAR": "Face your _____s and you will become stronger.",
+      "TRUE": "Is it _____ that you are moving to London next month?",
+      "TEAR": "Be careful not to _____ your clothes on the fence.",
+      "FARE": "How much is the bus _____ to the city center?",
+      "RATE": "The success _____ of the operation was very high.",
+      "FEAT": "Climbing Mt. Everest is a remarkable _____ of endurance."
     }
   },
   {
     "lang": "en",
-    "letters": ["B", "R", "E", "A", "D"],
-    "validWords": ["BREAD", "BEAD", "BARE", "BEAR", "READ", "DEAR", "RED", "BED", "BAD", "ARE", "ERA"],
+    "letters": ["B", "R", "I", "D", "G", "E"],
+    "validWords": ["BRIDGE", "RIDGE", "DIRE", "BIRD", "GRID", "RIDE", "BRIDE"],
     "hints": {
-      "BREAD": "Give us this day our daily _____.",
-      "BEAD": "A single glass _____ fell from her broken necklace.",
-      "BARE": "The winter trees stood _____ against the cold sky.",
-      "BEAR": "A large brown _____ was spotted near the campsite.",
-      "READ": "I like to _____ books before going to sleep.",
-      "DEAR": "The letter started with \"_____ Friend,\" which was nice.",
-      "RED": "The autumn leaves turned a beautiful shade of _____.",
-      "BED": "It was late, and he was finally ready for _____.",
-      "BAD": "Don't feel _____ about things you cannot change.",
-      "ARE": "How _____ you feeling today?",
-      "ERA": "The Victorian _____ was a time of great change."
+      "BRIDGE": "He's going under the _____ just as the police car is going over it.",
+      "RIDGE": "We walked along the mountain _____ to see the view.",
+      "DIRE": "The country is in _____ need of economic reform.",
+      "BIRD": "A small _____ was singing on the branch of the tree.",
+      "GRID": "The city is laid out on a _____ system of streets.",
+      "RIDE": "Can you give me a _____ to the airport tomorrow?",
+      "BRIDE": "The _____ looked beautiful in her white silk dress."
     }
   },
   {
     "lang": "en",
-    "letters": ["C", "L", "O", "U", "D"],
-    "validWords": ["CLOUD", "LOUD", "COLD", "DOC", "OLD", "DUO", "COULD"],
+    "letters": ["S", "P", "E", "E", "D"],
+    "validWords": ["SPEED", "DEEP", "SEED", "DEER"],
     "hints": {
-      "CLOUD": "Every _____ has a silver lining, as they say.",
-      "LOUD": "The music was so _____ the windows started to vibrate.",
-      "COLD": "Winter mornings are often very _____ and frosty.",
-      "DOC": "The _____ told him to take two pills and rest.",
-      "OLD": "They found an _____ map hidden in the attic.",
-      "DUO": "The famous musical _____ performed their latest hit.",
-      "COULD": "I wish I _____ fly like a bird in the sky."
+      "SPEED": "You should check your _____ while driving near schools.",
+      "DEEP": "The water in the lake is very _____ at the center.",
+      "SEED": "Every giant oak tree starts as a tiny _____.",
+      "DEER": "We saw a family of _____ grazing in the meadow."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["C", "R", "I", "M", "E"],
+    "validWords": ["CRIME", "RICE", "MICE", "MIRE", "RIME"],
+    "hints": {
+      "CRIME": "Fighting _____ is one of the top priorities for the local police.",
+      "RICE": "Would you like brown _____ or white _____ with your meal?",
+      "MICE": "The cat was hunting for _____ in the old barn.",
+      "MIRE": "The wheels of the truck were stuck in the deep _____.",
+      "RIME": "A delicate coating of _____ covered the windows in the morning."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["H", "E", "A", "R", "T"],
+    "validWords": ["HEART", "EARTH", "EAR", "TEA", "EAT", "RAT", "ART", "HEAT"],
+    "hints": {
+      "HEART": "Listen to your _____ when making important decisions.",
+      "EARTH": "We must take care of the _____ for future generations.",
+      "EAR": "He whispered a secret into her _____ so no one else could hear.",
+      "TEA": "I prefer herbal _____ over coffee in the afternoon.",
+      "EAT": "It's important to _____ a balanced diet every day.",
+      "RAT": "The laboratory used a white _____ for the experiment.",
+      "ART": "She visits the _____ gallery whenever she needs inspiration.",
+      "HEAT": "The summer _____ was almost unbearable in the city."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["L", "I", "G", "H", "T"],
+    "validWords": ["LIGHT", "GILT", "HILT", "HIT"],
+    "hints": {
+      "LIGHT": "Switch off the _____ when you leave the room to save energy.",
+      "GILT": "The mirror was set in a beautiful _____ frame.",
+      "HILT": "The knight gripped the _____ of his sword tightly.",
+      "HIT": "He managed to _____ the target on his very first try."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["P", "O", "W", "E", "R"],
+    "validWords": ["POWER", "ROPE", "ROW", "ORE", "PORE"],
+    "hints": {
+      "POWER": "The storm caused a major _____ outage in the entire neighborhood.",
+      "ROPE": "We used a thick _____ to pull the boat to the shore.",
+      "ROW": "Can you _____ the boat across the lake for me?",
+      "ORE": "Iron _____ is extracted from the ground and used to make steel.",
+      "PORE": "Sweat escapes from your body through tiny _____s in your skin."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["B", "R", "A", "I", "N"],
+    "validWords": ["BRAIN", "RAIN", "BARN", "BAR", "RAN", "BIN", "BRAN"],
+    "hints": {
+      "BRAIN": "The human _____ is the most complex organ in the body.",
+      "RAIN": "The plants need some _____ after this long dry spell.",
+      "BARN": "The farmer kept his tractor and hay inside the old _____.",
+      "BAR": "They met for a quick drink at the local _____ after work.",
+      "RAN": "She _____ as fast as she could to catch the departing bus.",
+      "BIN": "Please put your trash in the recycle _____ provided.",
+      "BRAN": "Eating _____ muffins is a good way to get more fiber."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["S", "M", "I", "L", "E"],
+    "validWords": ["SMILE", "MILE", "SLIM", "LIME", "SEMI", "SLIME"],
+    "hints": {
+      "SMILE": "A warm _____ can make a big difference in someone's day.",
+      "MILE": "He runs at least one _____ every morning before breakfast.",
+      "SLIM": "She maintains a _____ figure by exercising regularly.",
+      "LIME": "Add a squeeze of _____ to the water for a refreshing taste.",
+      "SEMI": "A large _____ truck was blocking the highway after the accident.",
+      "SLIME": "The snails left a trail of sticky _____ on the garden path."
     }
   }
 ]
