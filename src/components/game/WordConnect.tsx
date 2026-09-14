@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -8,6 +9,7 @@ import { audioManager } from '@/lib/audio-manager';
 import { Hand, Shuffle } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { Button } from '@/components/ui/button';
+import { WordGrid } from './WordGrid';
 
 interface WordConnectProps {
   level: WordLevel;
@@ -205,7 +207,6 @@ export function WordConnect({
   }, [showOnboarding, level, shuffledLetters, letterPositions]);
 
   if (!level || shuffledLetters.length === 0) return null;
-  const sortedValidWords = [...level.validWords].sort((a, b) => a.length - b.length);
 
   return (
     <div 
@@ -216,31 +217,11 @@ export function WordConnect({
       onMouseUp={handleInteractionEnd}
       onTouchEnd={handleInteractionEnd}
     >
-      <div 
-        key={`grid-${level.letters.join('')}`} 
-        className="w-full landscape:w-[220px] portrait:max-h-[25%] landscape:h-full p-4 glass rounded-3xl flex flex-wrap justify-center content-start gap-2 overflow-y-auto custom-scrollbar shrink-0 animate-slide-in-left z-10"
-      >
-        {sortedValidWords.map((word, idx) => (
-          <div key={`${word}-${idx}`} className="flex gap-1">
-            {word.split('').map((char, i) => {
-              const isFound = foundWords.includes(word);
-              return (
-                <div 
-                  key={i} 
-                  className={cn(
-                    "w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center border-2 rounded-xl font-black text-xs sm:text-sm transition-all duration-700",
-                    isFound 
-                      ? "sunny-gradient text-white border-white/40 shadow-md word-slot-found" 
-                      : "bg-white/10 border-white/20 text-transparent"
-                  )}
-                >
-                  {isFound ? char : ''}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+      <WordGrid 
+        validWords={level.validWords}
+        foundWords={foundWords}
+        lang={lang}
+      />
 
       <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
         <div className="h-14 sm:h-16 flex items-center justify-center shrink-0 w-full">

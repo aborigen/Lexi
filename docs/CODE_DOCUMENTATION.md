@@ -13,14 +13,20 @@ Manages the application state for localization, scoring, and level resets.
 - **Stat Tracking**: A dedicated button to view "Total Words Found" and "Hints Used."
 - **Settings Dropdown**: Consolidates Theme Switching and Language toggles.
 
-### 2. Interaction Engine (WordConnect.tsx)
+### 2. Word Discovery Matrix (WordGrid.tsx)
+A dedicated panel that tracks the player's progress within the current level.
+- **Dynamic Slots**: Words are represented by empty slots until discovered.
+- **Progression Counter**: Real-time feedback on how many words remain.
+- **Sorting**: Words are automatically organized by length to help players strategize.
+
+### 3. Interaction Engine (WordConnect.tsx)
 The core game logic uses a "collision detection" model for letter selection.
 - **Polar Positioning**: Letters are calculated using `CIRCLE_RADIUS` and `angle` math to form a perfect ring.
 - **Rotation**: The ring is rotated 45 degrees for better ergonomic access.
 - **Gesture Layer**: A dedicated SVG overlay draws line segments between the selected indices.
 - **Detailed Mechanics**: See [INTERACTION_MECHANICS.md](./INTERACTION_MECHANICS.md) for the gesture math.
 
-### 3. Audio Synthesis (audio-manager.ts)
+### 4. Audio Synthesis (audio-manager.ts)
 Lexi.AI generates all SFX at runtime using the Web Audio API.
 - **Tuning**: You can modify pitch (Hz), waveform ('sine', 'square', 'triangle'), and volume directly in `src/lib/audio-manager.ts`.
 - **No Assets**: This system ensures 100% offline compatibility and zero-latency feedback without loading external MP3 files.
