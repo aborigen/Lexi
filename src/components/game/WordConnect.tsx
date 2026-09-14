@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -181,13 +180,14 @@ export function WordConnect({
   }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete]);
 
   const handleShuffle = useCallback(() => {
+    if (selectedIndices.length > 0) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
     setTimeout(() => {
       setShuffledLetters(prev => shuffleArray(prev));
       setIsShuffling(false);
     }, 200);
-  }, []);
+  }, [selectedIndices.length]);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
@@ -205,6 +205,8 @@ export function WordConnect({
     if (indices.length < 2) return null;
     return indices.map(i => letterPositions[i]);
   }, [showOnboarding, level, shuffledLetters, letterPositions]);
+
+  const isDrawing = selectedIndices.length > 0;
 
   if (!level || shuffledLetters.length === 0) return null;
 
@@ -225,7 +227,7 @@ export function WordConnect({
 
       <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
         <div className="h-14 sm:h-16 flex items-center justify-center shrink-0 w-full">
-          {selectedIndices.length > 0 && (
+          {isDrawing && (
             <div className="sunny-gradient px-8 py-2.5 rounded-2xl text-xl sm:text-2xl font-black text-white animate-in zoom-in-95 duration-200 shadow-2xl border-4 border-white/60 tracking-widest uppercase italic">
               {selectedIndices.map(i => shuffledLetters[i]).join('')}
             </div>
@@ -303,7 +305,10 @@ export function WordConnect({
 
             {/* Shuffle Button in Center */}
             <div 
-              className="absolute z-50 flex items-center justify-center transition-all"
+              className={cn(
+                "absolute z-50 flex items-center justify-center transition-all",
+                isDrawing && "pointer-events-none opacity-40 scale-90"
+              )}
               style={{
                 left: OFFSET - LETTER_RADIUS,
                 top: OFFSET - LETTER_RADIUS,
@@ -315,6 +320,7 @@ export function WordConnect({
                 variant="ghost"
                 size="icon"
                 onClick={handleShuffle}
+                disabled={isDrawing}
                 className="w-12 h-12 rounded-2xl glass border-white/60 text-primary hover:bg-white/50 active:scale-90 shadow-lg"
                 title={t('shuffle', lang)}
               >
