@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
-import { Leaderboard } from '@/components/game/Leaderboard';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
@@ -43,7 +42,6 @@ export default function WordConnectPage() {
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
-  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [isLevelListOpen, setIsLevelListOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
@@ -321,106 +319,6 @@ export default function WordConnectPage() {
 
         <img src="https://picsum.photos/seed/pulpdrop/1920/1080" alt="hidden background" className="hidden" data-ai-hint="fruit texture" />
 
-        <header className="flex flex-row justify-between items-center h-16 shrink-0 z-50">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 sunny-gradient rounded-xl flex items-center justify-center shadow-lg transform -rotate-12 border-2 border-white/50">
-              <Gamepad2 className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-black italic tracking-tighter text-primary drop-shadow-sm hidden sm:block">LEXI.AI</span>
-          </div>
-
-          <div className="flex gap-2 items-center">
-            <div className="hidden xs:flex items-center gap-2 glass px-3 py-1.5 rounded-2xl border-primary/20">
-               <Award className="w-4 h-4 text-primary" />
-               <span className="text-xs font-black tracking-tighter uppercase opacity-80">
-                 {lang === 'ru' ? 'Ур' : 'Lvl'} {playerStats?.levelsCleared || 0}
-               </span>
-            </div>
-
-            <div 
-              ref={scoreBadgeRef}
-              className={cn(
-                "flex items-center gap-2 glass px-4 py-1.5 rounded-2xl border-primary/20 transition-all",
-                isScoreImpact && "animate-score-pulse border-primary shadow-[0_0_20px_rgba(255,179,0,0.4)]"
-              )}
-            >
-               <Trophy className="w-4 h-4 text-primary animate-pulse" />
-               <span className="text-sm sm:text-base font-black tracking-tight min-w-[3ch] text-center">
-                 {displayScore.toLocaleString()}
-               </span>
-            </div>
-            
-            <div className="flex gap-1">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setIsLevelListOpen(true)} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Level List"
-              >
-                <LayoutGrid className="w-4 h-4 text-primary" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleSave} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Save Progress"
-              >
-                <Save className="w-4 h-4 text-primary" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleShowStats} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Player Statistics"
-              >
-                <BarChart3 className="w-4 h-4 text-muted-foreground" />
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                    aria-label="Settings"
-                  >
-                    <Settings className="w-4 h-4 text-muted-foreground" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="glass border-white/40 min-w-[160px] rounded-2xl">
-                  <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40">Preferences</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={toggleTheme} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer">
-                    <span className="text-xs font-bold">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-                    {theme === 'light' ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={toggleLang} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer">
-                    <span className="text-xs font-bold">{lang === 'en' ? 'Русский Язык' : 'English Language'}</span>
-                    <Languages className="w-4 h-4 text-primary" />
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-white/20" />
-                  <DropdownMenuItem onClick={handleReset} className="flex justify-between items-center py-2.5 rounded-xl cursor-pointer text-destructive">
-                    <span className="text-xs font-bold">Reset Progress</span>
-                    <RefreshCcw className="w-4 h-4" />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleNextLevel} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Next Level"
-              >
-                <SkipForward className="w-4 h-4 text-muted-foreground" />
-              </Button>
-            </div>
-          </div>
-        </header>
-
         <main className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
           {currentLevel ? (
             <WordConnect 
@@ -449,11 +347,6 @@ export default function WordConnectPage() {
         )}
       </div>
 
-      <Leaderboard 
-        isOpen={isLeaderboardOpen} 
-        onOpenChange={setIsLeaderboardOpen} 
-        lang={lang} 
-      />
       <StatsDialog 
         isOpen={isStatsOpen} 
         onOpenChange={setIsStatsOpen} 
