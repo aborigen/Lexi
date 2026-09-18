@@ -6,7 +6,7 @@ import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
-import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award, LayoutGrid } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award, LayoutGrid, CheckCircle2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -32,6 +32,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function WordConnectPage() {
   const [score, setScore] = useState(0);
@@ -44,6 +50,7 @@ export default function WordConnectPage() {
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [isLevelListOpen, setIsLevelListOpen] = useState(false);
+  const [isVictoryOpen, setIsVictoryOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
@@ -54,12 +61,11 @@ export default function WordConnectPage() {
   const scoreBadgeRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<ScoreParticlesHandle>(null);
 
-  // Animated score counter effect
   useEffect(() => {
     if (displayScore === score) return;
     
     const diff = score - displayScore;
-    const stepSize = 5; // Refined step size
+    const stepSize = 5; 
     
     const timeout = setTimeout(() => {
       setDisplayScore(prev => {
@@ -69,7 +75,7 @@ export default function WordConnectPage() {
           return Math.max(prev - stepSize, score);
         }
       });
-    }, 20); // Faster interval for smoother flow at smaller steps
+    }, 20);
 
     return () => clearTimeout(timeout);
   }, [score, displayScore]);
@@ -153,13 +159,13 @@ export default function WordConnectPage() {
 
   const handleNextLevel = useCallback(() => {
     setLevelIndex(prev => prev + 1);
-    toast({ title: t('next_level', lang) });
-  }, [lang]);
+    setIsVictoryOpen(false);
+  }, []);
 
   const handleSelectLevel = useCallback((index: number) => {
     setLevelIndex(index);
-    toast({ title: `${t('level_list', lang)} ${index + 1}` });
-  }, [lang]);
+    setIsVictoryOpen(false);
+  }, []);
 
   const handleSave = useCallback(async () => {
     await syncHighScoreToYandex(highScore);
@@ -169,14 +175,23 @@ export default function WordConnectPage() {
   }, [highScore]);
 
   const handleLevelComplete = useCallback(() => {
-    toast({ title: t('game_over_title', lang), description: t('game_over_desc', lang) });
+    setIsVictoryOpen(true);
     
+    // Celebratory burst
+    if (particlesRef.current) {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      for(let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          particlesRef.current?.emit(centerX + (Math.random() - 0.5) * 100, centerY + (Math.random() - 0.5) * 100, centerX, -100);
+        }, i * 150);
+      }
+    }
+
     reportScoreToLeaderboard(score);
     updatePlayerStats({ levelsCleared: 1 });
     fetchPlayerStats().then(s => s && setPlayerStats(s));
-    
-    setTimeout(() => setLevelIndex(prev => prev + 1), 1500);
-  }, [lang, score]);
+  }, [score]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number, pos: { x: number, y: number }) => {
     if (particlesRef.current && scoreBadgeRef.current) {
@@ -307,7 +322,7 @@ export default function WordConnectPage() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={handleNextLevel} 
+                onClick={() => setLevelIndex(prev => prev + 1)} 
                 className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
                 aria-label="Next Level"
               >
@@ -316,8 +331,6 @@ export default function WordConnectPage() {
             </div>
           </div>
         </header>
-
-        <img src="https://picsum.photos/seed/pulpdrop/1920/1080" alt="hidden background" className="hidden" data-ai-hint="fruit texture" />
 
         <main className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
           {currentLevel ? (
@@ -346,6 +359,45 @@ export default function WordConnectPage() {
           </div>
         )}
       </div>
+
+      <Dialog open={isVictoryOpen} onOpenChange={setIsVictoryOpen}>
+        <DialogContent className="w-[94vw] max-w-[420px] rounded-[3rem] p-10 glass border-white/80 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-in zoom-in-95 duration-500 overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-full h-2 sunny-gradient" />
+          
+          <DialogHeader className="mb-6 flex flex-col items-center">
+            <div className="relative mb-6">
+              <div className="p-6 rounded-[2rem] sunny-gradient border-4 border-white/60 shadow-xl transform -rotate-6">
+                <Trophy className="w-16 h-16 text-white" />
+              </div>
+              <Sparkles className="absolute -top-4 -right-4 w-10 h-10 text-primary animate-pulse" />
+            </div>
+            <DialogTitle className="text-4xl font-black uppercase italic tracking-tighter text-foreground mb-2">
+              {t('game_over_title', lang)}
+            </DialogTitle>
+            <p className="text-sm font-black uppercase tracking-[0.2em] opacity-40">
+              {lang === 'ru' ? 'УРОВЕНЬ ПРОЙДЕН' : 'LEVEL CLEARED'}
+            </p>
+          </DialogHeader>
+
+          <div className="space-y-4 mb-8">
+            <div className="p-4 rounded-3xl bg-white/40 border border-white/60 flex justify-between items-center">
+               <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Total Score</span>
+               <span className="text-2xl font-black text-primary">{score.toLocaleString()}</span>
+            </div>
+            <p className="text-sm font-bold italic text-muted-foreground">
+              {t('game_over_desc', lang)}
+            </p>
+          </div>
+
+          <Button 
+            onClick={handleNextLevel}
+            className="w-full h-16 rounded-3xl sunny-gradient text-white text-lg font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl border-4 border-white/40"
+          >
+            {lang === 'ru' ? 'СЛЕДУЮЩИЙ УРОВЕНЬ' : 'CONTINUE'}
+            <SkipForward className="ml-2 w-5 h-5" />
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <StatsDialog 
         isOpen={isStatsOpen} 
