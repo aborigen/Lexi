@@ -1,9 +1,17 @@
 # Changelog
 
+## [2.33.0] - 2024-07-25
+### Improved
+- **Victory Dialog Responsiveness**: Refactored the "Level Complete" dialog to use dynamic padding, icon scaling, and font sizes. It now fits perfectly on small mobile screens without vertical overflow.
+- **Bilingual Context**: Added word translations to all level hints (Russian for English levels, English for Russian levels) to enhance educational value.
+
+### Fixed
+- **Header Duplication**: Resolved a bug causing the game header to render twice on certain viewports.
+- **UI Ergonomics**: Removed redundant "Save Progress" button as game state persists automatically.
+
 ## [2.32.0] - 2024-07-24
 ### Added
 - **English Level Expansion**: Added new high-polish levels featuring 5-letter target words (`SPEED`, `HEART`, `LIGHT`, `POWER`, `BRAIN`, `SMILE`) with full dictionary sub-words.
-- **Bilingual Level Context**: Appended explicit translations in parentheses to the end of every hint (Russian translations for English levels, English translations for Russian literary levels) to enhance educational value.
 - **Level Explorer List**: Integrated a level catalog dialog component accessible via a grid matrix icon, allowing players to view all items and jump between levels.
 
 ### Fixed
@@ -13,7 +21,7 @@
 ## [2.31.0] - 2024-07-23
 ### Added
 - **WordGrid Component**: Extracted and enhanced the word matrix UI into a dedicated component with a discovery counter.
-- **Shake Animation**: Added visual feedback for incorrect word attempts.
+- **Shake Animation**: Added visual haptic feedback for incorrect word attempts.
 - **Current Word Preview**: Implemented a floating "pill" UI that shows the word being constructed in real-time.
 
 ### Improved
@@ -22,10 +30,3 @@
 
 ### Fixed
 - **Type Integrity**: Resolved several strict TypeScript errors regarding component prop passing.
-
-## [2.30.0] - 2024-07-22
-### Added
-- **Score Particles**: Implemented a dynamic gem-shooting animation that travels from the interaction area to the score counter.
-- **Statistics Dialog**: Added a comprehensive visual summary of player achievements (levels, words, hints, etc.).
-- **Level Badge**: Integrated a persistent level counter in the global header for immediate progress feedback.
-- **Settings Consolidation**: Grouped theme, language, and reset controls into a new "Settings" dropdown menu for a cleaner UI.

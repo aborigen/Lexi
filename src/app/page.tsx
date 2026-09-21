@@ -354,40 +354,40 @@ export default function WordConnectPage() {
       </div>
 
       <Dialog open={isVictoryOpen} onOpenChange={setIsVictoryOpen}>
-        <DialogContent className="w-[94vw] max-w-[420px] rounded-[3rem] p-10 glass border-white/80 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-in zoom-in-95 duration-500 overflow-hidden text-center">
-          <div className="absolute top-0 left-0 w-full h-2 sunny-gradient" />
+        <DialogContent className="w-[94vw] max-w-[420px] rounded-[2.5rem] p-6 sm:p-10 glass border-white/80 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-in zoom-in-95 duration-500 overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-full h-1.5 sm:h-2 sunny-gradient" />
           
-          <DialogHeader className="mb-6 flex flex-col items-center">
-            <div className="relative mb-6">
-              <div className="p-6 rounded-[2rem] sunny-gradient border-4 border-white/60 shadow-xl transform -rotate-6">
-                <Trophy className="w-16 h-16 text-white" />
+          <DialogHeader className="mb-4 sm:mb-6 flex flex-col items-center">
+            <div className="relative mb-4 sm:mb-6">
+              <div className="p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] sunny-gradient border-4 border-white/60 shadow-xl transform -rotate-6">
+                <Trophy className="w-10 h-10 sm:w-16 sm:h-16 text-white" />
               </div>
-              <Sparkles className="absolute -top-4 -right-4 w-10 h-10 text-primary animate-pulse" />
+              <Sparkles className="absolute -top-3 -right-3 w-8 h-8 sm:w-10 sm:h-10 text-primary animate-pulse" />
             </div>
-            <DialogTitle className="text-4xl font-black uppercase italic tracking-tighter text-foreground mb-2">
+            <DialogTitle className="text-2xl sm:text-4xl font-black uppercase italic tracking-tighter text-foreground mb-1 sm:mb-2 leading-tight">
               {t('game_over_title', lang)}
             </DialogTitle>
-            <p className="text-sm font-black uppercase tracking-[0.2em] opacity-40">
+            <p className="text-[10px] sm:text-sm font-black uppercase tracking-[0.2em] opacity-40">
               {lang === 'ru' ? 'УРОВЕНЬ ПРОЙДЕН' : 'LEVEL CLEARED'}
             </p>
           </DialogHeader>
 
-          <div className="space-y-4 mb-8">
-            <div className="p-4 rounded-3xl bg-white/40 border border-white/60 flex justify-between items-center">
-               <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Total Score</span>
-               <span className="text-2xl font-black text-primary">{score.toLocaleString()}</span>
+          <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+            <div className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/40 border border-white/60 flex justify-between items-center">
+               <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-60">Total Score</span>
+               <span className="text-xl sm:text-2xl font-black text-primary">{score.toLocaleString()}</span>
             </div>
-            <p className="text-sm font-bold italic text-muted-foreground">
+            <p className="text-xs sm:text-sm font-bold italic text-muted-foreground px-2">
               {t('game_over_desc', lang)}
             </p>
           </div>
 
           <Button 
             onClick={handleNextLevel}
-            className="w-full h-16 rounded-3xl sunny-gradient text-white text-lg font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl border-4 border-white/40"
+            className="w-full h-12 sm:h-16 rounded-2xl sm:rounded-3xl sunny-gradient text-white text-base sm:text-lg font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl border-2 sm:border-4 border-white/40"
           >
             {lang === 'ru' ? 'СЛЕДУЮЩИЙ УРОВЕНЬ' : 'CONTINUE'}
-            <SkipForward className="ml-2 w-5 h-5" />
+            <SkipForward className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
         </DialogContent>
       </Dialog>
