@@ -1,7 +1,6 @@
-
 {
   "name": "lexi-ai",
-  "version": "2.27.0",
+  "version": "2.33.0",
   "private": true,
   "repository": {
     "type": "git",
