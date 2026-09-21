@@ -6,7 +6,7 @@ import { AIAdvisor } from '@/components/game/AIAdvisor';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
-import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Save, Settings, Award, LayoutGrid, CheckCircle2, Sparkles } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Settings, Award, LayoutGrid, CheckCircle2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -167,13 +167,6 @@ export default function WordConnectPage() {
     setIsVictoryOpen(false);
   }, []);
 
-  const handleSave = useCallback(async () => {
-    await syncHighScoreToYandex(highScore);
-    const stats = await fetchPlayerStats();
-    if (stats) setPlayerStats(stats);
-    toast({ title: "Progress Saved", description: "Your local progress has been recorded." });
-  }, [highScore]);
-
   const handleLevelComplete = useCallback(() => {
     setIsVictoryOpen(true);
     
@@ -270,15 +263,6 @@ export default function WordConnectPage() {
                 aria-label="Level List"
               >
                 <LayoutGrid className="w-4 h-4 text-primary" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleSave} 
-                className="rounded-xl w-9 h-9 glass border-none hover:bg-white/40"
-                aria-label="Save Progress"
-              >
-                <Save className="w-4 h-4 text-primary" />
               </Button>
               <Button 
                 variant="ghost" 
