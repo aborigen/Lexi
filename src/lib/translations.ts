@@ -26,7 +26,8 @@ type TranslationKeys =
   | 'player_stats'
   | 'next'
   | 'shuffle'
-  | 'level_list';
+  | 'level_list'
+  | 'level_words_title';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -55,7 +56,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     player_stats: 'Statistics',
     next: 'Next',
     shuffle: 'Shuffle',
-    level_list: 'Levels'
+    level_list: 'Levels',
+    level_words_title: 'Level Solutions'
   },
   ru: {
     high_score: 'Рекорд',
@@ -83,7 +85,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     player_stats: 'Статистика',
     next: 'След.',
     shuffle: 'Перемешать',
-    level_list: 'Уровни'
+    level_list: 'Уровни',
+    level_words_title: 'Слова на уровне'
   }
 };
 

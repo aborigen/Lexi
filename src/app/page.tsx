@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { WordConnect } from '@/components/game/WordConnect';
 import { AIAdvisor } from '@/components/game/AIAdvisor';
+import { LevelWordsDialog } from '@/components/game/LevelWordsDialog';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
@@ -333,14 +334,22 @@ export default function WordConnectPage() {
         </main>
 
         {currentLevel && (
-          <div className="absolute bottom-6 right-6 z-[100] animate-float">
-            <AIAdvisor 
-              onSuggestionReceived={handleHintUsed}
-              gameState={gameState}
-              lang={lang}
-              level={currentLevel}
-            />
-          </div>
+          <>
+            <div className="absolute bottom-6 left-6 z-[100] animate-float">
+              <LevelWordsDialog 
+                validWords={currentLevel.validWords}
+                lang={lang}
+              />
+            </div>
+            <div className="absolute bottom-6 right-6 z-[100] animate-float">
+              <AIAdvisor 
+                onSuggestionReceived={handleHintUsed}
+                gameState={gameState}
+                lang={lang}
+                level={currentLevel}
+              />
+            </div>
+          </>
         )}
       </div>
 
