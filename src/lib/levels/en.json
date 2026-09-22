@@ -50,12 +50,12 @@
   {
     "lang": "en",
     "letters": ["S", "P", "E", "E", "D"],
-    "validWords": ["SPEED", "DEEP", "SEED", "DEER"],
+    "validWords": ["SPEED", "DEEP", "SEED", "SEE"],
     "hints": {
       "SPEED": "You should check your _____ while driving near schools. (Скорость)",
       "DEEP": "The water in the lake is very _____ at the center. (Глубокий)",
       "SEED": "Every giant oak tree starts as a tiny _____. (Семя)",
-      "DEER": "We saw a family of _____ grazing in the meadow. (Олень)"
+      "SEE": "Can you _____ the mountains from your window? (Видеть)"
     }
   },
   {
