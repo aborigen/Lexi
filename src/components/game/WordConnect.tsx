@@ -245,8 +245,18 @@ export function WordConnect({
             )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
+            {/* Background Ring */}
+            <div 
+              className="absolute inset-0 glass rounded-full border-4 border-white/20 shadow-inner scale-[0.85] opacity-30 pointer-events-none"
+              style={{
+                width: COORDINATE_BASE,
+                height: COORDINATE_BASE,
+                transform: 'scale(0.85)'
+              }}
+            />
+
             <svg 
-              className="absolute inset-0 pointer-events-none" 
+              className="absolute inset-0 pointer-events-none z-0" 
               viewBox={`0 0 ${COORDINATE_BASE} ${COORDINATE_BASE}`}
               preserveAspectRatio="xMidYMid meet"
             >
@@ -260,6 +270,13 @@ export function WordConnect({
                   <stop offset="100%" stopColor="hsl(var(--accent))" />
                 </linearGradient>
               </defs>
+
+              {/* Subdued circle outline in SVG */}
+              <circle 
+                cx={OFFSET} cy={OFFSET} r={CIRCLE_RADIUS + LETTER_RADIUS} 
+                className="fill-white/5 stroke-white/10" 
+                strokeWidth="2"
+              />
 
               {showOnboarding && onboardingPath && (
                 <path 
