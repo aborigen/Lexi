@@ -32,6 +32,8 @@ export function WordConnect({
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   
@@ -71,6 +73,7 @@ export function WordConnect({
       selectedIndicesRef.current = [];
       setDragPath(null);
       setIsInvalid(false);
+      setIsSuccess(false);
     }
   }, [level]);
 
@@ -88,15 +91,17 @@ export function WordConnect({
   }, [showOnboarding]);
 
   const handleInteractionStart = (index: number) => {
+    if (isSuccess || isInvalid) return;
     completeOnboarding();
     setIsInvalid(false);
+    setIsSuccess(false);
     setSelectedIndices([index]);
     audioManager.playSelect(0);
   };
 
   const handleInteractionMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     const currentIndices = selectedIndicesRef.current;
-    if (currentIndices.length === 0 || shuffledLetters.length === 0) return;
+    if (currentIndices.length === 0 || shuffledLetters.length === 0 || isSuccess || isInvalid) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -139,55 +144,71 @@ export function WordConnect({
         audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [shuffledLetters, letterPositions, COORDINATE_BASE]);
+  }, [shuffledLetters, letterPositions, COORDINATE_BASE, isSuccess, isInvalid]);
 
   const handleInteractionEnd = useCallback(() => {
     const currentIndices = selectedIndicesRef.current;
-    if (currentIndices.length === 0 || !level || shuffledLetters.length === 0) return;
+    if (currentIndices.length === 0 || !level || shuffledLetters.length === 0 || isSuccess || isInvalid) return;
     
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
     if (level.validWords.includes(currentWord)) {
       if (!foundWords.includes(currentWord)) {
+        setIsSuccess(true);
         const rect = containerRef.current?.getBoundingClientRect();
         const startPos = rect ? {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2
         } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-        const newFound = [...foundWords, currentWord];
-        setFoundWords(newFound);
-        onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
-        
-        if (newFound.length === level.validWords.length) {
-          audioManager.playLevelComplete();
-          onLevelComplete();
-        } else {
-          audioManager.playSuccess();
-        }
+        setTimeout(() => {
+          const newFound = [...foundWords, currentWord];
+          setFoundWords(newFound);
+          onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
+          
+          if (newFound.length === level.validWords.length) {
+            audioManager.playLevelComplete();
+            onLevelComplete();
+          } else {
+            audioManager.playSuccess();
+          }
+          
+          setSelectedIndices([]);
+          selectedIndicesRef.current = [];
+          setDragPath(null);
+          setIsSuccess(false);
+        }, 500);
       } else {
         audioManager.playSelect(0);
+        setSelectedIndices([]);
+        selectedIndicesRef.current = [];
+        setDragPath(null);
       }
     } else if (currentIndices.length > 1) {
       audioManager.playError();
       setIsInvalid(true);
-      setTimeout(() => setIsInvalid(false), 400);
+      setTimeout(() => {
+        setIsInvalid(false);
+        setSelectedIndices([]);
+        selectedIndicesRef.current = [];
+        setDragPath(null);
+      }, 400);
+    } else {
+      setSelectedIndices([]);
+      selectedIndicesRef.current = [];
+      setDragPath(null);
     }
-    
-    setSelectedIndices([]);
-    selectedIndicesRef.current = [];
-    setDragPath(null);
-  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete]);
+  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete, isSuccess, isInvalid]);
 
   const handleShuffle = useCallback(() => {
-    if (selectedIndices.length > 0) return;
+    if (selectedIndices.length > 0 || isSuccess || isInvalid) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
     setTimeout(() => {
       setShuffledLetters(prev => shuffleArray(prev));
       setIsShuffling(false);
     }, 200);
-  }, [selectedIndices.length]);
+  }, [selectedIndices.length, isSuccess, isInvalid]);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
@@ -228,7 +249,10 @@ export function WordConnect({
       <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
         <div className="h-14 sm:h-16 flex items-center justify-center shrink-0 w-full">
           {isDrawing && (
-            <div className="sunny-gradient px-8 py-2.5 rounded-2xl text-xl sm:text-2xl font-black text-white animate-in zoom-in-95 duration-200 shadow-2xl border-4 border-white/60 tracking-widest uppercase italic">
+            <div className={cn(
+              "px-8 py-2.5 rounded-2xl text-xl sm:text-2xl font-black text-white animate-in zoom-in-95 duration-200 shadow-2xl border-4 tracking-widest uppercase italic transition-all",
+              isSuccess ? "success-gradient border-white animate-success-flash" : "sunny-gradient border-white/60"
+            )}>
               {selectedIndices.map(i => shuffledLetters[i]).join('')}
             </div>
           )}
@@ -241,7 +265,8 @@ export function WordConnect({
             className={cn(
               "relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-all duration-500 shrink-0 animate-zoom-in",
               isShuffling && "scale-[0.45] opacity-50",
-              isInvalid && "animate-shake"
+              isInvalid && "animate-shake",
+              isSuccess && "scale-105"
             )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
@@ -266,8 +291,8 @@ export function WordConnect({
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
                 <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" />
-                  <stop offset="100%" stopColor="hsl(var(--accent))" />
+                  <stop offset="0%" stopColor={isSuccess ? "#4CAF50" : "hsl(var(--primary))"} />
+                  <stop offset="100%" stopColor={isSuccess ? "#81C784" : "hsl(var(--accent))"} />
                 </linearGradient>
               </defs>
 
@@ -302,12 +327,12 @@ export function WordConnect({
                     stroke="url(#line-gradient)" 
                     strokeWidth="18" 
                     strokeLinecap="round"
-                    className="opacity-90"
+                    className={cn("transition-all duration-300", isSuccess ? "opacity-100" : "opacity-90")}
                     filter="url(#line-glow)"
                   />
                 );
               })}
-              {selectedIndices.length > 0 && dragPath && (
+              {selectedIndices.length > 0 && dragPath && !isSuccess && (
                 <line 
                   x1={letterPositions[selectedIndices[selectedIndices.length-1]].x} 
                   y1={letterPositions[selectedIndices[selectedIndices.length-1]].y} 
@@ -324,7 +349,7 @@ export function WordConnect({
             <div 
               className={cn(
                 "absolute z-50 flex items-center justify-center transition-all",
-                isDrawing && "pointer-events-none opacity-40 scale-90"
+                (isDrawing || isSuccess || isInvalid) && "pointer-events-none opacity-40 scale-90"
               )}
               style={{
                 left: OFFSET - LETTER_RADIUS,
@@ -337,7 +362,7 @@ export function WordConnect({
                 variant="ghost"
                 size="icon"
                 onClick={handleShuffle}
-                disabled={isDrawing}
+                disabled={isDrawing || isSuccess || isInvalid}
                 className="w-12 h-12 rounded-2xl glass border-white/60 text-primary hover:bg-white/50 active:scale-90 shadow-lg"
                 title={t('shuffle', lang)}
               >
@@ -362,8 +387,9 @@ export function WordConnect({
                   className={cn(
                     "absolute flex items-center justify-center font-black text-4xl rounded-3xl cursor-pointer transition-all duration-300 select-none border-4",
                     isSelected 
-                      ? "sunny-gradient text-white scale-125 z-10 shadow-2xl border-white" 
-                      : "glass hover:bg-white/80 hover:scale-105 border-white/60 shadow-xl"
+                      ? (isSuccess ? "success-gradient text-white scale-125 z-10 shadow-2xl border-white animate-success-flash" : "sunny-gradient text-white scale-125 z-10 shadow-2xl border-white") 
+                      : "glass hover:bg-white/80 hover:scale-105 border-white/60 shadow-xl",
+                    isInvalid && isSelected && "bg-destructive text-white border-destructive"
                   )}
                   style={{
                     left: pos.x - LETTER_RADIUS * 1.2,
