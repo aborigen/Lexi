@@ -91,7 +91,7 @@ export function WordConnect({
   }, [showOnboarding]);
 
   const handleInteractionStart = (index: number) => {
-    if (isSuccess || isInvalid) return;
+    if (isSuccess || isInvalid || isShuffling) return;
     completeOnboarding();
     setIsInvalid(false);
     setIsSuccess(false);
@@ -101,7 +101,7 @@ export function WordConnect({
 
   const handleInteractionMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     const currentIndices = selectedIndicesRef.current;
-    if (currentIndices.length === 0 || shuffledLetters.length === 0 || isSuccess || isInvalid) return;
+    if (currentIndices.length === 0 || shuffledLetters.length === 0 || isSuccess || isInvalid || isShuffling) return;
 
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -144,11 +144,11 @@ export function WordConnect({
         audioManager.playSelect(newIndices.length - 1);
       }
     });
-  }, [shuffledLetters, letterPositions, COORDINATE_BASE, isSuccess, isInvalid]);
+  }, [shuffledLetters, letterPositions, COORDINATE_BASE, isSuccess, isInvalid, isShuffling]);
 
   const handleInteractionEnd = useCallback(() => {
     const currentIndices = selectedIndicesRef.current;
-    if (currentIndices.length === 0 || !level || shuffledLetters.length === 0 || isSuccess || isInvalid) return;
+    if (currentIndices.length === 0 || !level || shuffledLetters.length === 0 || isSuccess || isInvalid || isShuffling) return;
     
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
@@ -198,17 +198,17 @@ export function WordConnect({
       selectedIndicesRef.current = [];
       setDragPath(null);
     }
-  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete, isSuccess, isInvalid]);
+  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete, isSuccess, isInvalid, isShuffling]);
 
   const handleShuffle = useCallback(() => {
-    if (selectedIndices.length > 0 || isSuccess || isInvalid) return;
+    if (selectedIndices.length > 0 || isSuccess || isInvalid || isShuffling) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
     setTimeout(() => {
       setShuffledLetters(prev => shuffleArray(prev));
-      setIsShuffling(false);
-    }, 200);
-  }, [selectedIndices.length, isSuccess, isInvalid]);
+      setTimeout(() => setIsShuffling(false), 100);
+    }, 300);
+  }, [selectedIndices.length, isSuccess, isInvalid, isShuffling]);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
@@ -349,7 +349,7 @@ export function WordConnect({
             <div 
               className={cn(
                 "absolute z-50 flex items-center justify-center transition-all",
-                (isDrawing || isSuccess || isInvalid) && "pointer-events-none opacity-40 scale-90"
+                (isDrawing || isSuccess || isInvalid || isShuffling) && "pointer-events-none opacity-40 scale-90"
               )}
               style={{
                 left: OFFSET - LETTER_RADIUS,
@@ -362,11 +362,11 @@ export function WordConnect({
                 variant="ghost"
                 size="icon"
                 onClick={handleShuffle}
-                disabled={isDrawing || isSuccess || isInvalid}
+                disabled={isDrawing || isSuccess || isInvalid || isShuffling}
                 className="w-12 h-12 rounded-2xl glass border-white/60 text-primary hover:bg-white/50 active:scale-90 shadow-lg"
                 title={t('shuffle', lang)}
               >
-                <Shuffle className={cn("w-6 h-6 transition-transform duration-500", isShuffling && "rotate-180")} />
+                <Shuffle className={cn("w-6 h-6 transition-all duration-300", isShuffling && "rotate-[360deg] scale-125")} />
               </Button>
             </div>
 
@@ -375,7 +375,7 @@ export function WordConnect({
               const isSelected = selectedIndices.includes(i);
               return (
                 <div
-                  key={i}
+                  key={`${char}-${i}`}
                   onMouseDown={(e) => {
                     e.stopPropagation();
                     handleInteractionStart(i);
@@ -389,7 +389,8 @@ export function WordConnect({
                     isSelected 
                       ? (isSuccess ? "success-gradient text-white scale-125 z-10 shadow-2xl border-white animate-success-flash" : "sunny-gradient text-white scale-125 z-10 shadow-2xl border-white") 
                       : "glass hover:bg-white/80 hover:scale-105 border-white/60 shadow-xl",
-                    isInvalid && isSelected && "bg-destructive text-white border-destructive"
+                    isInvalid && isSelected && "bg-destructive text-white border-destructive",
+                    isShuffling && "animate-jumble"
                   )}
                   style={{
                     left: pos.x - LETTER_RADIUS * 1.2,
