@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.34.0] - 2024-07-26
+### Added
+- **Refined Success Feedback**: Implemented a "Success Flash" animation that provides immediate celebratory visual confirmation when a word is correctly guessed.
+- **Kinetic Shuffle Feedback**: Added a jumble animation for letters and a 360-spin for the shuffle icon to make reordering feel more physical and responsive.
+- **Interaction Ring Background**: Added a glassmorphic background layer under the letter ring to improve UI depth and accessibility.
+
 ## [2.33.0] - 2024-07-25
 ### Improved
 - **Victory Dialog Responsiveness**: Refactored the "Level Complete" victory dialog using dynamic paddings, icon scaling, and fluid text parameters to prevent overflow on ultra-small viewport mobile screens.

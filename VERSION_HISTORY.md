@@ -1,5 +1,10 @@
-
 # Lexi.AI - Version History
+
+## v2.34.0 (2024-07-26)
+### Added
+- **Refined Success Feedback**: Implemented high-impact visual confirmation for correct words, including success flashes and ring pulses.
+- **Kinetic Shuffle**: Added kinetic jumble animations for letters and icon spinning when reshuffling the board.
+- **Grounding Ring**: Integrated a new glassmorphic background layer behind the letter circle for better visual grounding.
 
 ## v2.33.0 (2024-07-25)
 ### Improved

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.34.0] - 2024-07-26
+### Improved
+- **Success Feedback**: Added high-impact success flash and ring pulses to reward correct word identification.
+- **Shuffle UX**: Integrated kinetic "jumble" animations for letters when the shuffle button is pressed.
+- **UI Depth**: Added a glassmorphic grounding ring behind the interactive letter circle.
+
 ## [2.33.0] - 2024-07-25
 ### Improved
 - **Victory Dialog Responsiveness**: Refactored the "Level Complete" dialog to use dynamic padding, icon scaling, and font sizes. It now fits perfectly on small mobile screens without vertical overflow.
