@@ -196,8 +196,16 @@ export function WordConnect({
     if (selectedIndices.length > 0 || isSuccess || isInvalid || isShuffling) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
-    setTimeout(() => setShuffledLetters(prev => shuffleArray(prev)), 250);
-    setTimeout(() => setIsShuffling(false), 600);
+    
+    // Switch data at the peak of the collapse (approx 300ms)
+    setTimeout(() => {
+      setShuffledLetters(prev => shuffleArray(prev));
+    }, 300);
+
+    // End shuffling state when animation completes (600ms)
+    setTimeout(() => {
+      setIsShuffling(false);
+    }, 600);
   }, [selectedIndices.length, isSuccess, isInvalid, isShuffling]);
 
   const onboardingPath = useMemo(() => {
@@ -348,7 +356,7 @@ export function WordConnect({
                       ? (isSuccess ? "success-gradient text-white scale-125 z-10 shadow-[0_20px_40px_rgba(34,197,94,0.4)] border-white animate-success-pop" : "sunny-gradient text-white scale-125 z-10 shadow-[0_20px_40px_rgba(245,158,11,0.4)] border-white") 
                       : "glass hover:bg-white/80 hover:scale-105 border-white/50 shadow-2xl",
                     isInvalid && isSelected && "bg-destructive text-white border-destructive",
-                    isShuffling && "animate-jumble"
+                    isShuffling && "animate-vortex-shuffle"
                   )}
                   style={{
                     left: pos.x - LETTER_RADIUS * 1.4,
