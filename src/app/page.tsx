@@ -317,44 +317,44 @@ export default function WordConnectPage() {
       </div>
 
       <Dialog open={isVictoryOpen} onOpenChange={setIsVictoryOpen}>
-        <DialogContent className="w-[94vw] max-w-[460px] rounded-[3.5rem] p-8 sm:p-12 glass border-white/80 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] animate-in zoom-in-95 duration-700 text-center overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-2 sunny-gradient" />
+        <DialogContent className="w-[94vw] max-w-[440px] rounded-[2.5rem] sm:rounded-[3.5rem] p-6 sm:p-10 glass border-white/80 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] animate-in zoom-in-95 duration-700 text-center overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1.5 sunny-gradient" />
           
-          <div className="relative mb-8 flex justify-center">
-            <div className="p-8 sm:p-10 rounded-[2.5rem] sunny-gradient border-8 border-white/50 shadow-2xl transform -rotate-6 animate-float-y">
-              <Trophy className="w-12 h-12 sm:w-20 sm:h-20 text-white drop-shadow-lg" />
+          <div className="relative mb-6 sm:mb-8 flex justify-center">
+            <div className="p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] sunny-gradient border-4 sm:border-8 border-white/50 shadow-2xl transform -rotate-6 animate-float-y">
+              <Trophy className="w-10 h-10 sm:w-16 sm:h-16 text-white drop-shadow-lg" />
             </div>
-            <Sparkles className="absolute -top-4 -right-4 w-12 h-12 text-primary animate-pulse" />
+            <Sparkles className="absolute -top-3 -right-3 w-8 h-8 sm:w-12 sm:h-12 text-primary animate-pulse" />
           </div>
 
-          <DialogHeader className="mb-8 items-center">
-            <DialogTitle className="text-3xl sm:text-5xl font-black uppercase italic tracking-tighter text-foreground leading-tight mb-2">
+          <DialogHeader className="mb-6 sm:mb-8 items-center space-y-1">
+            <DialogTitle className="text-2xl sm:text-4xl font-black uppercase italic tracking-tighter text-foreground leading-tight">
               {t('game_over_title', lang)}
             </DialogTitle>
-            <div className="bg-primary/10 px-6 py-1.5 rounded-full border border-primary/20">
-              <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.4em] text-primary">
+            <div className="bg-primary/10 px-4 py-1 rounded-full border border-primary/20">
+              <span className="text-[9px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary">
                 {lang === 'ru' ? 'УРОВЕНЬ ПРОЙДЕН' : 'LEVEL COMPLETED'}
               </span>
             </div>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-4 mb-10">
-            <div className="p-4 rounded-[2rem] bg-white/30 border border-white/50">
-               <span className="text-[9px] font-black uppercase tracking-widest opacity-40 block mb-1">Score</span>
-               <span className="text-2xl font-black text-primary">{score.toLocaleString()}</span>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10">
+            <div className="p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] bg-white/30 border border-white/50">
+               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">Score</span>
+               <span className="text-xl sm:text-2xl font-black text-primary">{score.toLocaleString()}</span>
             </div>
-            <div className="p-4 rounded-[2rem] bg-white/30 border border-white/50">
-               <span className="text-[9px] font-black uppercase tracking-widest opacity-40 block mb-1">Found</span>
-               <span className="text-2xl font-black text-primary">{gameState.foundWords.length}</span>
+            <div className="p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] bg-white/30 border border-white/50">
+               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">Found</span>
+               <span className="text-xl sm:text-2xl font-black text-primary">{gameState.foundWords.length}</span>
             </div>
           </div>
 
           <Button 
             onClick={handleNextLevel}
-            className="w-full h-16 sm:h-20 rounded-[2rem] sm:rounded-[2.5rem] sunny-gradient text-white text-lg sm:text-xl font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl border-4 border-white/40 group"
+            className="w-full h-14 sm:h-16 rounded-[1.5rem] sm:rounded-[2rem] sunny-gradient text-white text-base sm:text-lg font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl border-4 border-white/40 group"
           >
-            {lang === 'ru' ? 'СЛЕДУЮЩИЙ УРОВЕНЬ' : 'CONTINUE'}
-            <SkipForward className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            {lang === 'ru' ? 'ДАЛЕЕ' : 'CONTINUE'}
+            <SkipForward className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </DialogContent>
       </Dialog>
