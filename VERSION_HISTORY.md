@@ -1,5 +1,12 @@
 # Lexi.AI - Version History
 
+## v2.35.0 (2024-07-27)
+### Major Features & Expansion
+- **English Level Mastery**: Added 30 new 5-letter levels, significantly increasing game longevity and vocabulary depth.
+- **Universal SDK Bridge**: Unified support for Yandex, VK, and Sber Devices under a single adapter pattern.
+- **"Vortex" Interaction**: New high-energy shuffle animation with scale collapse and motion blur.
+- **Store Assets**: Generated comprehensive English and Russian promotional materials for multi-platform publishing.
+
 ## v2.34.0 (2024-07-26)
 ### Added
 - **Refined Success Feedback**: Implemented high-impact visual confirmation for correct words, including success flashes and ring pulses.
@@ -26,21 +33,3 @@
 - **WordGrid Component**: Extracted and enhanced the word matrix UI into a dedicated component with a discovery counter.
 - **Shake Animation**: Added visual haptic feedback for incorrect word attempts.
 - **Current Word Preview**: Implemented a floating "pill" UI that shows the word being constructed in real-time.
-
-## v2.30.0 (2024-07-22)
-### Animation & UX Overhaul
-- **Particle Engine**: Added high-performance gem particles for score increments.
-- **Header Badge**: Persistent Level display integrated into the main HUD.
-- **Consolidated Settings**: Refactored the header to include a unified settings dropdown.
-- **Visual Contrast**: Darkened the light theme background to improve readability of glassmorphic elements.
-- **Build Stability**: Fixed all remaining TypeScript build errors and ReferenceErrors.
-
-## v2.29.0 (2024-07-21)
-### Deployment & Standalone Refactoring
-- **SDK Decoupling**: Removed all Yandex Games SDK script injections and platform-specific calls to support generic static hosting.
-- **Offline Persistence**: Implemented a `localStorage` engine for all player progress, high scores, and lifetime statistics.
-- **Restore Guide**: Created `docs/YANDEX_SDK_RESTORE.md` for future platform re-integration.
-
-## v2.28.0 (2024-07-20)
-### UI Refinement
-- **Letter Ring Alignment**: Optimized the circular letter interaction by rotating the ring to a 45-degree start, providing a cleaner geometric layout for the interaction engines.
