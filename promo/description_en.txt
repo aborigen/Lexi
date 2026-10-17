@@ -1,0 +1,20 @@
+Lexi.AI - Word Connect Puzzle
+
+Short Description:
+An engaging circular word-linking game with AI-powered hints and a relaxing aesthetic.
+
+Long Description:
+Step into the serene world of Lexi.AI, where words come to life under a bright blue sky!
+
+Lexi.AI is an intuitive word-linking puzzle that challenges your vocabulary and cognitive skills. Connect letters in circular motions to discover hidden combinations and clear levels. 
+
+Feeling stuck? Use our unique Lexical AI Advisor to receive clever, cryptic hints that guide you without giving the answer away. Perfect for players who love crosswords, word searches, and brain training.
+
+Key Features:
+- ✨ Intuitive Circular Interaction: Smooth line-drawing mechanics for natural word formation.
+- 🤖 AI-Powered Advisor: Smart context-based hints to help you through tough levels.
+- ☀️ Relaxing Aesthetic: "Blue Sky" and "Starry Night" themes for a stress-free experience.
+- 📚 Educational Value: Improve your vocabulary with levels in English and Russian.
+- 🏆 Global Leaderboards: Compete with players worldwide and track your progress.
+
+Master the art of words with Lexi.AI!
