@@ -205,7 +205,6 @@ export default function WordConnectPage() {
             </div>
             <div className="flex flex-col leading-none">
               <span className="text-2xl font-black italic tracking-tighter text-primary drop-shadow-md hidden xs:block">LEXI.AI</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 hidden sm:block">Word Connect</span>
             </div>
           </div>
 
