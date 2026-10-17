@@ -204,10 +204,16 @@ export function WordConnect({
     if (selectedIndices.length > 0 || isSuccess || isInvalid || isShuffling) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
+    
+    // Timing swap to coincide with the "peak" of the animation (when scale is smallest)
     setTimeout(() => {
       setShuffledLetters(prev => shuffleArray(prev));
-      setTimeout(() => setIsShuffling(false), 100);
-    }, 300);
+    }, 250);
+
+    // End shuffling state after the animation finishes
+    setTimeout(() => {
+      setIsShuffling(false);
+    }, 500);
   }, [selectedIndices.length, isSuccess, isInvalid, isShuffling]);
 
   const onboardingPath = useMemo(() => {
@@ -264,7 +270,6 @@ export function WordConnect({
             ref={containerRef}
             className={cn(
               "relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-all duration-500 shrink-0 animate-zoom-in",
-              isShuffling && "scale-[0.45] opacity-50",
               isInvalid && "animate-shake",
               isSuccess && "scale-105"
             )}
