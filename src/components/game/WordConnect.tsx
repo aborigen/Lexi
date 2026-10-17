@@ -5,7 +5,7 @@ import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-con
 import { WordLevel } from '@/lib/levels';
 import { cn, shuffleArray } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
-import { Hand, Shuffle } from 'lucide-react';
+import { Hand, Shuffle, Sparkles } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { Button } from '@/components/ui/button';
 import { WordGrid } from './WordGrid';
@@ -59,15 +59,12 @@ export function WordConnect({
 
   useEffect(() => {
     const isFirstTime = typeof window !== 'undefined' ? !localStorage.getItem('lexi_onboarding_complete') : false;
-    if (isFirstTime) {
-      setShowOnboarding(true);
-    }
+    if (isFirstTime) setShowOnboarding(true);
   }, []);
 
   useEffect(() => {
     if (level) {
-      const shuffled = shuffleArray(level.letters);
-      setShuffledLetters(shuffled);
+      setShuffledLetters(shuffleArray(level.letters));
       setFoundWords([]);
       setSelectedIndices([]);
       selectedIndicesRef.current = [];
@@ -116,10 +113,8 @@ export function WordConnect({
     }
 
     const scale = rect.width / COORDINATE_BASE;
-    
     const x = (clientX - rect.left) / scale;
     const y = (clientY - rect.top) / scale;
-    
     setDragPath({ x, y });
 
     if (currentIndices.length > 1) {
@@ -165,21 +160,18 @@ export function WordConnect({
           const newFound = [...foundWords, currentWord];
           setFoundWords(newFound);
           onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
-          
           if (newFound.length === level.validWords.length) {
             audioManager.playLevelComplete();
             onLevelComplete();
           } else {
             audioManager.playSuccess();
           }
-          
           setSelectedIndices([]);
           selectedIndicesRef.current = [];
           setDragPath(null);
           setIsSuccess(false);
         }, 500);
       } else {
-        audioManager.playSelect(0);
         setSelectedIndices([]);
         selectedIndicesRef.current = [];
         setDragPath(null);
@@ -204,43 +196,30 @@ export function WordConnect({
     if (selectedIndices.length > 0 || isSuccess || isInvalid || isShuffling) return;
     setIsShuffling(true);
     audioManager.playSelect(0);
-    
-    // Timing swap to coincide with the "peak" of the animation (when scale is smallest)
-    setTimeout(() => {
-      setShuffledLetters(prev => shuffleArray(prev));
-    }, 250);
-
-    // End shuffling state after the animation finishes
-    setTimeout(() => {
-      setIsShuffling(false);
-    }, 500);
+    setTimeout(() => setShuffledLetters(prev => shuffleArray(prev)), 250);
+    setTimeout(() => setIsShuffling(false), 600);
   }, [selectedIndices.length, isSuccess, isInvalid, isShuffling]);
 
   const onboardingPath = useMemo(() => {
     if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
     const firstWord = level.validWords.find(w => w.length >= 3) || level.validWords[0];
     if (!firstWord) return null;
-
     const indices: number[] = [];
     for (const char of firstWord.split('')) {
       const idx = shuffledLetters.indexOf(char);
-      if (idx !== -1 && !indices.includes(idx)) {
-        indices.push(idx);
-      }
+      if (idx !== -1 && !indices.includes(idx)) indices.push(idx);
     }
-    
     if (indices.length < 2) return null;
     return indices.map(i => letterPositions[i]);
   }, [showOnboarding, level, shuffledLetters, letterPositions]);
 
   const isDrawing = selectedIndices.length > 0;
-
   if (!level || shuffledLetters.length === 0) return null;
 
   return (
     <div 
       ref={rootRef}
-      className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-4 sm:pb-8"
+      className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-8 sm:pb-12"
       onMouseMove={handleInteractionMove}
       onTouchMove={handleInteractionMove}
       onMouseUp={handleInteractionEnd}
@@ -252,14 +231,15 @@ export function WordConnect({
         lang={lang}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0">
-        <div className="h-14 sm:h-16 flex items-center justify-center shrink-0 w-full">
+      <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0 py-4">
+        <div className="h-16 sm:h-20 flex items-center justify-center shrink-0 w-full relative">
           {isDrawing && (
             <div className={cn(
-              "px-8 py-2.5 rounded-2xl text-xl sm:text-2xl font-black text-white animate-in zoom-in-95 duration-200 shadow-2xl border-4 tracking-widest uppercase italic transition-all",
-              isSuccess ? "success-gradient border-white animate-success-flash" : "sunny-gradient border-white/60"
+              "px-10 py-3.5 rounded-[2.5rem] text-2xl sm:text-3xl font-black text-white animate-in zoom-in-95 duration-200 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] border-4 tracking-[0.2em] uppercase italic transition-all relative overflow-hidden",
+              isSuccess ? "success-gradient border-white animate-success-flash" : "sunny-gradient border-white/80"
             )}>
               {selectedIndices.map(i => shuffledLetters[i]).join('')}
+              <div className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
             </div>
           )}
         </div>
@@ -269,56 +249,36 @@ export function WordConnect({
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
             className={cn(
-              "relative select-none touch-none scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 landscape:scale-[0.5] sm:landscape:scale-[0.65] transition-all duration-500 shrink-0 animate-zoom-in",
+              "relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-85 md:scale-95 landscape:scale-[0.55] sm:landscape:scale-[0.7] transition-all duration-700 shrink-0 animate-zoom-in",
               isInvalid && "animate-shake",
               isSuccess && "scale-105"
             )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
-            {/* Background Ring */}
+            {/* Visual Grounding Ring */}
             <div 
-              className="absolute inset-0 glass rounded-full border-4 border-white/20 shadow-inner scale-[0.85] opacity-30 pointer-events-none"
+              className="absolute inset-0 ring-track rounded-full shadow-inner opacity-40 pointer-events-none"
               style={{
                 width: COORDINATE_BASE,
                 height: COORDINATE_BASE,
-                transform: 'scale(0.85)'
+                transform: 'scale(0.9)'
               }}
             />
 
             <svg 
-              className="absolute inset-0 pointer-events-none z-0" 
+              className="absolute inset-0 pointer-events-none z-0 overflow-visible" 
               viewBox={`0 0 ${COORDINATE_BASE} ${COORDINATE_BASE}`}
-              preserveAspectRatio="xMidYMid meet"
             >
               <defs>
-                <filter id="line-glow">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
+                <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
                 <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={isSuccess ? "#4CAF50" : "hsl(var(--primary))"} />
-                  <stop offset="100%" stopColor={isSuccess ? "#81C784" : "hsl(var(--accent))"} />
+                  <stop offset="0%" stopColor={isSuccess ? "#f0fdf4" : "hsl(var(--primary))"} />
+                  <stop offset="100%" stopColor={isSuccess ? "#4ade80" : "hsl(var(--accent))"} />
                 </linearGradient>
               </defs>
-
-              {/* Subdued circle outline in SVG */}
-              <circle 
-                cx={OFFSET} cy={OFFSET} r={CIRCLE_RADIUS + LETTER_RADIUS} 
-                className="fill-white/5 stroke-white/10" 
-                strokeWidth="2"
-              />
-
-              {showOnboarding && onboardingPath && (
-                <path 
-                  d={`M ${onboardingPath.map(p => `${p.x},${p.y}`).join(' L ')}`}
-                  fill="none"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="10"
-                  strokeLinecap="round"
-                  strokeDasharray="1500"
-                  className="opacity-20 animate-onboarding-path"
-                />
-              )}
 
               {selectedIndices.length > 1 && selectedIndices.slice(0, -1).map((idx, i) => {
                 const start = letterPositions[idx];
@@ -330,9 +290,9 @@ export function WordConnect({
                     x1={start.x} y1={start.y} 
                     x2={end.x} y2={end.y} 
                     stroke="url(#line-gradient)" 
-                    strokeWidth="18" 
+                    strokeWidth="24" 
                     strokeLinecap="round"
-                    className={cn("transition-all duration-300", isSuccess ? "opacity-100" : "opacity-90")}
+                    className={cn("transition-all duration-300", isSuccess ? "opacity-100" : "opacity-80")}
                     filter="url(#line-glow)"
                   />
                 );
@@ -343,7 +303,7 @@ export function WordConnect({
                   y1={letterPositions[selectedIndices[selectedIndices.length-1]].y} 
                   x2={dragPath.x} y2={dragPath.y} 
                   stroke="hsl(var(--primary))" 
-                  strokeWidth="18" 
+                  strokeWidth="24" 
                   strokeLinecap="round"
                   className="opacity-40"
                 />
@@ -353,14 +313,14 @@ export function WordConnect({
             {/* Shuffle Button in Center */}
             <div 
               className={cn(
-                "absolute z-50 flex items-center justify-center transition-all",
-                (isDrawing || isSuccess || isInvalid || isShuffling) && "pointer-events-none opacity-40 scale-90"
+                "absolute z-50 flex items-center justify-center transition-all duration-500",
+                (isDrawing || isSuccess || isInvalid || isShuffling) && "pointer-events-none opacity-20 scale-75"
               )}
               style={{
-                left: OFFSET - LETTER_RADIUS,
-                top: OFFSET - LETTER_RADIUS,
-                width: LETTER_RADIUS * 2,
-                height: LETTER_RADIUS * 2,
+                left: OFFSET - LETTER_RADIUS * 1.5,
+                top: OFFSET - LETTER_RADIUS * 1.5,
+                width: LETTER_RADIUS * 3,
+                height: LETTER_RADIUS * 3,
               }}
             >
               <Button
@@ -368,10 +328,9 @@ export function WordConnect({
                 size="icon"
                 onClick={handleShuffle}
                 disabled={isDrawing || isSuccess || isInvalid || isShuffling}
-                className="w-12 h-12 rounded-2xl glass border-white/60 text-primary hover:bg-white/50 active:scale-90 shadow-lg"
-                title={t('shuffle', lang)}
+                className="w-16 h-16 rounded-[2rem] glass border-white/60 text-primary hover:bg-white/60 active:scale-90 shadow-2xl transition-all"
               >
-                <Shuffle className={cn("w-6 h-6 transition-all duration-300", isShuffling && "rotate-[360deg] scale-125")} />
+                <Shuffle className={cn("w-8 h-8 transition-all duration-500", isShuffling && "rotate-[360deg] scale-125")} />
               </Button>
             </div>
 
@@ -381,27 +340,21 @@ export function WordConnect({
               return (
                 <div
                   key={`${char}-${i}`}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    handleInteractionStart(i);
-                  }}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    handleInteractionStart(i);
-                  }}
+                  onMouseDown={(e) => { e.stopPropagation(); handleInteractionStart(i); }}
+                  onTouchStart={(e) => { e.stopPropagation(); handleInteractionStart(i); }}
                   className={cn(
-                    "absolute flex items-center justify-center font-black text-4xl rounded-3xl cursor-pointer transition-all duration-300 select-none border-4",
+                    "absolute flex items-center justify-center font-black text-4xl sm:text-5xl rounded-[2rem] cursor-pointer transition-all duration-300 select-none border-4",
                     isSelected 
-                      ? (isSuccess ? "success-gradient text-white scale-125 z-10 shadow-2xl border-white animate-success-flash" : "sunny-gradient text-white scale-125 z-10 shadow-2xl border-white") 
-                      : "glass hover:bg-white/80 hover:scale-105 border-white/60 shadow-xl",
+                      ? (isSuccess ? "success-gradient text-white scale-125 z-10 shadow-[0_20px_40px_rgba(34,197,94,0.4)] border-white animate-success-pop" : "sunny-gradient text-white scale-125 z-10 shadow-[0_20px_40px_rgba(245,158,11,0.4)] border-white") 
+                      : "glass hover:bg-white/80 hover:scale-105 border-white/50 shadow-2xl",
                     isInvalid && isSelected && "bg-destructive text-white border-destructive",
                     isShuffling && "animate-jumble"
                   )}
                   style={{
-                    left: pos.x - LETTER_RADIUS * 1.2,
-                    top: pos.y - LETTER_RADIUS * 1.2,
-                    width: LETTER_RADIUS * 2.4,
-                    height: LETTER_RADIUS * 2.4,
+                    left: pos.x - LETTER_RADIUS * 1.4,
+                    top: pos.y - LETTER_RADIUS * 1.4,
+                    width: LETTER_RADIUS * 2.8,
+                    height: LETTER_RADIUS * 2.8,
                   }}
                 >
                   {char}
@@ -413,13 +366,13 @@ export function WordConnect({
               <div 
                 className="absolute pointer-events-none z-[60] animate-onboarding-hand"
                 style={{
-                  left: onboardingPath[0].x - 25,
-                  top: onboardingPath[0].y - 25,
+                  left: onboardingPath[0].x - 30,
+                  top: onboardingPath[0].y - 30,
                 }}
               >
                 <div className="flex flex-col items-center">
-                  <Hand className="w-12 h-12 text-primary drop-shadow-2xl" fill="currentColor" />
-                  <span className="text-xs font-black uppercase text-primary bg-white/90 px-4 py-1.5 rounded-2xl shadow-2xl mt-3 whitespace-nowrap border-2 border-primary/20">
+                  <Hand className="w-16 h-16 text-primary drop-shadow-2xl" fill="currentColor" />
+                  <span className="text-xs font-black uppercase text-primary bg-white/95 px-6 py-2 rounded-[1.5rem] shadow-2xl mt-4 whitespace-nowrap border-2 border-primary/30">
                     {t('guide_draw', lang)}
                   </span>
                 </div>
