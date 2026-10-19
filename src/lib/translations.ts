@@ -27,7 +27,18 @@ type TranslationKeys =
   | 'next'
   | 'shuffle'
   | 'level_list'
-  | 'level_words_title';
+  | 'level_words_title'
+  | 'level_label'
+  | 'settings'
+  | 'theme_light'
+  | 'theme_dark'
+  | 'my_stats'
+  | 'reset_game'
+  | 'level_select_hint'
+  | 'level_completed_sub'
+  | 'continue'
+  | 'found'
+  | 'words';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -57,7 +68,18 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     next: 'Next',
     shuffle: 'Shuffle',
     level_list: 'Levels',
-    level_words_title: 'Level Solutions'
+    level_words_title: 'Level Solutions',
+    level_label: 'Level',
+    settings: 'Game Settings',
+    theme_light: 'Light Mode',
+    theme_dark: 'Dark Mode',
+    my_stats: 'My Stats',
+    reset_game: 'Reset Game',
+    level_select_hint: 'Select a level to start playing',
+    level_completed_sub: 'Level Completed',
+    continue: 'Continue',
+    found: 'Found',
+    words: 'Words'
   },
   ru: {
     high_score: 'Рекорд',
@@ -86,7 +108,18 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     next: 'След.',
     shuffle: 'Перемешать',
     level_list: 'Уровни',
-    level_words_title: 'Слова на уровне'
+    level_words_title: 'Слова на уровне',
+    level_label: 'Уровень',
+    settings: 'Настройки',
+    theme_light: 'Светлая тема',
+    theme_dark: 'Темная тема',
+    my_stats: 'Моя статистика',
+    reset_game: 'Сбросить игру',
+    level_select_hint: 'Выберите уровень, чтобы начать',
+    level_completed_sub: 'Уровень пройден',
+    continue: 'Далее',
+    found: 'Найдено',
+    words: 'Слов'
   }
 };
 

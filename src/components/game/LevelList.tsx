@@ -59,7 +59,7 @@ export function LevelList({ isOpen, onOpenChange, levels, currentIndex, onSelect
                 >
                   <div className="w-full flex justify-between items-center">
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40">
-                      {lang === 'ru' ? 'УРОВЕНЬ' : 'LEVEL'} {index + 1}
+                      {t('level_label', lang)} {index + 1}
                     </span>
                     {isActive && <CheckCircle2 className="w-3 h-3 text-primary" />}
                   </div>
@@ -69,7 +69,7 @@ export function LevelList({ isOpen, onOpenChange, levels, currentIndex, onSelect
                     ))}
                   </div>
                   <span className="text-[9px] font-bold opacity-40 uppercase mt-1">
-                    {level.validWords.length} {lang === 'ru' ? 'СЛОВ' : 'WORDS'}
+                    {level.validWords.length} {t('words', lang)}
                   </span>
                 </Button>
               );
@@ -79,7 +79,7 @@ export function LevelList({ isOpen, onOpenChange, levels, currentIndex, onSelect
         
         <div className="mt-4 pt-4 border-t border-white/20 flex justify-center">
            <p className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-[0.3em]">
-             Select a level to start playing
+             {t('level_select_hint', lang)}
            </p>
         </div>
       </DialogContent>

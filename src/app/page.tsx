@@ -171,7 +171,6 @@ export default function WordConnectPage() {
       const targetY = targetRect.top + targetRect.height / 2;
       particlesRef.current.emit(pos.x, pos.y, targetX, targetY);
 
-      // Trigger impact sooner and for less time
       setTimeout(() => {
         setIsScoreImpact(true);
         setTimeout(() => setIsScoreImpact(false), 400);
@@ -213,7 +212,7 @@ export default function WordConnectPage() {
             <div className="hidden sm:flex items-center gap-2 glass px-4 py-2 rounded-2xl border-white/60">
                <Award className="w-4 h-4 text-primary" />
                <span className="text-xs font-black tracking-tight uppercase opacity-60">
-                 {lang === 'ru' ? 'УРОВЕНЬ' : 'LEVEL'} {playerStats?.levelsCleared || 0}
+                 {t('level_label', lang)} {playerStats?.levelsCleared || 0}
                </span>
             </div>
 
@@ -251,9 +250,9 @@ export default function WordConnectPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="glass border-white/60 min-w-[200px] rounded-[2rem] p-2 shadow-2xl">
-                  <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-4 py-2">Game Settings</DropdownMenuLabel>
+                  <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-4 py-2">{t('settings', lang)}</DropdownMenuLabel>
                   <DropdownMenuItem onClick={toggleTheme} className="flex justify-between items-center py-3 px-4 rounded-2xl cursor-pointer hover:bg-white/30">
-                    <span className="text-sm font-bold">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                    <span className="text-sm font-bold">{theme === 'light' ? t('theme_dark', lang) : t('theme_light', lang)}</span>
                     {theme === 'light' ? <Moon className="w-5 h-5 text-primary" /> : <Sun className="w-5 h-5 text-primary" />}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={toggleLang} className="flex justify-between items-center py-3 px-4 rounded-2xl cursor-pointer hover:bg-white/30">
@@ -261,12 +260,12 @@ export default function WordConnectPage() {
                     <Languages className="w-5 h-5 text-primary" />
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setIsStatsOpen(true)} className="flex justify-between items-center py-3 px-4 rounded-2xl cursor-pointer hover:bg-white/30">
-                    <span className="text-sm font-bold">My Stats</span>
+                    <span className="text-sm font-bold">{t('my_stats', lang)}</span>
                     <BarChart3 className="w-5 h-5 text-primary" />
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-white/10 my-2" />
                   <DropdownMenuItem onClick={handleReset} className="flex justify-between items-center py-3 px-4 rounded-2xl cursor-pointer text-destructive hover:bg-destructive/10">
-                    <span className="text-sm font-bold">Reset Game</span>
+                    <span className="text-sm font-bold">{t('reset_game', lang)}</span>
                     <RefreshCcw className="w-5 h-5" />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -333,18 +332,18 @@ export default function WordConnectPage() {
             </DialogTitle>
             <div className="bg-primary/10 px-4 py-1 rounded-full border border-primary/20">
               <span className="text-[9px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary">
-                {lang === 'ru' ? 'УРОВЕНЬ ПРОЙДЕН' : 'LEVEL COMPLETED'}
+                {t('level_completed_sub', lang)}
               </span>
             </div>
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8 sm:mb-10">
             <div className="p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] bg-white/30 border border-white/50">
-               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">Score</span>
+               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">{t('score', lang)}</span>
                <span className="text-xl sm:text-2xl font-black text-primary">{score.toLocaleString()}</span>
             </div>
             <div className="p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] bg-white/30 border border-white/50">
-               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">Found</span>
+               <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest opacity-40 block mb-0.5">{t('found', lang)}</span>
                <span className="text-xl sm:text-2xl font-black text-primary">{gameState.foundWords.length}</span>
             </div>
           </div>
@@ -353,7 +352,7 @@ export default function WordConnectPage() {
             onClick={handleNextLevel}
             className="w-full h-14 sm:h-16 rounded-[1.5rem] sm:rounded-[2rem] sunny-gradient text-white text-base sm:text-lg font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl border-4 border-white/40 group"
           >
-            {lang === 'ru' ? 'ДАЛЕЕ' : 'CONTINUE'}
+            {t('continue', lang)}
             <SkipForward className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </DialogContent>
