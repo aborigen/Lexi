@@ -1,0 +1,19 @@
+<svg width="576" height="576" viewBox="0 0 576 576" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vkSkyRu" x1="0" y1="0" x2="0" y2="576" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+    <filter id="vkGlowRu" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="576" height="576" rx="144" fill="url(#vkSkyRu)" />
+  <circle cx="480" cy="460" r="70" fill="white" fill-opacity="0.3" />
+  <circle cx="410" cy="480" r="60" fill="white" fill-opacity="0.3" />
+  <path d="M170 400 C 120 250, 420 150, 382 300" stroke="#FBBF24" stroke-width="28" stroke-linecap="round" filter="url(#vkGlowRu)" fill="none" />
+  <circle cx="170" cy="400" r="22" fill="#FBBF24" filter="url(#vkGlowRu)" />
+  <circle cx="382" cy="300" r="22" fill="#FBBF24" filter="url(#vkGlowRu)" />
+  <text x="288" y="360" font-family="system-ui, sans-serif" font-weight="900" font-style="italic" font-size="320" fill="#FBBF24" text-anchor="middle" filter="url(#vkGlowRu)">Л</text>
+</svg>

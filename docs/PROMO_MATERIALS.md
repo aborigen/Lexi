@@ -1,19 +1,22 @@
-# Lexi.AI - Yandex Games Promotional Materials
 
-This document provides localized descriptions, metadata, and asset references for publishing Lexi.AI on the Yandex Games platform.
+# Lexi.AI - Promotional Materials
+
+This document provides localized descriptions, metadata, and asset references for publishing Lexi.AI on multiple platforms (Yandex Games, VK Games, Poki, etc.).
 
 ## 1. Visual Assets (SVG)
 The following source files are available in the root `promo/` directory:
 
 ### Universal / English Assets
 - **Cover Image** (`promo/cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
-- **Game Icon** (`promo/icon_512.svg`): 512x512 high-contrast icon optimized for the store grid.
+- **Standard Icon** (`promo/icon_512.svg`): 512x512 high-contrast icon.
+- **VK Icon** (`promo/icon_vk_576.svg`): 576x576 specialized icon for the VK platform.
 - **Portrait Screenshot** (`promo/screenshot_portrait_en.svg`): 1080x1920 (9:16) gameplay view for English locale.
 - **Landscape Screenshot** (`promo/screenshot_landscape_en.svg`): 1920x1080 (16:9) gameplay view for English locale.
 
 ### Russian Localized Assets
 - **Russian Cover Image** (`promo/cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
-- **Russian Store Icon** (`promo/icon_ru_512.svg`): 512x512 localized icon.
+- **Russian Standard Icon** (`promo/icon_ru_512.svg`): 512x512 localized icon.
+- **Russian VK Icon** (`promo/icon_vk_ru_576.svg`): 576x576 specialized localized icon for the VK platform.
 - **Russian Portrait Screenshot** (`promo/screenshot_portrait_ru.svg`): 1080x1920 (9:16) localized gameplay view.
 - **Russian Landscape Screenshot** (`promo/screenshot_landscape_ru.svg`): 1920x1080 (16:9) localized gameplay view.
 
@@ -58,9 +61,4 @@ Lexi.AI — это интуитивно понятная головоломка,
 - 🌍 **Полная локализация**: Игра полностью переведена на русский и английский языки.
 
 ## 3. Keywords & Tags
-
-### English
 Word, Connect, Puzzle, AI, Brain, Language, Search, Crossword, Logic, Educational.
-
-### Russian
-Слова, Соединение, Головоломка, ИИ, Мозг, Язык, Поиск, Кроссворд, Логика, Обучающая.
