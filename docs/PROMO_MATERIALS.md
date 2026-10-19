@@ -10,6 +10,7 @@ The following source files are available in the root `promo/` directory:
 - **Cover Image** (`promo/cover.svg`): 800x470 banner featuring the core mechanics and branding in English.
 - **Standard Icon** (`promo/icon_512.svg`): 512x512 high-contrast icon.
 - **VK Icon** (`promo/icon_vk_576.svg`): 576x576 specialized icon for the VK platform.
+- **VK Snippet** (`promo/snippet_vk_1120x630_en.svg`): 1120x630 wide promo banner for VK.
 - **Portrait Screenshot** (`promo/screenshot_portrait_en.svg`): 1080x1920 (9:16) gameplay view for English locale.
 - **Landscape Screenshot** (`promo/screenshot_landscape_en.svg`): 1920x1080 (16:9) gameplay view for English locale.
 
@@ -17,6 +18,7 @@ The following source files are available in the root `promo/` directory:
 - **Russian Cover Image** (`promo/cover_ru.svg`): 800x470 localized banner with Russian title and subtitle.
 - **Russian Standard Icon** (`promo/icon_ru_512.svg`): 512x512 localized icon.
 - **Russian VK Icon** (`promo/icon_vk_ru_576.svg`): 576x576 specialized localized icon for the VK platform.
+- **Russian VK Snippet** (`promo/snippet_vk_1120x630_ru.svg`): 1120x630 localized wide promo banner for VK.
 - **Russian Portrait Screenshot** (`promo/screenshot_portrait_ru.svg`): 1080x1920 (9:16) localized gameplay view.
 - **Russian Landscape Screenshot** (`promo/screenshot_landscape_ru.svg`): 1920x1080 (16:9) localized gameplay view.
 
