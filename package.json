@@ -12,7 +12,11 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "archive": "sh scripts/build-archive.sh"
+    "archive": "sh scripts/build-archive.sh",
+    "build:yandex": "sh scripts/build-multiplatform.sh yandex",
+    "build:vk": "sh scripts/build-multiplatform.sh vk",
+    "build:sber": "sh scripts/build-multiplatform.sh sber",
+    "build:all": "npm run build:yandex && npm run build:vk && npm run build:sber"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
