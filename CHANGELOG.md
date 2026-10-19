@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.35.1] - 2024-07-28
+### Added
+- **Multi-Platform Automation**: Added `scripts/build-multiplatform.sh` to handle automated static builds and archiving for Yandex, VK, and Sber.
+- **Documentation**: Created `docs/ENV_INSTRUCTIONS.md` providing clear guidance on switching publishing platforms.
+
+### Improved
+- **Full Localization**: Completed translation of the Victory (Level Complete) dialog, settings menu, and all global UI headers.
+- **UI Streamlining**: Removed the "WORD CONNECT" subtitle from the main header to enhance brand clarity.
+- **Animation Snappiness**: Shortened the Score particle animation duration and tightened the badge flash timing for more immediate feedback.
+- **Mobile Ergonomics**: Refined the Victory dialog dimensions and paddings to ensure it fits perfectly on ultra-small mobile displays.
+
 ## [2.35.0] - 2024-07-27
 ### Added
 - **Major Level Expansion**: Integrated 30 new high-quality English levels featuring 5-letter target words and full bilingual hints.
@@ -26,8 +37,3 @@
 ### Fixed
 - **Header Duplication**: Resolved structural stacking bug causing multiple identical master navigation headers to map onto specific viewports.
 - **UI Ergonomics**: Suppressed manual "Save Progress" trigger component since save states automatically cycle to local cache stores dynamically.
-
-## [2.32.0] - 2024-07-24
-### Added
-- **English Level Expansion**: Added new high-polish levels featuring 5-letter target words (`SPEED`, `HEART`, `LIGHT`, `POWER`, `BRAIN`, `SMILE`) with full dictionary sub-words.
-- **Level Explorer List**: Integrated a level catalog dialog component accessible via a grid matrix icon, allowing players to view all items and jump between levels.

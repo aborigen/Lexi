@@ -1,5 +1,13 @@
 # Lexi.AI - Version History
 
+## v2.35.1 (2024-07-28)
+### UI Polish & Localization
+- **Localized Victory**: The "Level Complete" dialog now supports full English/Russian localization.
+- **Fast Score Flow**: Optimized score particles and badge flashes for quicker visual gratification.
+- **Clean Header**: Simplified the main header by removing redundant text labels.
+- **Build Automation**: New shell scripts for one-click publishing to Yandex, VK, and Sber platforms.
+- **Mobile Fit**: Compact Victory UI for narrow phone screens.
+
 ## v2.35.0 (2024-07-27)
 ### Major Features & Expansion
 - **English Level Mastery**: Added 30 new 5-letter levels, significantly increasing game longevity and vocabulary depth.
@@ -19,17 +27,7 @@
 - **WordGrid Component Compactness**: Redesigned sizing matrices and height limitations for small and narrow landscape/portrait viewports to secure unobstructed gesture interactions.
 - **Bilingual Context**: Integrated contextual translations into dictionary items across all level modules (Russian translations for English levels, English translations for Pushkin citations) to increase educational gameplay quality.
 
-### Fixed
-- **Header Duplication**: Resolved structural stacking bug causing multiple identical master navigation headers to map onto specific viewports.
-- **UI Ergonomics**: Suppressed manual "Save Progress" trigger component since save states automatically cycle to local cache stores dynamically.
-
 ## v2.32.0 (2024-07-24)
 ### Added
 - **English Level Expansion**: Added new high-polish levels featuring 5-letter target words (`SPEED`, `HEART`, `LIGHT`, `POWER`, `BRAIN`, `SMILE`) with full dictionary sub-words.
 - **Level Explorer List**: Integrated a level catalog dialog component accessible via a grid matrix icon, allowing players to view all items and jump between levels.
-
-## v2.31.0 (2024-07-23)
-### Added
-- **WordGrid Component**: Extracted and enhanced the word matrix UI into a dedicated component with a discovery counter.
-- **Shake Animation**: Added visual haptic feedback for incorrect word attempts.
-- **Current Word Preview**: Implemented a floating "pill" UI that shows the word being constructed in real-time.
