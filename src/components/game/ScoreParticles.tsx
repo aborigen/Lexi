@@ -32,11 +32,11 @@ export const ScoreParticles = forwardRef<ScoreParticlesHandle>((_, ref) => {
       targetX,
       targetY,
       progress: 0,
-      speed: 0.02 + Math.random() * 0.015,
-      delay: i * 50,
+      speed: 0.04 + Math.random() * 0.03, // Increased speed
+      delay: i * 20, // Reduced delay for tighter clustering
       size: 8 + Math.random() * 12,
       rotation: Math.random() * 360,
-      arcFactor: (Math.random() - 0.5) * 200 // Random curve
+      arcFactor: (Math.random() - 0.5) * 150 // Slightly reduced arc for faster pathing
     }));
 
     setParticles(prev => [...prev, ...newParticles]);
@@ -73,11 +73,9 @@ export const ScoreParticles = forwardRef<ScoreParticlesHandle>((_, ref) => {
       {particles.map(p => {
         if (p.delay > 0) return null;
 
-        // Quadratic Bezier or simple interpolation with arc
         const dx = p.targetX - p.startX;
         const dy = p.targetY - p.startY;
         
-        // Add a curve to the path
         const arc = Math.sin(p.progress * Math.PI) * p.arcFactor;
         
         const currentX = p.startX + dx * p.progress + arc;

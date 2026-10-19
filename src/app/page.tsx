@@ -171,10 +171,11 @@ export default function WordConnectPage() {
       const targetY = targetRect.top + targetRect.height / 2;
       particlesRef.current.emit(pos.x, pos.y, targetX, targetY);
 
+      // Trigger impact sooner and for less time
       setTimeout(() => {
         setIsScoreImpact(true);
-        setTimeout(() => setIsScoreImpact(false), 600);
-      }, 500);
+        setTimeout(() => setIsScoreImpact(false), 400);
+      }, 300);
     }
     setScore(prev => prev + newScore);
     updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
