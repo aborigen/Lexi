@@ -38,7 +38,8 @@ type TranslationKeys =
   | 'level_completed_sub'
   | 'continue'
   | 'found'
-  | 'words';
+  | 'words'
+  | 'locked';
 
 const translations: Record<string, Record<TranslationKeys, string>> = {
   en: {
@@ -79,7 +80,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     level_completed_sub: 'Level Completed',
     continue: 'Continue',
     found: 'Found',
-    words: 'Words'
+    words: 'Words',
+    locked: 'Locked'
   },
   ru: {
     high_score: 'Рекорд',
@@ -119,7 +121,8 @@ const translations: Record<string, Record<TranslationKeys, string>> = {
     level_completed_sub: 'Уровень пройден',
     continue: 'Далее',
     found: 'Найдено',
-    words: 'Слов'
+    words: 'Слов',
+    locked: 'Закрыто'
   }
 };
 

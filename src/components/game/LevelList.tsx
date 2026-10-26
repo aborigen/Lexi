@@ -11,7 +11,7 @@ import { WordLevel } from '@/lib/levels';
 import { t } from '@/lib/translations';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, CheckCircle2 } from 'lucide-react';
+import { LayoutGrid, CheckCircle2, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LevelListProps {
@@ -19,11 +19,12 @@ interface LevelListProps {
   onOpenChange: (open: boolean) => void;
   levels: WordLevel[];
   currentIndex: number;
+  maxLevelReached: number;
   onSelectLevel: (index: number) => void;
   lang: string;
 }
 
-export function LevelList({ isOpen, onOpenChange, levels, currentIndex, onSelectLevel, lang }: LevelListProps) {
+export function LevelList({ isOpen, onOpenChange, levels, currentIndex, maxLevelReached, onSelectLevel, lang }: LevelListProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="w-[94vw] max-w-[440px] rounded-[3rem] p-7 glass border-white/80 shadow-2xl animate-in zoom-in-95 duration-300">
@@ -42,35 +43,53 @@ export function LevelList({ isOpen, onOpenChange, levels, currentIndex, onSelect
           <div className="grid grid-cols-2 gap-3 pb-4">
             {levels.map((level, index) => {
               const isActive = index === currentIndex;
+              const isLocked = index > maxLevelReached;
+              
               return (
                 <Button
                   key={index}
                   variant="ghost"
+                  disabled={isLocked}
                   onClick={() => {
-                    onSelectLevel(index);
-                    onOpenChange(false);
+                    if (!isLocked) {
+                      onSelectLevel(index);
+                      onOpenChange(false);
+                    }
                   }}
                   className={cn(
                     "h-auto flex flex-col items-start p-4 rounded-[1.5rem] border transition-all duration-300 gap-1",
                     isActive 
                       ? 'bg-primary/20 border-primary/50 shadow-lg scale-[1.02]' 
-                      : 'bg-white/40 border-white/60 hover:bg-white/60'
+                      : 'bg-white/40 border-white/60 hover:bg-white/60',
+                    isLocked && "opacity-40 grayscale-[0.5] cursor-not-allowed border-dashed"
                   )}
                 >
                   <div className="w-full flex justify-between items-center">
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40">
                       {t('level_label', lang)} {index + 1}
                     </span>
-                    {isActive && <CheckCircle2 className="w-3 h-3 text-primary" />}
+                    {isActive ? (
+                      <CheckCircle2 className="w-3 h-3 text-primary" />
+                    ) : isLocked ? (
+                      <Lock className="w-3 h-3 text-muted-foreground" />
+                    ) : (
+                      <CheckCircle2 className="w-3 h-3 text-primary/40" />
+                    )}
                   </div>
                   <div className="flex flex-wrap gap-0.5 mt-1">
-                    {level.letters.map((char, i) => (
-                      <span key={i} className="text-xs font-black text-foreground/80">{char}</span>
-                    ))}
+                    {isLocked ? (
+                      <span className="text-[10px] font-black text-muted-foreground italic">{t('locked', lang)}</span>
+                    ) : (
+                      level.letters.map((char, i) => (
+                        <span key={i} className="text-xs font-black text-foreground/80">{char}</span>
+                      ))
+                    )}
                   </div>
-                  <span className="text-[9px] font-bold opacity-40 uppercase mt-1">
-                    {level.validWords.length} {t('words', lang)}
-                  </span>
+                  {!isLocked && (
+                    <span className="text-[9px] font-bold opacity-40 uppercase mt-1">
+                      {level.validWords.length} {t('words', lang)}
+                    </span>
+                  )}
                 </Button>
               );
             })}

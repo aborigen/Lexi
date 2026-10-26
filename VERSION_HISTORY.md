@@ -1,6 +1,13 @@
 
 # Lexi.AI - Version History
 
+## v2.36.0 (2024-07-30)
+### Core Gameplay Refactor
+- **Linear Progression**: Replaced random level shuffling with a sequential progression system.
+- **Level Unlocking**: Added logic to lock future levels until the current one is completed.
+- **Persistent State**: Level index and highest reached level are now saved to `localStorage` and synced with platform cloud storage.
+- **UI Feedback**: The Level List now visually distinguishes between completed, active, and locked levels.
+
 ## v2.35.3 (2024-07-29)
 ### UI Refinement
 - **Wider Word Discovery**: Increased the width of the sidebar in landscape orientation to prevent target word letters from wrapping.

@@ -23,7 +23,6 @@ import {
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
-import { shuffleArray } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -45,6 +44,7 @@ export default function WordConnectPage() {
   const [displayScore, setDisplayScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
+  const [maxLevelReached, setMaxLevelReached] = useState(0);
   const [activeLevels, setActiveLevels] = useState<WordLevel[]>([]);
   const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -84,6 +84,12 @@ export default function WordConnectPage() {
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('lexi_high_score') : null;
         if (savedScore) setHighScore(parseInt(savedScore));
 
+        const savedLevel = typeof window !== 'undefined' ? localStorage.getItem('lexi_level_index') : '0';
+        setLevelIndex(parseInt(savedLevel || '0'));
+
+        const savedMaxLevel = typeof window !== 'undefined' ? localStorage.getItem('lexi_max_level') : '0';
+        setMaxLevelReached(parseInt(savedMaxLevel || '0'));
+
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
@@ -93,7 +99,7 @@ export default function WordConnectPage() {
         
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
         const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-        setActiveLevels(shuffleArray(base));
+        setActiveLevels(base); // Sequential loading
 
         await updatePlayerStats({ totalSessions: 1 });
         const stats = await fetchPlayerStats();
@@ -110,8 +116,10 @@ export default function WordConnectPage() {
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    setActiveLevels(shuffleArray(base));
+    setActiveLevels(base);
+    // Reset index when changing language as levels are different sets
     setLevelIndex(0);
+    setMaxLevelReached(0);
   }, [lang]);
 
   useEffect(() => {
@@ -132,24 +140,32 @@ export default function WordConnectPage() {
     setScore(0);
     setDisplayScore(0);
     setLevelIndex(0);
-    const filtered = LEVELS.filter(lvl => lvl.lang === lang);
-    const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    setActiveLevels(shuffleArray(base));
-    toast({ title: t('reset', lang), description: "Progress cleared and levels shuffled." });
+    setMaxLevelReached(0);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lexi_level_index', '0');
+      localStorage.setItem('lexi_max_level', '0');
+    }
+    toast({ title: t('reset', lang), description: "Progress cleared." });
   }, [lang]);
 
   const handleNextLevel = useCallback(() => {
-    setLevelIndex(prev => prev + 1);
+    const nextIdx = levelIndex + 1;
+    setLevelIndex(nextIdx);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lexi_level_index', nextIdx.toString());
+    }
     setIsVictoryOpen(false);
-  }, []);
+  }, [levelIndex]);
 
   const handleSelectLevel = useCallback((index: number) => {
     setLevelIndex(index);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lexi_level_index', index.toString());
+    }
     setIsVictoryOpen(false);
   }, []);
 
   const handleLevelComplete = useCallback(() => {
-    // Initial celebration particles
     if (particlesRef.current) {
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
@@ -165,7 +181,15 @@ export default function WordConnectPage() {
       }
     }
 
-    // Delay the dialog to let the user enjoy the success state
+    // Update progression
+    if (levelIndex === maxLevelReached) {
+      const newMax = maxLevelReached + 1;
+      setMaxLevelReached(newMax);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('lexi_max_level', newMax.toString());
+      }
+    }
+
     setTimeout(() => {
       setIsVictoryOpen(true);
     }, 2000);
@@ -173,7 +197,7 @@ export default function WordConnectPage() {
     reportScoreToLeaderboard(score);
     updatePlayerStats({ levelsCleared: 1 });
     fetchPlayerStats().then(s => s && setPlayerStats(s));
-  }, [score]);
+  }, [score, levelIndex, maxLevelReached]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number, pos: { x: number, y: number }) => {
     if (particlesRef.current && scoreBadgeRef.current) {
@@ -285,7 +309,8 @@ export default function WordConnectPage() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => setLevelIndex(prev => prev + 1)} 
+                disabled={levelIndex >= maxLevelReached}
+                onClick={() => handleNextLevel()} 
                 className="rounded-2xl w-10 h-10 glass border-white/60 hover:bg-white/50 hidden xs:flex"
               >
                 <SkipForward className="w-5 h-5 text-muted-foreground" />
@@ -374,7 +399,8 @@ export default function WordConnectPage() {
         isOpen={isLevelListOpen}
         onOpenChange={setIsLevelListOpen}
         levels={activeLevels}
-        currentIndex={levelIndex % activeLevels.length}
+        currentIndex={levelIndex}
+        maxLevelReached={maxLevelReached}
         onSelectLevel={handleSelectLevel}
         lang={lang}
       />
