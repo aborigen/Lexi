@@ -5,6 +5,7 @@
 ### Added
 - **VK Deployment Automation**: Integrated `vk-miniapps-deploy` for one-click uploading to VK Games hosting.
 - **Configuration**: Added `vk-hosting-config.json` template for VK production builds.
+- **Documentation**: Added `docs/GIT_WORKFLOW.md` explaining branching strategies for multi-platform development.
 
 ## [2.35.1] - 2024-07-28
 ### Added
@@ -16,5 +17,3 @@
 - **UI Streamlining**: Removed the "WORD CONNECT" subtitle from the main header to enhance brand clarity.
 - **Animation Snappiness**: Shortened the Score particle animation duration and tightened the badge flash timing for more immediate feedback.
 - **Mobile Ergonomics**: Refined the Victory dialog dimensions and paddings to ensure it fits perfectly on ultra-small mobile displays.
-
-... (rest of history)
