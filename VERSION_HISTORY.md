@@ -11,6 +11,7 @@
 ### UI & UX Enhancements
 - **In-Game AI Advisor**: Moved citation hints from a separate modal to a persistent, togglable display within the main `WordGrid`.
 - **Default Hints**: The AI Citation is now shown automatically when a level begins.
+- **Onboarding Refinement**: Added an animated "Hand Pointer" to demonstrate the draw mechanic to new users.
 - **Landscape Optimization**: Wider sidebar layout for better fitting of long words on wide screens.
 - **Celebration Timing**: Delayed the Victory Dialog by 2 seconds to improve the impact of success animations.
 

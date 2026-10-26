@@ -43,9 +43,7 @@ export function WordGrid({ validWords, foundWords, lang = 'en', activeHint = nul
       )}
 
       <div className="flex flex-col items-center gap-2">
-        <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 leading-none">
-          {t('found_words', lang)}
-        </span>
+
         <div className="flex items-center gap-2">
           <Sparkles className={cn("w-4 h-4 text-primary transition-opacity", isLevelComplete ? "opacity-100" : "opacity-0")} />
           <span className={cn(

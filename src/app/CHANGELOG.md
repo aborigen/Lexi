@@ -6,6 +6,7 @@
 - **Integrated AI Hints**: AI citation hints are now displayed directly within the Word Grid panel on the main game screen.
 - **Auto-Hint Feature**: Literary context hints are now displayed by default at the start of each level to provide immediate educational value.
 - **Pangram Gameplay Rule**: Refactored levels to focus on a "One Word Anagram" mechanic, where the goal is to find the single word using all available letters.
+- **Refined Onboarding**: Added a smooth hand animation to guide new users through their first word connection.
 
 ### Improved
 - **Linear Progression**: Implemented sequential level unlocking. Future levels are locked until the current one is mastered.
