@@ -73,7 +73,7 @@ export default function WordConnectPage() {
         if (diff > 0) return Math.min(prev + stepSize, score);
         return Math.max(prev - stepSize, score);
       });
-    }, 20);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, [score, displayScore]);
@@ -149,16 +149,27 @@ export default function WordConnectPage() {
   }, []);
 
   const handleLevelComplete = useCallback(() => {
-    setIsVictoryOpen(true);
+    // Initial celebration particles
     if (particlesRef.current) {
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      for(let i = 0; i < 6; i++) {
+      for(let i = 0; i < 12; i++) {
         setTimeout(() => {
-          particlesRef.current?.emit(centerX + (Math.random() - 0.5) * 200, centerY + (Math.random() - 0.5) * 200, centerX, -200);
-        }, i * 120);
+          particlesRef.current?.emit(
+            centerX + (Math.random() - 0.5) * 400, 
+            centerY + (Math.random() - 0.5) * 400, 
+            centerX, 
+            -200
+          );
+        }, i * 150);
       }
     }
+
+    // Delay the dialog to let the user enjoy the success state
+    setTimeout(() => {
+      setIsVictoryOpen(true);
+    }, 2000);
+
     reportScoreToLeaderboard(score);
     updatePlayerStats({ levelsCleared: 1 });
     fetchPlayerStats().then(s => s && setPlayerStats(s));
