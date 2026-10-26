@@ -1,33 +1,24 @@
+
 # Lexi.AI - Version History
 
+## v2.35.3 (2024-07-29)
+### UI Refinement
+- **Wider Word Discovery**: Increased the width of the sidebar in landscape orientation to prevent target word letters from wrapping.
+- **Single-Line Layout**: Forced a horizontal, non-wrapping layout for letter slots in landscape mode for better visual flow.
+
+## v2.35.2 (2024-07-29)
+### Added
+- **VK Deployment Automation**: Integrated `vk-miniapps-deploy` for one-click uploading to VK Games hosting.
+- **Configuration**: Added `vk-hosting-config.json` template for VK production builds.
+- **Documentation**: Added `docs/GIT_WORKFLOW.md` explaining branching strategies for multi-platform development.
+
 ## v2.35.1 (2024-07-28)
-### UI Polish & Localization
-- **Localized Victory**: The "Level Complete" dialog now supports full English/Russian localization.
-- **Fast Score Flow**: Optimized score particles and badge flashes for quicker visual gratification.
-- **Clean Header**: Simplified the main header by removing redundant text labels.
-- **Build Automation**: New shell scripts for one-click publishing to Yandex, VK, and Sber platforms.
-- **Mobile Fit**: Compact Victory UI for narrow phone screens.
-
-## v2.35.0 (2024-07-27)
-### Major Features & Expansion
-- **English Level Mastery**: Added 30 new 5-letter levels, significantly increasing game longevity and vocabulary depth.
-- **Universal SDK Bridge**: Unified support for Yandex, VK, and Sber Devices under a single adapter pattern.
-- **"Vortex" Interaction**: New high-energy shuffle animation with scale collapse and motion blur.
-- **Store Assets**: Generated comprehensive English and Russian promotional materials for multi-platform publishing.
-
-## v2.34.0 (2024-07-26)
 ### Added
-- **Refined Success Feedback**: Implemented high-impact visual confirmation for correct words, including success flashes and ring pulses.
-- **Kinetic Shuffle**: Added kinetic jumble animations for letters and icon spinning when reshuffling the board.
-- **Grounding Ring**: Integrated a new glassmorphic background layer behind the letter circle for better visual grounding.
+- **Multi-Platform Automation**: Added `scripts/build-multiplatform.sh` to handle automated static builds and archiving for Yandex, VK, and Sber.
+- **Documentation**: Created `docs/ENV_INSTRUCTIONS.md` providing clear guidance on switching publishing platforms.
 
-## v2.33.0 (2024-07-25)
 ### Improved
-- **Victory Dialog Responsiveness**: Refactored the "Level Complete" victory dialog using dynamic paddings, icon scaling, and fluid text parameters to prevent overflow on ultra-small viewport mobile screens.
-- **WordGrid Component Compactness**: Redesigned sizing matrices and height limitations for small and narrow landscape/portrait viewports to secure unobstructed gesture interactions.
-- **Bilingual Context**: Integrated contextual translations into dictionary items across all level modules (Russian translations for English levels, English translations for Pushkin citations) to increase educational gameplay quality.
-
-## v2.32.0 (2024-07-24)
-### Added
-- **English Level Expansion**: Added new high-polish levels featuring 5-letter target words (`SPEED`, `HEART`, `LIGHT`, `POWER`, `BRAIN`, `SMILE`) with full dictionary sub-words.
-- **Level Explorer List**: Integrated a level catalog dialog component accessible via a grid matrix icon, allowing players to view all items and jump between levels.
+- **Full Localization**: Completed translation of the Victory (Level Complete) dialog, settings menu, and all global UI headers.
+- **UI Streamlining**: Removed the "WORD CONNECT" subtitle from the main header to enhance brand clarity.
+- **Animation Snappiness**: Shortened the Score particle animation duration and tightened the badge flash timing for more immediate feedback.
+- **Mobile Ergonomics**: Refined the Victory dialog dimensions and paddings to ensure it fits perfectly on ultra-small mobile displays.
