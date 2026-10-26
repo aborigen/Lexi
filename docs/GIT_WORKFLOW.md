@@ -24,7 +24,25 @@ git checkout -b branch-name
 
 ---
 
-## 3. Recommended Branching Strategy for Lexi.AI
+## 3. How to Push Your Changes
+
+Once you've made changes and committed them locally, you need to "push" them to the cloud (GitHub/GitLab).
+
+### The First Push
+The first time you push a new branch, you must set the "upstream" destination:
+```bash
+git push -u origin branch-name
+```
+
+### Subsequent Pushes
+After the first time, you can simply use:
+```bash
+git push
+```
+
+---
+
+## 4. Recommended Branching Strategy for Lexi.AI
 
 ### The `main` Branch
 This is your "Single Source of Truth." It should always contain code that builds and runs perfectly. 
@@ -42,17 +60,19 @@ Used for quick patches:
 
 ---
 
-## 4. Why it matters for Lexi.AI
+## 5. Why it matters for Lexi.AI
 Since this project targets multiple platforms (Yandex, VK, Sber), branches allow you to:
 1.  **Experiment**: Try a new Genkit prompt in a branch without breaking the existing AI Advisor.
 2.  **Verify**: Build a static archive from a specific branch to test on the VK sandbox before committing to the main release.
-3.  **Safety**: If an `npm install` breaks your environment (as seen with versioning issues), you can easily revert to the state of the branch before the change.
+3.  **Safety**: If an `npm install` breaks your environment, you can easily revert to the state of the branch before the change.
 
 ---
 
-## 5. Useful Commands Reference
+## 6. Useful Commands Reference
 - **Check current branch**: `git branch`
 - **Create and switch**: `git checkout -b branch-name`
+- **Push for first time**: `git push -u origin branch-name`
+- **Push normally**: `git push`
 - **Switch back to main**: `git checkout main`
 - **Merge changes**: (While on main) `git merge branch-name`
 - **Delete a branch**: `git branch -d branch-name`
