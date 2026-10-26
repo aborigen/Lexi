@@ -1,4 +1,17 @@
+
 # Changelog
+
+## [2.36.0] - 2024-07-30
+### Added
+- **Integrated AI Hints**: AI citation hints are now displayed directly within the Word Grid panel on the main game screen.
+- **Auto-Hint Feature**: Literary context hints are now displayed by default at the start of each level to provide immediate educational value.
+- **Pangram Gameplay Rule**: Refactored levels to focus on a "One Word Anagram" mechanic, where the goal is to find the single word using all available letters.
+
+### Improved
+- **Linear Progression**: Implemented sequential level unlocking. Future levels are locked until the current one is mastered.
+- **Victory Feedback**: Added a 2-second delay before the Victory Dialog opens to allow celebratory SFX and particle animations to complete.
+- **Landscape Ergonomics**: Widened the Word Discovery sidebar in landscape mode to ensure target word slots always fit on a single line.
+- **UI Persistence**: Game state (level index, high score, unlocked levels) now persists via `localStorage` and platform cloud storage.
 
 ## [2.35.1] - 2024-07-28
 ### Added
@@ -10,18 +23,3 @@
 - **UI Streamlining**: Removed "WORD CONNECT" subtitle from logo area for a cleaner design.
 - **Animation Timing**: Increased speed of score particles and shortened success flash duration.
 - **Victory Dialog**: Optimized padding and scaling for small mobile devices.
-
-## [2.34.0] - 2024-07-26
-### Improved
-- **Success Feedback**: Added high-impact success flash and ring pulses to reward correct word identification.
-- **Shuffle UX**: Integrated kinetic "jumble" animations for letters when the shuffle button is pressed.
-- **UI Depth**: Added a glassmorphic grounding ring behind the interactive letter circle.
-
-## [2.33.0] - 2024-07-25
-### Improved
-- **Victory Dialog Responsiveness**: Refactored the "Level Complete" dialog to use dynamic padding, icon scaling, and font sizes. It now fits perfectly on small mobile screens without vertical overflow.
-- **Bilingual Context**: Added word translations to all level hints (Russian for English levels, English for Russian levels) to enhance educational value.
-
-### Fixed
-- **Header Duplication**: Resolved a bug causing the game header to render twice on certain viewports.
-- **UI Ergonomics**: Removed redundant "Save Progress" button as game state persists automatically.
