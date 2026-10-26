@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -24,10 +25,6 @@ interface AIAdvisorProps {
   level: WordLevel;
 }
 
-/**
- * AIAdvisor Component
- * FAB (Floating Action Button) implementation for maximum screen space.
- */
 export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
   const [citation, setCitation] = useState<string | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
@@ -40,9 +37,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
   const handleGetSuggestion = async () => {
     if (!gameState.letters || gameState.letters.length === 0 || !level) return;
 
-    const remaining = level.validWords.filter(w => !gameState.foundWords.includes(w));
-    
-    if (remaining.length === 0) {
+    if (gameState.foundWords.length > 0) {
       setCitation(t('hint_all_found', lang));
       setIsOverlayOpen(true);
       return;
@@ -52,8 +47,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
     await new Promise(resolve => setTimeout(resolve, 800));
 
     try {
-      const sorted = [...remaining].sort((a, b) => b.length - a.length);
-      const targetWord = sorted[0];
+      const targetWord = level.validWords[0];
       const staticHint = level.hints[targetWord];
 
       if (staticHint) {
@@ -96,13 +90,6 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
           <Loader2 className="w-6 h-6 text-white animate-spin" />
         ) : (
           <BrainCircuit className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-        )}
-        
-        {!isLoading && !isButtonDisabled && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-accent border-2 border-white"></span>
-          </span>
         )}
       </Button>
 

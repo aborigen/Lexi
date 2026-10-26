@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -5,7 +6,7 @@ import { CIRCLE_RADIUS, LETTER_RADIUS, INTERACTION_BUFFER } from '@/lib/game-con
 import { WordLevel } from '@/lib/levels';
 import { cn, shuffleArray } from '@/lib/utils';
 import { audioManager } from '@/lib/audio-manager';
-import { Hand, Shuffle, Sparkles } from 'lucide-react';
+import { Hand, Shuffle } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { Button } from '@/components/ui/button';
 import { WordGrid } from './WordGrid';
@@ -148,34 +149,23 @@ export function WordConnect({
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
     if (level.validWords.includes(currentWord)) {
-      if (!foundWords.includes(currentWord)) {
-        setIsSuccess(true);
-        const rect = containerRef.current?.getBoundingClientRect();
-        const startPos = rect ? {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      setIsSuccess(true);
+      const rect = containerRef.current?.getBoundingClientRect();
+      const startPos = rect ? {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-        setTimeout(() => {
-          const newFound = [...foundWords, currentWord];
-          setFoundWords(newFound);
-          onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
-          if (newFound.length === level.validWords.length) {
-            audioManager.playLevelComplete();
-            onLevelComplete();
-          } else {
-            audioManager.playSuccess();
-          }
-          setSelectedIndices([]);
-          selectedIndicesRef.current = [];
-          setDragPath(null);
-          setIsSuccess(false);
-        }, 500);
-      } else {
+      setTimeout(() => {
+        setFoundWords([currentWord]);
+        onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
+        audioManager.playLevelComplete();
+        onLevelComplete();
         setSelectedIndices([]);
         selectedIndicesRef.current = [];
         setDragPath(null);
-      }
+        setIsSuccess(false);
+      }, 500);
     } else if (currentIndices.length > 1) {
       audioManager.playError();
       setIsInvalid(true);
@@ -197,29 +187,14 @@ export function WordConnect({
     setIsShuffling(true);
     audioManager.playSelect(0);
     
-    // Switch data at the peak of the collapse (approx 300ms)
     setTimeout(() => {
       setShuffledLetters(prev => shuffleArray(prev));
     }, 300);
 
-    // End shuffling state when animation completes (600ms)
     setTimeout(() => {
       setIsShuffling(false);
     }, 600);
   }, [selectedIndices.length, isSuccess, isInvalid, isShuffling]);
-
-  const onboardingPath = useMemo(() => {
-    if (!showOnboarding || !level || shuffledLetters.length === 0) return null;
-    const firstWord = level.validWords.find(w => w.length >= 3) || level.validWords[0];
-    if (!firstWord) return null;
-    const indices: number[] = [];
-    for (const char of firstWord.split('')) {
-      const idx = shuffledLetters.indexOf(char);
-      if (idx !== -1 && !indices.includes(idx)) indices.push(idx);
-    }
-    if (indices.length < 2) return null;
-    return indices.map(i => letterPositions[i]);
-  }, [showOnboarding, level, shuffledLetters, letterPositions]);
 
   const isDrawing = selectedIndices.length > 0;
   if (!level || shuffledLetters.length === 0) return null;
@@ -227,7 +202,7 @@ export function WordConnect({
   return (
     <div 
       ref={rootRef}
-      className="flex flex-col landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-8 sm:pb-12"
+      className="flex flex-col portrait:items-center landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-8 sm:pb-12"
       onMouseMove={handleInteractionMove}
       onTouchMove={handleInteractionMove}
       onMouseUp={handleInteractionEnd}
@@ -263,7 +238,6 @@ export function WordConnect({
             )}
             style={{ width: COORDINATE_BASE, height: COORDINATE_BASE }}
           >
-            {/* Visual Grounding Ring */}
             <div 
               className="absolute inset-0 ring-track rounded-full shadow-inner opacity-40 pointer-events-none"
               style={{
@@ -318,7 +292,6 @@ export function WordConnect({
               )}
             </svg>
 
-            {/* Shuffle Button in Center */}
             <div 
               className={cn(
                 "absolute z-50 flex items-center justify-center transition-all duration-500",
@@ -370,12 +343,12 @@ export function WordConnect({
               );
             })}
 
-            {showOnboarding && onboardingPath && (
+            {showOnboarding && (
               <div 
-                className="absolute pointer-events-none z-[60] animate-onboarding-hand"
+                className="absolute pointer-events-none z-[60] animate-onboarding-hand opacity-60"
                 style={{
-                  left: onboardingPath[0].x - 30,
-                  top: onboardingPath[0].y - 30,
+                  left: OFFSET - 30,
+                  top: OFFSET + 100,
                 }}
               >
                 <div className="flex flex-col items-center">

@@ -3,540 +3,321 @@
   {
     "lang": "en",
     "letters": ["S", "T", "A", "R", "E"],
-    "validWords": ["STAR", "STARE", "TEAR", "RATE", "ERA", "ART", "EAT", "TEA", "ARE", "REST", "EAST", "SEAT"],
+    "validWords": ["STARE"],
     "hints": {
-      "STAR": "Look up at the night sky and find the brightest _____. (Звезда)",
-      "STARE": "It is impolite to _____ at people for too long. (Пристальный взгляд)",
-      "TEAR": "A single _____ rolled down her cheek as she read the letter. (Слеза)",
-      "RATE": "The interest _____ has increased significantly this year. (Ставка/Курс)",
-      "ERA": "We are living in a new digital _____ of innovation. (Эра)",
-      "ART": "Life is short, but _____ is long and eternal. (Искусство)",
-      "EAT": "You are what you _____, so choose healthy food. (Есть)",
-      "TEA": "Would you like a cup of hot _____ with lemon? (Чай)",
-      "ARE": "Where _____ you going so late in the evening? (Глагол 'быть')",
-      "REST": "After a long walk, they decided to _____ by the river. (Отдых)",
-      "EAST": "The sun rises in the _____ and sets in the west. (Восток)",
-      "SEAT": "Please take your _____ and fasten your belt. (Место/Сиденье)"
+      "STARE": "It is impolite to _____ at people for too long. (Пристальный взгляд)"
     }
   },
   {
     "lang": "en",
     "letters": ["F", "E", "A", "T", "U", "R", "E"],
-    "validWords": ["FEATURE", "FEAR", "TRUE", "TEAR", "FARE", "RATE", "FEAT"],
+    "validWords": ["FEATURE"],
     "hints": {
-      "FEATURE": "This software has a unique _____ that distinguishes it from others. (Особенность)",
-      "FEAR": "Face your _____s and you will become stronger. (Страх)",
-      "TRUE": "Is it _____ that you are moving to London next month? (Правда)",
-      "TEAR": "Be careful not to _____ your clothes on the fence. (Рвать)",
-      "FARE": "How much is the bus _____ to the city center? (Стоимость проезда)",
-      "RATE": "The success _____ of the operation was very high. (Показатель/Рейтинг)",
-      "FEAT": "Climbing Mt. Everest is a remarkable _____ of endurance. (Подвиг)"
+      "FEATURE": "This software has a unique _____ that distinguishes it from others. (Особенность)"
     }
   },
   {
     "lang": "en",
     "letters": ["B", "R", "I", "D", "G", "E"],
-    "validWords": ["BRIDGE", "RIDGE", "DIRE", "BIRD", "GRID", "RIDE", "BRIDE"],
+    "validWords": ["BRIDGE"],
     "hints": {
-      "BRIDGE": "He's going under the _____ just as the police car is going over it. (Мост)",
-      "RIDGE": "We walked along the mountain _____ to see the view. (Хребет)",
-      "DIRE": "The country is in _____ need of economic reform. (Отчаянный/Крайний)",
-      "BIRD": "A small _____ was singing on the branch of the tree. (Птица)",
-      "GRID": "The city is laid out on a _____ system of streets. (Сетка)",
-      "RIDE": "Can you give me a _____ to the airport tomorrow? (Поездка)",
-      "BRIDE": "The _____ looked beautiful in her white silk dress. (Невеста)"
+      "BRIDGE": "He's going under the _____ just as the police car is going over it. (Мост)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "P", "E", "E", "D"],
-    "validWords": ["SPEED", "DEEP", "SEED", "SEE"],
+    "validWords": ["SPEED"],
     "hints": {
-      "SPEED": "You should check your _____ while driving near schools. (Скорость)",
-      "DEEP": "The water in the lake is very _____ at the center. (Глубокий)",
-      "SEED": "Every giant oak tree starts as a tiny _____. (Семя)",
-      "SEE": "Can you _____ the mountains from your window? (Видеть)"
+      "SPEED": "You should check your _____ while driving near schools. (Скорость)"
     }
   },
   {
     "lang": "en",
     "letters": ["C", "R", "I", "M", "E"],
-    "validWords": ["CRIME", "RICE", "MICE", "MIRE", "RIME"],
+    "validWords": ["CRIME"],
     "hints": {
-      "CRIME": "Fighting _____ is one of the top priorities for the local police. (Преступление)",
-      "RICE": "Would you like brown _____ or white _____ with your meal? (Рис)",
-      "MICE": "The cat was hunting for _____ in the old barn. (Мыши)",
-      "MIRE": "The wheels of the truck were stuck in the deep _____. (Трясина)",
-      "RIME": "A delicate coating of _____ covered the windows in the morning. (Иней)"
+      "CRIME": "Fighting _____ is one of the top priorities for the local police. (Преступление)"
     }
   },
   {
     "lang": "en",
     "letters": ["H", "E", "A", "R", "T"],
-    "validWords": ["HEART", "EARTH", "EAR", "TEA", "EAT", "RAT", "ART", "HEAT"],
+    "validWords": ["HEART"],
     "hints": {
-      "HEART": "Listen to your _____ when making important decisions. (Сердце)",
-      "EARTH": "We must take care of the _____ for future generations. (Земля)",
-      "EAR": "He whispered a secret into her _____ so no one else could hear. (Ухо)",
-      "TEA": "I prefer herbal _____ over coffee in the afternoon. (Чай)",
-      "EAT": "It's important to _____ a balanced diet every day. (Есть)",
-      "RAT": "The laboratory used a white _____ for the experiment. (Крыса)",
-      "ART": "She visits the _____ gallery whenever she needs inspiration. (Искусство)",
-      "HEAT": "The summer _____ was almost unbearable in the city. (Жара)"
+      "HEART": "Listen to your _____ when making important decisions. (Сердце)"
     }
   },
   {
     "lang": "en",
     "letters": ["L", "I", "G", "H", "T"],
-    "validWords": ["LIGHT", "GILT", "HILT", "HIT"],
+    "validWords": ["LIGHT"],
     "hints": {
-      "LIGHT": "Switch off the _____ when you leave the room to save energy. (Свет)",
-      "GILT": "The mirror was set in a beautiful _____ frame. (Позолота)",
-      "HILT": "The knight gripped the _____ of his sword tightly. (Эфес/Рукоять)",
-      "HIT": "He managed to _____ the target on his very first try. (Удар/Попадание)"
+      "LIGHT": "Switch off the _____ when you leave the room to save energy. (Свет)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "O", "W", "E", "R"],
-    "validWords": ["POWER", "ROPE", "ROW", "ORE", "PORE"],
+    "validWords": ["POWER"],
     "hints": {
-      "POWER": "The storm caused a major _____ outage in the entire neighborhood. (Сила/Энергия)",
-      "ROPE": "We used a thick _____ to pull the boat to the shore. (Веревка)",
-      "ROW": "Can you _____ the boat across the lake for me? (Ряд/Грести)",
-      "ORE": "Iron _____ is extracted from the ground and used to make steel. (Руда)",
-      "PORE": "Sweat escapes from your body through tiny _____s in your skin. (Пора)"
+      "POWER": "The storm caused a major _____ outage in the entire neighborhood. (Сила/Энергия)"
     }
   },
   {
     "lang": "en",
     "letters": ["B", "R", "A", "I", "N"],
-    "validWords": ["BRAIN", "RAIN", "BARN", "BAR", "RAN", "BIN", "BRAN"],
+    "validWords": ["BRAIN"],
     "hints": {
-      "BRAIN": "The human _____ is the most complex organ in the body. (Мозг)",
-      "RAIN": "The plants need some _____ after this long dry spell. (Дождь)",
-      "BARN": "The farmer kept his tractor and hay inside the old _____. (Амбар)",
-      "BAR": "They met for a quick drink at the local _____ after work. (Бар)",
-      "RAN": "She _____ as fast as she could to catch the departing bus. (Бежал)",
-      "BIN": "Please put your trash in the recycle _____ provided. (Мусорное ведро)",
-      "BRAN": "Eating _____ muffins is a good way to get more fiber. (Отруби)"
+      "BRAIN": "The human _____ is the most complex organ in the body. (Мозг)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "M", "I", "L", "E"],
-    "validWords": ["SMILE", "MILE", "SLIM", "LIME", "SEMI", "SLIME"],
+    "validWords": ["SMILE"],
     "hints": {
-      "SMILE": "A warm _____ can make a big difference in someone's day. (Улыбка)",
-      "MILE": "He runs at least one _____ every morning before breakfast. (Миля)",
-      "SLIM": "She maintains a _____ figure by exercising regularly. (Стройный)",
-      "LIME": "Add a squeeze of _____ to the water for a refreshing taste. (Лайм)",
-      "SEMI": "A large _____ truck was blocking the highway after the accident. (Полу-)",
-      "SLIME": "The snails left a trail of sticky _____ on the garden path. (Слизь)"
+      "SMILE": "A warm _____ can make a big difference in someone's day. (Улыбка)"
     }
   },
   {
     "lang": "en",
     "letters": ["D", "R", "E", "A", "M"],
-    "validWords": ["DREAM", "READ", "DEAR", "MADE", "MEAD", "RED", "MAD", "ARM", "ERA"],
+    "validWords": ["DREAM"],
     "hints": {
-      "DREAM": "I had a strange _____ last night that I still remember. (Мечта/Сон)",
-      "READ": "I love to _____ books before going to sleep. (Читать)",
-      "DEAR": "She started the letter with '_____ Friend'. (Дорогой)",
-      "MADE": "This cake was _____ from scratch by my grandmother. (Сделал)",
-      "MEAD": "In ancient times, people often drank _____, a honey-based wine. (Медовуха)",
-      "RED": "The apple turned bright _____ when it was ripe. (Красный)",
-      "MAD": "Don't be _____ at me for being late. (Злой)",
-      "ARM": "He broke his _____ while playing football. (Рука)",
-      "ERA": "We are living in a digital _____ of rapid change. (Эра)"
+      "DREAM": "I had a strange _____ last night that I still remember. (Мечта/Сон)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "L", "A", "N", "T"],
-    "validWords": ["PLANT", "PLAN", "PANT", "PLAT", "ANT", "PAN", "TAP", "LAP"],
+    "validWords": ["PLANT"],
     "hints": {
-      "PLANT": "Remember to water the _____ every morning. (Растение)",
-      "PLAN": "We need a solid _____ to finish this project on time. (План)",
-      "PANT": "The dog began to _____ after running in the sun. (Тяжело дышать)",
-      "PLAT": "The architect showed us the _____ for the new park. (План участка)",
-      "ANT": "A tiny _____ was carrying a crumb twice its size. (Муравей)",
-      "PAN": "Heat the oil in a large frying _____ before cooking. (Сковорода)",
-      "TAP": "Just _____ the screen to open the application. (Стукнуть/Коснуться)",
-      "LAP": "The cat jumped onto her _____ and started to purr. (Колени)"
+      "PLANT": "Remember to water the _____ every morning. (Растение)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "T", "O", "N", "E"],
-    "validWords": ["STONE", "NOTES", "TONES", "SENT", "NETS", "TONS", "ONE", "TEN"],
+    "validWords": ["STONE"],
     "hints": {
-      "STONE": "The old house was built using large blocks of _____. (Камень)",
-      "NOTES": "She took detailed _____ during the university lecture. (Заметки)",
-      "TONES": "The musician experimented with different musical _____. (Тона)",
-      "SENT": "I _____ an email to my boss earlier today. (Отправил)",
-      "NETS": "Fishermen used large _____ to catch the morning's haul. (Сети)",
-      "TONS": "The ship was carrying several _____ of steel. (Тонны)",
-      "ONE": "There is only _____ cookie left in the jar. (Один)",
-      "TEN": "A decade consists of _____ full years. (Десять)"
+      "STONE": "The old house was built using large blocks of _____. (Камень)"
     }
   },
   {
     "lang": "en",
     "letters": ["W", "A", "T", "E", "R"],
-    "validWords": ["WATER", "TEAR", "RATE", "WEAR", "WET", "ART", "TEA", "EAT"],
+    "validWords": ["WATER"],
     "hints": {
-      "WATER": "Drink plenty of _____ during hot summer days. (Вода)",
-      "TEAR": "Be careful not to _____ the paper when you fold it. (Рвать)",
-      "RATE": "What is the exchange _____ for dollars today? (Курс/Ставка)",
-      "WEAR": "I'm not sure what to _____ to the wedding. (Носить)",
-      "WET": "Don't step on the _____ floor; I just mopped it. (Мокрый)",
-      "ART": "The museum displays modern _____ from all over the world. (Искусство)",
-      "TEA": "British people are famous for their love of _____. (Чай)",
-      "EAT": "It is healthy to _____ a lot of vegetables. (Есть)"
+      "WATER": "Drink plenty of _____ during hot summer days. (Вода)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "O", "U", "N", "D"],
-    "validWords": ["SOUND", "NODS", "NOD", "SUN", "SOD", "DUO"],
+    "validWords": ["SOUND"],
     "hints": {
-      "SOUND": "I heard a loud _____ coming from the basement. (Звук)",
-      "NODS": "He often _____ his head when he agrees with someone. (Кивает)",
-      "NOD": "Give a simple _____ to show that you understand. (Кивок)",
-      "SUN": "The _____ is at its highest point at noon. (Солнце)",
-      "SOD": "The gardener laid down fresh _____ to start the lawn. (Дерн)",
-      "DUO": "The famous comedy _____ performed to a sold-out crowd. (Дуэт)"
+      "SOUND": "I heard a loud _____ coming from the basement. (Звук)"
     }
   },
   {
     "lang": "en",
     "letters": ["B", "R", "E", "A", "D"],
-    "validWords": ["BREAD", "BEAD", "READ", "DEAR", "BEAR", "BED", "RED", "BAD", "ARE"],
+    "validWords": ["BREAD"],
     "hints": {
-      "BREAD": "There is nothing like the smell of fresh _____. (Хлеб)",
-      "BEAD": "She threaded a single glass _____ onto the string. (Бусина)",
-      "READ": "It is important to _____ the instructions carefully. (Читать)",
-      "DEAR": "My _____ friend, it has been too long since we met. (Дорогой)",
-      "BEAR": "We saw a large brown _____ in the forest yesterday. (Медведь)",
-      "BED": "It is time to go to _____ and get some rest. (Кровать)",
-      "RED": "Roses are often _____ and signify love. (Красный)",
-      "BAD": "Eating too much sugar is _____ for your teeth. (Плохо)",
-      "ARE": "How _____ you doing today? (Глагол 'быть')"
+      "BREAD": "There is nothing like the smell of fresh _____. (Хлеб)"
     }
   },
   {
     "lang": "en",
     "letters": ["C", "H", "A", "I", "R"],
-    "validWords": ["CHAIR", "RICH", "ARCH", "HAIR", "AIR", "CAR"],
+    "validWords": ["CHAIR"],
     "hints": {
-      "CHAIR": "Please take a _____ and make yourself comfortable. (Стул)",
-      "RICH": "The dessert was very _____, full of chocolate and cream. (Богатый/Насыщенный)",
-      "ARCH": "The stone _____ led to a beautiful secret garden. (Арка)",
-      "HAIR": "She decided to cut her _____ shorter for the summer. (Волосы)",
-      "AIR": "The mountain _____ was cold and incredibly fresh. (Воздух)",
-      "CAR": "They bought a new electric _____ last month. (Машина)"
+      "CHAIR": "Please take a _____ and make yourself comfortable. (Стул)"
     }
   },
   {
     "lang": "en",
     "letters": ["G", "R", "A", "S", "S"],
-    "validWords": ["GRASS", "RAGS", "SAGS", "GAS", "SAG", "RAG"],
+    "validWords": ["GRASS"],
     "hints": {
-      "GRASS": "The _____ is always greener on the other side. (Трава)",
-      "RAGS": "The old furniture was covered in dusty _____. (Тряпки)",
-      "SAGS": "The old bookshelf _____ under the weight of the books. (Провисает)",
-      "GAS": "We need to stop at the station for some _____. (Газ/Бензин)",
-      "SAG": "The roof began to _____ after the heavy snowfall. (Провисать)",
-      "RAG": "Use a clean _____ to wipe the dust off the table. (Тряпка)"
+      "GRASS": "The _____ is always greener on the other side. (Трава)"
     }
   },
   {
     "lang": "en",
     "letters": ["F", "R", "U", "I", "T"],
-    "validWords": ["FRUIT", "TURF", "RIFT", "FIT", "RUT", "FUR"],
+    "validWords": ["FRUIT"],
     "hints": {
-      "FRUIT": "Apple is a very popular type of _____. (Фрукт)",
-      "TURF": "The players ran across the artificial _____ of the stadium. (Дерн)",
-      "RIFT": "A small _____ appeared between the two formerly close friends. (Разрыв)",
-      "FIT": "I need to go to the gym to stay _____. (В форме/Подходить)",
-      "RUT": "The cart wheels got stuck in a deep mud _____. (Колея)",
-      "FUR": "The cat's _____ is very soft and warm. (Мех)"
+      "FRUIT": "Apple is a very popular type of _____. (Фрукт)"
     }
   },
   {
     "lang": "en",
     "letters": ["C", "L", "O", "U", "D"],
-    "validWords": ["CLOUD", "COULD", "LOUD", "COLD", "CLOD", "OLD"],
+    "validWords": ["CLOUD"],
     "hints": {
-      "CLOUD": "A single white _____ floated in the blue sky. (Облако)",
-      "COULD": "I wish I _____ travel around the world. (Мог бы)",
-      "LOUD": "The music was so _____ that the windows vibrated. (Громкий)",
-      "COLD": "The winter mornings are very _____ in this region. (Холодный)",
-      "CLOD": "The plow turned over a heavy _____ of earth. (Ком земли)",
-      "OLD": "My grandfather tells stories about the _____ days. (Старый)"
+      "CLOUD": "A single white _____ floated in the blue sky. (Облако)"
     }
   },
   {
     "lang": "en",
     "letters": ["W", "O", "R", "L", "D"],
-    "validWords": ["WORLD", "WORD", "LORD", "ROD", "OLD", "LOW"],
+    "validWords": ["WORLD"],
     "hints": {
-      "WORLD": "Traveling allows you to see different parts of the _____. (Мир)",
-      "WORD": "I can't remember the exact _____ he used. (Слово)",
-      "LORD": "The _____ of the manor welcomed his guests. (Лорд/Господин)",
-      "ROD": "The fisherman used a graphite _____ to catch the trout. (Удилище)",
-      "OLD": "This _____ building is a protected historical landmark. (Старый)",
-      "LOW": "The tide is _____ in the afternoon. (Низкий)"
+      "WORLD": "Traveling allows you to see different parts of the _____. (Мир)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "P", "A", "C", "E"],
-    "validWords": ["SPACE", "APES", "CASE", "PACE", "CAPE", "CAP", "ASP", "ACE"],
+    "validWords": ["SPACE"],
     "hints": {
-      "SPACE": "Astronauts explore the vastness of outer _____. (Космос)",
-      "APES": "Our closest relatives in the animal kingdom are the _____. (Обезьяны)",
-      "CASE": "In this specific _____, we must act very quickly. (Случай/Дело)",
-      "PACE": "He walked at a very fast _____ to catch the bus. (Темп/Шаг)",
-      "CAPE": "The superhero wore a bright red _____ during the mission. (Плащ/Мыс)",
-      "CAP": "Put the _____ back on the bottle so it doesn't spill. (Крышка)",
-      "ASP": "The _____ is a venomous snake found in North Africa. (Аспид)",
-      "ACE": "He is an _____ pilot with many years of experience. (Ас)"
+      "SPACE": "Astronauts explore the vastness of outer _____. (Космос)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "L", "A", "N", "E"],
-    "validWords": ["PLANE", "LANE", "PLAN", "PANE", "NAP", "PAN", "PEN"],
+    "validWords": ["PLANE"],
     "hints": {
-      "PLANE": "We took a _____ to travel to Japan. (Самолет)",
-      "LANE": "The narrow _____ led to a small village in the hills. (Переулок/Полоса)",
-      "PLAN": "Do you have a _____ for the weekend? (План)",
-      "PANE": "A bird accidentally flew into the glass window _____. (Оконное стекло)",
-      "NAP": "The baby usually takes a _____ in the afternoon. (Сон)",
-      "PAN": "Heat the _____ before adding the butter. (Сковорода)",
-      "PEN": "Could I borrow a _____ to sign this document? (Ручка)"
+      "PLANE": "We took a _____ to travel to Japan. (Самолет)"
     }
   },
   {
     "lang": "en",
     "letters": ["F", "I", "E", "L", "D"],
-    "validWords": ["FIELD", "FILE", "IDLE", "LIED", "DIE", "FED", "LED"],
+    "validWords": ["FIELD"],
     "hints": {
-      "FIELD": "The cows were grazing peacefully in the green _____. (Поле)",
-      "FILE": "I saved the report in a separate PDF _____. (Файл)",
-      "IDLE": "The factory machines have been _____ for a week. (Простаивающий)",
-      "LIED": "He _____ about his age to get the job. (Лгал)",
-      "DIE": "Roll the _____ to see who goes first in the game. (Игральная кость)",
-      "FED": "I have already _____ the cat this morning. (Покормил)",
-      "LED": "The narrow path _____ us to the hidden waterfall. (Вел)"
+      "FIELD": "The cows were grazing peacefully in the green _____. (Поле)"
     }
   },
   {
     "lang": "en",
     "letters": ["M", "O", "U", "N", "T"],
-    "validWords": ["MOUNT", "NOT", "OUT", "NUT", "TON"],
+    "validWords": ["MOUNT"],
     "hints": {
-      "MOUNT": "They decided to _____ the camera on a tripod. (Гора/Устанавливать)",
-      "NOT": "I am _____ sure if I can come tonight. (Не)",
-      "OUT": "The children are playing _____ in the garden. (Снаружи)",
-      "NUT": "A squirrel was hiding a _____ in the tree. (Орех)",
-      "TON": "The elephant weighs more than a _____. (Тонна)"
+      "MOUNT": "They decided to _____ the camera on a tripod. (Гора/Устанавливать)"
     }
   },
   {
     "lang": "en",
     "letters": ["O", "C", "E", "A", "N"],
-    "validWords": ["OCEAN", "CANE", "CAN", "ONE", "ACE"],
+    "validWords": ["OCEAN"],
     "hints": {
-      "OCEAN": "The Atlantic _____ is vast and full of mysteries. (Океан)",
-      "CANE": "The old man walked with the help of a wooden _____. (Трость)",
-      "CAN": "_____ you help me with this heavy box? (Мочь/Банка)",
-      "ONE": "I only have _____ dollar left in my wallet. (Один)",
-      "ACE": "He served an _____ and won the tennis match. (Ас)"
+      "OCEAN": "The Atlantic _____ is vast and full of mysteries. (Океан)"
     }
   },
   {
     "lang": "en",
     "letters": ["F", "L", "A", "M", "E"],
-    "validWords": ["FLAME", "MEAL", "LEAF", "MALE", "FLEA", "ELF", "LAM"],
+    "validWords": ["FLAME"],
     "hints": {
-      "FLAME": "A tiny _____ was enough to start the campfire. (Пламя)",
-      "MEAL": "We enjoyed a delicious three-course _____ at the restaurant. (Прием пищи)",
-      "LEAF": "A single yellow _____ fell from the tree. (Лист)",
-      "MALE": "The _____ lion has a large and beautiful mane. (Мужской)",
-      "FLEA": "The poor dog had a _____ biting its ear. (Блоха)",
-      "ELF": "The legend says a small _____ lives in this forest. (Эльф)",
-      "LAM": "The suspect went on the _____ to avoid the police. (Бегство)"
+      "FLAME": "A tiny _____ was enough to start the campfire. (Пламя)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "T", "O", "R", "M"],
-    "validWords": ["STORM", "MOST", "SORT", "ROT", "TOM"],
+    "validWords": ["STORM"],
     "hints": {
-      "STORM": "A violent _____ hit the coast during the night. (Шторм/Буря)",
-      "MOST": "_____ people enjoy going to the beach in summer. (Большинство)",
-      "SORT": "What _____ of music do you like to listen to? (Сорт/Тип)",
-      "ROT": "The fallen apples began to _____ on the ground. (Гнить)",
-      "TOM": "My neighbor's cat is a large ginger _____. (Кот/Том)"
+      "STORM": "A violent _____ hit the coast during the night. (Шторм/Буря)"
     }
   },
   {
     "lang": "en",
     "letters": ["S", "H", "O", "R", "E"],
-    "validWords": ["SHORE", "HORSE", "ROSE", "SHOE", "ORE", "SHE"],
+    "validWords": ["SHORE"],
     "hints": {
-      "SHORE": "They walked along the _____ as the sun began to set. (Берег)",
-      "HORSE": "He learned to ride a _____ when he was a child. (Лошадь)",
-      "ROSE": "The sun _____ over the horizon at six o'clock. (Взошло/Роза)",
-      "SHOE": "I need to buy a new pair of running _____s. (Обувь)",
-      "ORE": "The miners extracted iron _____ from the deep cave. (Руда)",
-      "SHE": "_____ is the most talented singer in our school. (Она)"
+      "SHORE": "They walked along the _____ as the sun began to set. (Берег)"
     }
   },
   {
     "lang": "en",
     "letters": ["B", "L", "A", "D", "E"],
-    "validWords": ["BLADE", "BALD", "BALE", "DEAL", "LEAD", "BED", "LAD", "BAD"],
+    "validWords": ["BLADE"],
     "hints": {
-      "BLADE": "The _____ of the knife was sharp and shiny. (Лезвие)",
-      "BALD": "He decided to shave his head and go completely _____. (Лысый)",
-      "BALE": "The farmer stacked a large _____ of hay in the barn. (Тюк)",
-      "DEAL": "We managed to close the business _____ yesterday. (Сделка)",
-      "LEAD": "The guide will _____ us through the mountain pass. (Вести/Свинец)",
-      "BED": "There is nothing better than your own _____ after a trip. (Кровать)",
-      "LAD": "He was a bright young _____ with a great future. (Парень)",
-      "BAD": "It is a _____ idea to drive during a heavy storm. (Плохо)"
+      "BLADE": "The _____ of the knife was sharp and shiny. (Лезвие)"
     }
   },
   {
     "lang": "en",
     "letters": ["G", "H", "O", "S", "T"],
-    "validWords": ["GHOST", "HOST", "SHOT", "GOT", "HOT"],
+    "validWords": ["GHOST"],
     "hints": {
-      "GHOST": "Some people believe the old mansion is haunted by a _____. (Призрак)",
-      "HOST": "The _____ welcomed everyone to the evening dinner. (Хозяин)",
-      "SHOT": "The photographer took a beautiful _____ of the sunset. (Снимок/Выстрел)",
-      "GOT": "I _____ a letter from my cousin this morning. (Получил)",
-      "HOT": "The tea is very _____, so be careful not to burn yourself. (Горячий)"
+      "GHOST": "Some people believe the old mansion is haunted by a _____. (Призрак)"
     }
   },
   {
     "lang": "en",
     "letters": ["T", "R", "A", "I", "N"],
-    "validWords": ["TRAIN", "RAIN", "ANTI", "TAN", "ART", "RAT", "ANT"],
+    "validWords": ["TRAIN"],
     "hints": {
-      "TRAIN": "The _____ to Paris leaves at exactly eight o'clock. (Поезд)",
-      "RAIN": "The sound of _____ on the roof helps me sleep. (Дождь)",
-      "ANTI": "The body produced _____bodies to fight the infection. (Анти-)",
-      "TAN": "She got a beautiful _____ after a week at the beach. (Загар)",
-      "ART": "Learning to paint is a great way to express your _____. (Искусство)",
-      "RAT": "The cat chased a large _____ into the old barn. (Крыса)",
-      "ANT": "An _____ can lift things much heavier than its body. (Муравей)"
+      "TRAIN": "The _____ to Paris leaves at exactly eight o'clock. (Поезд)"
     }
   },
   {
     "lang": "en",
     "letters": ["H", "O", "U", "S", "E"],
-    "validWords": ["HOUSE", "HOSE", "SHOE", "USE", "SHE"],
+    "validWords": ["HOUSE"],
     "hints": {
-      "HOUSE": "They are planning to build a new _____ next year. (Дом)",
-      "HOSE": "Use the garden _____ to water the thirsty plants. (Шланг)",
-      "SHOE": "Wait, I need to tie the lace of my left _____. (Обувь)",
-      "USE": "Do you know how to _____ this new software? (Использовать)",
-      "SHE": "_____ is planning to move to London next month. (Она)"
+      "HOUSE": "They are planning to build a new _____ next year. (Дом)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "A", "P", "E", "R"],
-    "validWords": ["PAPER", "PEAR", "REAP", "PARE", "PER", "ARE"],
+    "validWords": ["PAPER"],
     "hints": {
-      "PAPER": "Please write your name at the top of the _____. (Бумага)",
-      "PEAR": "A _____ is a sweet fruit that is shaped like a bell. (Груша)",
-      "REAP": "In the fall, farmers begin to _____ the harvest. (Пожинать)",
-      "PARE": "You should _____ the apples before making the pie. (Очищать кожуру)",
-      "PER": "The speed limit is sixty miles _____ hour. (В/На)",
-      "ARE": "Where _____ you going so early in the morning? (Глагол 'быть')"
+      "PAPER": "Please write your name at the top of the _____. (Бумага)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "H", "O", "N", "E"],
-    "validWords": ["PHONE", "HOPE", "OPEN", "PEN", "ONE", "HEN"],
+    "validWords": ["PHONE"],
     "hints": {
-      "PHONE": "I need to charge my _____ before we leave. (Телефон)",
-      "HOPE": "I _____ you have a wonderful time at the party. (Надеяться)",
-      "OPEN": "Please _____ the window to let some fresh air in. (Открыть)",
-      "PEN": "The ink in my _____ has completely run out. (Ручка)",
-      "ONE": "There is only _____ slice of pizza left. (Один)",
-      "HEN": "The _____ laid a fresh egg early this morning. (Курица)"
+      "PHONE": "I need to charge my _____ before we leave. (Телефон)"
     }
   },
   {
     "lang": "en",
     "letters": ["T", "R", "U", "C", "K"],
-    "validWords": ["TRUCK", "TUCK", "RUT", "CUT"],
+    "validWords": ["TRUCK"],
     "hints": {
-      "TRUCK": "The delivery _____ arrived with all our new furniture. (Грузовик)",
-      "TUCK": "Remember to _____ your shirt into your trousers. (Заправлять)",
-      "RUT": "After the rain, the wheels left a deep _____ in the mud. (Колея)",
-      "CUT": "Be careful not to _____ your finger with the knife. (Резать)"
+      "TRUCK": "The delivery _____ arrived with all our new furniture. (Грузовик)"
     }
   },
   {
     "lang": "en",
     "letters": ["T", "A", "B", "L", "E"],
-    "validWords": ["TABLE", "BELT", "ABLE", "BEAT", "BALE", "TEA", "EAT", "BAT"],
+    "validWords": ["TABLE"],
     "hints": {
-      "TABLE": "Dinner is served on the large wooden _____. (Стол)",
-      "BELT": "I need to wear a _____ because my pants are loose. (Ремень)",
-      "ABLE": "Will you be _____ to help me with this task? (Способный)",
-      "BEAT": "He managed to _____ the record in the 100-meter dash. (Победить/Бить)",
-      "BALE": "The truck was carrying a large _____ of cotton. (Тюк)",
-      "TEA": "I'd like a cup of green _____ with honey. (Чай)",
-      "EAT": "What would you like to _____ for lunch today? (Есть)",
-      "BAT": "A _____ is the only mammal that can truly fly. (Летучая мышь/Бита)"
+      "TABLE": "Dinner is served on the large wooden _____. (Стол)"
     }
   },
   {
     "lang": "en",
     "letters": ["B", "E", "A", "C", "H"],
-    "validWords": ["BEACH", "EACH", "BACH", "ACE"],
+    "validWords": ["BEACH"],
     "hints": {
-      "BEACH": "We spent the whole day relaxing on the sandy _____. (Пляж)",
-      "EACH": "_____ student was given a new notebook. (Каждый)",
-      "BACH": "Johann Sebastian _____ was a famous German composer. (Бах)",
-      "ACE": "He is an _____ at solving difficult math problems. (Ас)"
+      "BEACH": "We spent the whole day relaxing on the sandy _____. (Пляж)"
     }
   },
   {
     "lang": "en",
     "letters": ["N", "I", "G", "H", "T"],
-    "validWords": ["NIGHT", "THING", "THIN", "HINT", "TIN", "HIT"],
+    "validWords": ["NIGHT"],
     "hints": {
-      "NIGHT": "The stars are much brighter during a clear _____. (Ночь)",
-      "THING": "Is there one _____ you miss most about home? (Вещь/Предмет)",
-      "THIN": "The ice on the lake is too _____ to walk on. (Тонкий)",
-      "HINT": "If you're stuck, the game can give you a _____. (Подсказка)",
-      "TIN": "They bought a small _____ of cookies for the trip. (Оловянная банка)",
-      "HIT": "His latest song became a massive global _____. (Хит/Удар)"
+      "NIGHT": "The stars are much brighter during a clear _____. (Ночь)"
     }
   },
   {
     "lang": "en",
     "letters": ["P", "A", "R", "T", "Y"],
-    "validWords": ["PARTY", "PART", "TRAY", "TRAP", "ART", "RAT", "PAY"],
+    "validWords": ["PARTY"],
     "hints": {
-      "PARTY": "Are you coming to the birthday _____ tonight? (Вечеринка)",
-      "PART": "I'm only staying for a _____ of the meeting. (Часть)",
-      "TRAY": "The waiter carried the drinks on a silver _____. (Поднос)",
-      "TRAP": "The hunters set a _____ in the forest for the wolf. (Ловушка)",
-      "ART": "She loves to visit the local _____ gallery on weekends. (Искусство)",
-      "RAT": "A laboratory _____ was used for the medical study. (Крыса)",
-      "PAY": "I need to _____ my utility bills by Friday. (Платить)"
+      "PARTY": "Are you coming to the birthday _____ tonight? (Вечеринка)"
     }
   }
 ]
