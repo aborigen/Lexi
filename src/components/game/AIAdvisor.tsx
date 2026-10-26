@@ -1,18 +1,12 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, Sparkles, Loader2 } from 'lucide-react';
+import { BrainCircuit, Loader2 } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { WordLevel } from '@/lib/levels';
 import { toast } from '@/hooks/use-toast';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { cn } from '@/lib/utils';
 
 interface AIAdvisorProps {
   gameState: {
@@ -20,47 +14,45 @@ interface AIAdvisorProps {
     foundWords: string[];
     allValidWords: string[];
   };
-  onSuggestionReceived: (hint: string) => void;
+  onSuggestionReceived: (hint: string | null) => void;
   lang?: string;
   level: WordLevel;
+  activeHint?: string | null;
 }
 
-export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level }: AIAdvisorProps) {
-  const [citation, setCitation] = useState<string | null>(null);
-  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level, activeHint }: AIAdvisorProps) {
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setCitation(null);
-  }, [gameState.foundWords.length, level]);
 
   const handleGetSuggestion = async () => {
     if (!gameState.letters || gameState.letters.length === 0 || !level) return;
 
-    if (gameState.foundWords.length > 0) {
-      setCitation(t('hint_all_found', lang));
-      setIsOverlayOpen(true);
+    // Toggle off if already showing
+    if (activeHint) {
+      onSuggestionReceived(null);
+      return;
+    }
+
+    // Check if level is already complete
+    if (gameState.foundWords.length >= level.validWords.length) {
+      onSuggestionReceived(t('hint_all_found', lang));
       return;
     }
 
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Simulate AI "thinking" for polish
+    await new Promise(resolve => setTimeout(resolve, 600));
 
     try {
       const targetWord = level.validWords[0];
       const staticHint = level.hints[targetWord];
 
       if (staticHint) {
-        setCitation(staticHint);
-        setIsOverlayOpen(true);
         onSuggestionReceived(staticHint);
       } else {
         const placeholder = t('hint_template', lang)
           .replace('{n}', targetWord.length.toString())
           .replace('{c}', targetWord[0].toUpperCase());
         
-        setCitation(placeholder);
-        setIsOverlayOpen(true);
         onSuggestionReceived(placeholder);
       }
     } catch (error) {
@@ -76,52 +68,29 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level 
   };
 
   const isButtonDisabled = !gameState.letters || gameState.letters.length === 0 || isLoading;
+  const isHintActive = !!activeHint;
 
   return (
-    <>
-      <Button 
-        size="icon" 
-        className="w-14 h-14 rounded-full shadow-2xl sunny-gradient border-4 border-white/80 active:scale-95 transition-all group relative"
-        onClick={handleGetSuggestion}
-        disabled={isButtonDisabled}
-        title={t('get_hint', lang)}
-      >
-        {isLoading ? (
-          <Loader2 className="w-6 h-6 text-white animate-spin" />
-        ) : (
-          <BrainCircuit className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-        )}
-      </Button>
-
-      <Dialog open={isOverlayOpen} onOpenChange={setIsOverlayOpen}>
-        <DialogContent className="w-[92vw] max-w-[400px] rounded-[2.5rem] p-8 glass border-white/80 shadow-2xl animate-in zoom-in-95 duration-300">
-          <DialogHeader className="mb-4">
-            <div className="flex justify-center mb-3">
-              <div className="p-3 rounded-full bg-primary/10 border border-primary/20">
-                <Sparkles className="w-6 h-6 text-primary animate-pulse" />
-              </div>
-            </div>
-            <DialogTitle className="text-center text-primary uppercase tracking-[0.2em] text-xs font-black">
-              {t('strategy_identified', lang)}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="py-2 text-center">
-            <p className="text-lg sm:text-xl font-black leading-relaxed italic text-foreground tracking-tight whitespace-pre-line">
-              {citation}
-            </p>
-          </div>
-
-          <div className="mt-8 flex justify-center">
-            <Button 
-              onClick={() => setIsOverlayOpen(false)}
-              className="rounded-full px-8 font-black uppercase tracking-widest text-[10px] h-10 bg-foreground text-background hover:opacity-90"
-            >
-              OK
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Button 
+      size="icon" 
+      className={cn(
+        "w-14 h-14 rounded-full shadow-2xl transition-all group relative border-4",
+        isHintActive 
+          ? "bg-foreground text-background border-foreground/50 scale-110" 
+          : "sunny-gradient border-white/80 active:scale-95"
+      )}
+      onClick={handleGetSuggestion}
+      disabled={isButtonDisabled}
+      title={isHintActive ? "Hide Hint" : t('get_hint', lang)}
+    >
+      {isLoading ? (
+        <Loader2 className="w-6 h-6 text-white animate-spin" />
+      ) : (
+        <BrainCircuit className={cn(
+          "w-7 h-7 transition-transform",
+          isHintActive ? "text-background" : "text-white group-hover:scale-110"
+        )} />
+      )}
+    </Button>
   );
 }

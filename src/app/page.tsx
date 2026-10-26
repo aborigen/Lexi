@@ -221,9 +221,11 @@ export default function WordConnectPage() {
     updatePlayerStats({ totalWordsFound: 1, longestWord: wordLength });
   }, []);
 
-  const handleHintUsed = useCallback((hint: string) => {
+  const handleHintToggle = useCallback((hint: string | null) => {
     setActiveHint(hint);
-    updatePlayerStats({ hintsUsed: 1 });
+    if (hint) {
+      updatePlayerStats({ hintsUsed: 1 });
+    }
   }, []);
 
   const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
@@ -350,10 +352,11 @@ export default function WordConnectPage() {
               lang={lang}
             />
             <AIAdvisor 
-              onSuggestionReceived={handleHintUsed}
+              onSuggestionReceived={handleHintToggle}
               gameState={gameState}
               lang={lang}
               level={currentLevel}
+              activeHint={activeHint}
             />
           </div>
         )}
