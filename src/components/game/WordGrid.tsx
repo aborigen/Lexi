@@ -19,7 +19,7 @@ export function WordGrid({ validWords, foundWords, lang = 'en' }: WordGridProps)
 
   return (
     <div className={cn(
-      "w-full portrait:max-h-[25vh] p-6 glass rounded-[2.5rem] flex flex-col gap-6 overflow-hidden shrink-0 animate-slide-in-left z-10 border-white/50 transition-all duration-1000 relative items-center justify-center",
+      "w-full portrait:max-h-[25vh] landscape:w-72 sm:landscape:w-80 landscape:h-full p-6 glass rounded-[2.5rem] flex flex-col gap-4 sm:gap-6 overflow-hidden shrink-0 animate-slide-in-left z-10 border-white/50 transition-all duration-1000 relative items-center justify-center",
       isLevelComplete && "bg-primary/5 border-primary/40 shadow-[0_0_60px_rgba(245,158,11,0.2)]"
     )}>
       <div className="flex flex-col items-center gap-2">
@@ -37,12 +37,12 @@ export function WordGrid({ validWords, foundWords, lang = 'en' }: WordGridProps)
         </div>
       </div>
       
-      <div className="flex justify-center gap-2 sm:gap-3 flex-wrap">
+      <div className="flex justify-center gap-1.5 sm:gap-2.5 flex-wrap">
         {targetWord.split('').map((char, i) => (
           <div 
             key={i} 
             className={cn(
-              "w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 flex items-center justify-center border-4 rounded-2xl font-black text-xl sm:text-2xl transition-all duration-700",
+              "w-9 h-9 xs:w-11 xs:h-11 sm:w-14 sm:h-14 flex items-center justify-center border-[3px] sm:border-4 rounded-xl sm:rounded-2xl font-black text-lg sm:text-2xl transition-all duration-700",
               isFound 
                 ? "sunny-gradient text-white border-white/50 shadow-xl" 
                 : "bg-black/5 border-white/10 text-transparent shadow-inner",

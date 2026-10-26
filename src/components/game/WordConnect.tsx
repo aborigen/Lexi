@@ -50,7 +50,7 @@ export function WordConnect({
   const letterPositions = useMemo(() => {
     if (!shuffledLetters.length) return [];
     return shuffledLetters.map((_, index) => {
-      const angle = (index * (360 / shuffledLetters.length) - 45) * (Math.PI / 180);
+      const angle = (index * (360 / shuffledLetters.length) - 90) * (Math.PI / 180);
       return {
         x: OFFSET + CIRCLE_RADIUS * Math.cos(angle),
         y: OFFSET + CIRCLE_RADIUS * Math.sin(angle)
@@ -202,7 +202,7 @@ export function WordConnect({
   return (
     <div 
       ref={rootRef}
-      className="flex flex-col portrait:items-center landscape:flex-row items-center w-full h-full min-h-0 touch-none relative overflow-hidden pb-8 sm:pb-12"
+      className="flex flex-col portrait:items-center landscape:flex-row landscape:items-stretch landscape:gap-8 w-full h-full min-h-0 touch-none relative overflow-hidden pb-4 sm:pb-8"
       onMouseMove={handleInteractionMove}
       onTouchMove={handleInteractionMove}
       onMouseUp={handleInteractionEnd}
@@ -214,7 +214,7 @@ export function WordConnect({
         lang={lang}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0 py-4">
+      <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0 py-4 landscape:py-8">
         <div className="h-16 sm:h-20 flex items-center justify-center shrink-0 w-full relative">
           {isDrawing && (
             <div className={cn(
@@ -232,7 +232,7 @@ export function WordConnect({
             key={`circle-${level.letters.join('')}`}
             ref={containerRef}
             className={cn(
-              "relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-85 md:scale-95 landscape:scale-[0.55] sm:landscape:scale-[0.7] transition-all duration-700 shrink-0 animate-zoom-in",
+              "relative select-none touch-none scale-[0.6] xs:scale-[0.7] sm:scale-85 md:scale-95 landscape:scale-[0.5] sm:landscape:scale-[0.7] lg:landscape:scale-[0.85] transition-all duration-700 shrink-0 animate-zoom-in",
               isInvalid && "animate-shake",
               isSuccess && "scale-105"
             )}
