@@ -53,6 +53,7 @@ export default function WordConnectPage() {
   const [isLevelListOpen, setIsLevelListOpen] = useState(false);
   const [isVictoryOpen, setIsVictoryOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
+  const [activeHint, setActiveHint] = useState<string | null>(null);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
     letters: [],
     foundWords: [],
@@ -99,7 +100,7 @@ export default function WordConnectPage() {
         
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
         const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-        setActiveLevels(base); // Sequential loading
+        setActiveLevels(base); 
 
         await updatePlayerStats({ totalSessions: 1 });
         const stats = await fetchPlayerStats();
@@ -117,9 +118,9 @@ export default function WordConnectPage() {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
     setActiveLevels(base);
-    // Reset index when changing language as levels are different sets
     setLevelIndex(0);
     setMaxLevelReached(0);
+    setActiveHint(null);
   }, [lang]);
 
   useEffect(() => {
@@ -136,11 +137,17 @@ export default function WordConnectPage() {
     }
   }, [score, highScore]);
 
+  // Reset hint when level changes
+  useEffect(() => {
+    setActiveHint(null);
+  }, [levelIndex]);
+
   const handleReset = useCallback(() => {
     setScore(0);
     setDisplayScore(0);
     setLevelIndex(0);
     setMaxLevelReached(0);
+    setActiveHint(null);
     if (typeof window !== 'undefined') {
       localStorage.setItem('lexi_level_index', '0');
       localStorage.setItem('lexi_max_level', '0');
@@ -181,7 +188,6 @@ export default function WordConnectPage() {
       }
     }
 
-    // Update progression
     if (levelIndex === maxLevelReached) {
       const newMax = maxLevelReached + 1;
       setMaxLevelReached(newMax);
@@ -216,6 +222,7 @@ export default function WordConnectPage() {
   }, []);
 
   const handleHintUsed = useCallback((hint: string) => {
+    setActiveHint(hint);
     updatePlayerStats({ hintsUsed: 1 });
   }, []);
 
@@ -327,6 +334,7 @@ export default function WordConnectPage() {
               onLevelComplete={handleLevelComplete}
               onStateUpdate={handleStateUpdate}
               lang={lang}
+              activeHint={activeHint}
             />
           ) : (
             <div className="flex-1 flex items-center justify-center">

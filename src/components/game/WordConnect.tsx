@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -17,6 +16,7 @@ interface WordConnectProps {
   onLevelComplete: () => void;
   onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
   lang?: string;
+  activeHint?: string | null;
 }
 
 export function WordConnect({ 
@@ -24,7 +24,8 @@ export function WordConnect({
   onScoreUpdate, 
   onLevelComplete, 
   onStateUpdate,
-  lang = 'en' 
+  lang = 'en',
+  activeHint = null
 }: WordConnectProps) {
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
@@ -212,6 +213,7 @@ export function WordConnect({
         validWords={level.validWords}
         foundWords={foundWords}
         lang={lang}
+        activeHint={activeHint}
       />
 
       <div className="flex-1 flex flex-col items-center justify-between w-full min-h-0 relative z-0 py-4 landscape:py-8">
