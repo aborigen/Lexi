@@ -42,7 +42,19 @@ git push
 
 ---
 
-## 4. Recommended Branching Strategy for Lexi.AI
+## 4. How to Pull Changes
+
+To download changes from the remote repository to your current local branch, use:
+
+```bash
+git pull origin branch-name
+```
+
+**Pro Tip:** Always run `git pull` before you start working for the day. This ensures you have the latest code and helps prevent "Merge Conflicts" where two people edited the same line.
+
+---
+
+## 5. Recommended Branching Strategy for Lexi.AI
 
 ### The `main` Branch
 This is your "Single Source of Truth." It should always contain code that builds and runs perfectly. 
@@ -60,7 +72,7 @@ Used for quick patches:
 
 ---
 
-## 5. Why it matters for Lexi.AI
+## 6. Why it matters for Lexi.AI
 Since this project targets multiple platforms (Yandex, VK, Sber), branches allow you to:
 1.  **Experiment**: Try a new Genkit prompt in a branch without breaking the existing AI Advisor.
 2.  **Verify**: Build a static archive from a specific branch to test on the VK sandbox before committing to the main release.
@@ -68,11 +80,12 @@ Since this project targets multiple platforms (Yandex, VK, Sber), branches allow
 
 ---
 
-## 6. Useful Commands Reference
+## 7. Useful Commands Reference
 - **Check current branch**: `git branch`
 - **Create and switch**: `git checkout -b branch-name`
 - **Push for first time**: `git push -u origin branch-name`
 - **Push normally**: `git push`
+- **Pull changes**: `git pull origin branch-name`
 - **Switch back to main**: `git checkout main`
 - **Merge changes**: (While on main) `git merge branch-name`
 - **Delete a branch**: `git branch -d branch-name`
