@@ -63,6 +63,8 @@ export default function WordConnectPage() {
   const scoreBadgeRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<ScoreParticlesHandle>(null);
 
+  const currentLevel = activeLevels.length > 0 ? activeLevels[levelIndex % activeLevels.length] : null;
+
   useEffect(() => {
     if (displayScore === score) return;
     
@@ -120,7 +122,6 @@ export default function WordConnectPage() {
     setActiveLevels(base);
     setLevelIndex(0);
     setMaxLevelReached(0);
-    setActiveHint(null);
   }, [lang]);
 
   useEffect(() => {
@@ -137,17 +138,22 @@ export default function WordConnectPage() {
     }
   }, [score, highScore]);
 
-  // Reset hint when level changes
+  // Set default hint when level changes
   useEffect(() => {
-    setActiveHint(null);
-  }, [levelIndex]);
+    if (currentLevel) {
+      const targetWord = currentLevel.validWords[0];
+      const hint = currentLevel.hints[targetWord];
+      setActiveHint(hint || null);
+    } else {
+      setActiveHint(null);
+    }
+  }, [currentLevel]);
 
   const handleReset = useCallback(() => {
     setScore(0);
     setDisplayScore(0);
     setLevelIndex(0);
     setMaxLevelReached(0);
-    setActiveHint(null);
     if (typeof window !== 'undefined') {
       localStorage.setItem('lexi_level_index', '0');
       localStorage.setItem('lexi_max_level', '0');
@@ -234,8 +240,6 @@ export default function WordConnectPage() {
 
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
-
-  const currentLevel = activeLevels.length > 0 ? activeLevels[levelIndex % activeLevels.length] : null;
 
   return (
     <div className="h-screen w-full text-foreground overflow-hidden flex flex-col select-none relative">
