@@ -345,17 +345,19 @@ export function WordConnect({
               );
             })}
 
-            {showOnboarding && (
+            {showOnboarding && !isDrawing && (
               <div 
-                className="absolute pointer-events-none z-[60] animate-onboarding-hand opacity-60"
+                className="absolute pointer-events-none z-[60] flex flex-col items-center"
                 style={{
-                  left: OFFSET - 30,
-                  top: OFFSET + 100,
+                  left: letterPositions[0].x - 30,
+                  top: letterPositions[0].y + 20,
                 }}
               >
-                <div className="flex flex-col items-center">
-                  <Hand className="w-16 h-16 text-primary drop-shadow-2xl" fill="currentColor" />
-                  <span className="text-xs font-black uppercase text-primary bg-white/95 px-6 py-2 rounded-[1.5rem] shadow-2xl mt-4 whitespace-nowrap border-2 border-primary/30">
+                <div className="animate-onboarding-hand">
+                   <Hand className="w-16 h-16 text-primary drop-shadow-2xl" fill="currentColor" />
+                </div>
+                <div className="bg-white/95 px-6 py-2 rounded-full shadow-2xl mt-4 border-2 border-primary/30 animate-pulse">
+                  <span className="text-xs font-black uppercase text-primary whitespace-nowrap">
                     {t('guide_draw', lang)}
                   </span>
                 </div>
