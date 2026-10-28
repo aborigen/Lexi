@@ -1,0 +1,19 @@
+Lexi.AI - Word Connect Puzzle (Sber Devices)
+
+Short Description:
+An engaging circular word-linking game with AI-powered hints for Sber devices.
+
+Long Description:
+Step into the serene world of Lexi.AI, now optimized for Sber devices and the Salute platform!
+
+Lexi.AI is an intuitive word-linking puzzle that challenges your vocabulary and cognitive skills. Connect letters in circular motions to discover hidden combinations and clear levels.
+
+Feeling stuck? Use our unique Lexical AI Advisor to receive clever, cryptic hints—literary citations with the target word replaced by "_____". Use context and your knowledge to solve the puzzle!
+
+Key Features for Sber:
+- 🤖 AI-Powered Advisor: Smart hints to help you through tough levels.
+- 📺 TV Optimized: Designed for a great experience on SberBox and SberPortal.
+- ☀️ Relaxing Aesthetic: "Blue Sky" and "Starry Night" themes.
+- 🏆 Global Fun: Play in English or Russian.
+
+Master the art of words with Lexi.AI on Salute!

@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.36.2] - 2024-08-01
+### Added
+- **Sber Promo Materials**: Localized text assets for SberBox and SberPortal added to `promo/sber`.
+
 ## [2.36.0] - 2024-07-30
 ### Added
 - **Integrated AI Hints**: AI citation hints are now displayed directly within the Word Grid panel on the main game screen.

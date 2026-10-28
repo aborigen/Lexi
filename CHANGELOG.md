@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.36.2] - 2024-08-01
+### Added
+- **Sber Promo Materials**: Added localized descriptions and metadata for publishing on Sber Devices (Salute platform).
+- **Directory Structure**: Created `promo/sber` for platform-specific assets.
+
 ## [2.36.1] - 2024-07-31
 ### Removed
 - **Victory Dialog**: Removed the Level Complete dialog window to streamline the transition between levels. The game now auto-advances after success animations.
@@ -15,7 +20,6 @@
 ### Improved
 - **Linear Progression**: Implemented sequential level unlocking. Future levels are locked until the current one is mastered.
 - **Victory Feedback**: Added a 2-second delay before succession logic to allow celebratory SFX and particle animations to complete.
-- **Landscape Ergonomics**: Widened the Word Discovery sidebar in landscape mode to ensure target word slots always fit on a single line.
 - **UI Persistence**: Game state (level index, high score, unlocked levels) now persists via `localStorage` and platform cloud storage.
 
 ## [2.35.2] - 2024-07-29

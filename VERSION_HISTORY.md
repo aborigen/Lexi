@@ -1,6 +1,10 @@
 
 # Lexi.AI - Version History
 
+## v2.36.2 (2024-08-01)
+### Platform Expansion
+- **Sber Assets**: Created promo materials for Sber Devices in `promo/sber`.
+
 ## v2.36.1 (2024-07-31)
 ### UX Streamlining
 - **Automated Progression**: Removed the Level Complete dialog. The game now automatically advances to the next level 2.5 seconds after a success, allowing for a better "flow" state.

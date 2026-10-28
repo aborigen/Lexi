@@ -1,0 +1,8 @@
+{
+  "platform": "sber",
+  "app_name": "Lexi.AI",
+  "category": "Games/Puzzle",
+  "tags": ["Word", "Connect", "AI", "Puzzle", "Education"],
+  "target_devices": ["SberBox", "SberPortal", "SberTV", "Salute Mobile"],
+  "version": "2.36.2"
+}
