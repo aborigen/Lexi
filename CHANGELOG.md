@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.36.5] - 2024-08-04
+### Added
+- **Technical Documentation**: Created `docs/PLATFORM_ADAPTER_CODE.md` providing a commented code walkthrough of the SDK bridge logic.
+
 ## [2.36.4] - 2024-08-03
 ### Added
 - **Architectural Documentation**: Created `docs/PLATFORM_ADAPTER_PATTERN.md` to explain the multi-platform SDK bridge logic.
