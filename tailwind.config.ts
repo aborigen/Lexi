@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -10,8 +11,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-        headline: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        // Map the CSS variable from next/font/local to a Tailwind utility
+        body: ['var(--font-lexi)', 'system-ui', 'sans-serif'],
+        headline: ['var(--font-lexi)', 'system-ui', 'sans-serif'],
         code: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace'],
       },
       colors: {

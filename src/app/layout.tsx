@@ -1,6 +1,13 @@
-
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
+import { Fredoka } from 'next/font/google';
 import './globals.css';
+
+const fredoka = Fredoka({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-lexi',
+  display: 'swap',
+  weight: ['400', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'Lexi.AI - Word Connect Puzzle',
@@ -14,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-body antialiased selection:bg-primary selection:text-white">
+      <body className={`${fredoka.variable} font-body antialiased selection:bg-primary selection:text-white`}>
         {children}
       </body>
     </html>
