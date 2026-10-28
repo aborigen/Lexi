@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.36.1] - 2024-07-31
+### Removed
+- **Victory Dialog**: Removed the Level Complete dialog window to streamline the transition between levels. The game now auto-advances after success animations.
+
 ## [2.36.0] - 2024-07-30
 ### Added
 - **Integrated AI Hints**: AI citation hints are now displayed directly within the Word Grid panel on the main game screen.
@@ -10,7 +14,7 @@
 
 ### Improved
 - **Linear Progression**: Implemented sequential level unlocking. Future levels are locked until the current one is mastered.
-- **Victory Feedback**: Added a 2-second delay before the Victory Dialog opens to allow celebratory SFX and particle animations to complete.
+- **Victory Feedback**: Added a 2-second delay before succession logic to allow celebratory SFX and particle animations to complete.
 - **Landscape Ergonomics**: Widened the Word Discovery sidebar in landscape mode to ensure target word slots always fit on a single line.
 - **UI Persistence**: Game state (level index, high score, unlocked levels) now persists via `localStorage` and platform cloud storage.
 
