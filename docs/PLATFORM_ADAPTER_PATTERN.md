@@ -1,49 +1,28 @@
-# Platform Adapter Pattern in Lexi.AI
+# Platform Adapter Pattern in Lexi.AI (Refactored)
 
-Lexi.AI utilizes the **Platform Adapter Pattern** to maintain a single, clean codebase while deploying to multiple gaming platforms (Yandex Games, VK Games, Sber Salute, and Standalone Web).
+Lexi.AI utilizes the **Platform Adapter Pattern** to maintain a single codebase while deploying to Yandex Games, VK Games, Sber Salute, and Standalone Web.
 
-## 1. The Core Philosophy
-Instead of creating separate branches or repositories for different platforms, Lexi.AI uses a **Unified SDK Bridge** (`src/lib/yandex-sdk.ts`). This bridge abstracts the specific APIs of each platform into a consistent internal interface that the React components can call without knowing which platform is currently active.
+## 1. Strategic Refactoring
+The architecture has been updated to provide a more modular "Strategy" approach. The bridge (`src/lib/yandex-sdk.ts`) serves as the **Context**, and the platform-specific blocks inside it act as the **Strategies**.
 
-## 2. Implementation Overview
+## 2. Sber Devices (Salute) Specialization
+Sber integration requires a two-way communication channel between the web app and the Salute Assistant.
 
-### A. Environment Configuration
-The active platform is controlled via the `NEXT_PUBLIC_GAME_PLATFORM` environment variable in the `.env` file:
-```env
-NEXT_PUBLIC_GAME_PLATFORM=yandex # Options: standalone, yandex, vk, sber
-```
+### How it works for Sber:
+- **State Feedback**: The app periodically sends its state to the Assistant so the voice scenario knows what level the user is on.
+- **Voice Commands**: The refactored bridge is prepared to receive events via `on('data')`, allowing the game to respond to commands like "Start Level" or "Get Hint" spoken to the device.
+- **TV Optimization**: The bridge ensures that persistence is handled correctly for shared TV devices via the Salute storage logic.
 
-### B. Dynamic Script Injection
-The bridge does not bundle heavy SDKs. Instead, it injects the required platform scripts at runtime during the initialization phase:
-- **Yandex**: `https://yandex.ru/games/sdk/v2`
-- **VK**: `https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js`
-- **Sber**: `https://smart-display.sberdevices.ru/assistant-client.js`
+## 3. Unified Interface Reference
 
-### C. Standardized Interface
-The bridge exposes a common set of functions used throughout the app:
-- `initYandexSDK()`: Handles platform-specific handshake and script loading.
-- `updatePlayerStats()`: Automatically routes data to `localStorage` (all), Yandex Cloud Storage, or VK Storage.
-- `reportScoreToLeaderboard()`: Maps internal scores to the specific technical leaderboard IDs of the target platform.
-- `getEnvironmentLanguage()`: Detects language from the SDK environment or the browser headers.
+| Method | Yandex Games | VK Games | Sber Salute | Standalone |
+|--------|--------------|----------|-------------|------------|
+| `initYandexSDK()` | `YaGames.init()` | `VKBridge.init()`| `AssistantClient.create()` | No-op |
+| `updatePlayerStats()`| `player.setStats()`| `VKWebAppStorageSet` | `assistant.sendData()` | `localStorage` |
+| `syncHighScore()` | `player.setData()` | N/A (LB only) | `assistant.sendData()` | `localStorage` |
+| `reportScore()` | `lb.setScore()` | `ShowLBBox` | `assistant.sendData()` | No-op |
 
-## 3. Supported Platform Behaviors
-
-| Feature | Standalone | Yandex Games | VK Games | Sber Salute |
-|---------|------------|--------------|----------|-------------|
-| **Persistence** | `localStorage` | Cloud Data + Stats | VK Storage | Sber Assistant |
-| **Leaderboards**| Local only | Yandex Global LBs | VK Leaderboard Box| Salute Global |
-| **Ads** | None | Fullscreen/Rewarded | VK Bridge Ads | Salute Ads |
-| **Social** | None | Reviews/Shortcuts | Posts/Friends | N/A |
-
-## 4. Benefits of this Approach
-1. **Zero Logic Duplication**: A bug fix in the word-linking logic applies to all platforms simultaneously.
-2. **Simplified Build Pipeline**: The `scripts/build-multiplatform.sh` script simply swaps the environment variable and runs a standard `next build`.
-3. **Reduced Bundle Size**: Only the necessary platform scripts are loaded by the client's browser.
-4. **Maintenance**: Adding a new platform (e.g., Poki or CrazyGames) only requires adding a new case to the `src/lib/yandex-sdk.ts` bridge.
-
-## 5. Development Workflow
-When adding a feature that requires platform interaction:
-1. Define the function in `src/lib/yandex-sdk.ts`.
-2. Implement the `switch (PLATFORM)` logic.
-3. Ensure a fallback exists for `standalone` mode so development remains smooth locally.
-4. Call the new function from your React components.
+## 4. Development Benefits
+1. **Isolation**: You can simulate any platform by changing the `.env` variable.
+2. **Clean UI**: React components are not cluttered with `if (yandex) ... else if (sber)` blocks.
+3. **Voice Readiness**: The Sber scaffold is ready for integration with voice-activated gameplay.

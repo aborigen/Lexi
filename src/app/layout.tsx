@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Fredoka } from 'next/font/google';
+import { Nunito } from 'next/font/google';
 import './globals.css';
 
-const fredoka = Fredoka({
+const nunito = Nunito({
   subsets: ['latin', 'cyrillic'],
   variable: '--font-lexi',
   display: 'swap',
-  weight: ['400', '700'],
+  weight: ['400', '700', '900'],
 });
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fredoka.variable} font-body antialiased selection:bg-primary selection:text-white`}>
+      <body className={`${nunito.variable} font-body antialiased selection:bg-primary selection:text-white`}>
         {children}
       </body>
     </html>

@@ -1,92 +1,51 @@
-# Platform Adapter Pattern - Code Walkthrough
+# Platform Adapter Pattern - Refactored Code Walkthrough
 
-This document provides a technical deep-dive into the implementation of the **Platform Adapter Pattern** used in Lexi.AI.
+This document provides a technical deep-dive into the refactored **Platform Adapter Pattern** implementation in Lexi.AI, focusing on the enhanced Sber Devices integration.
 
-## 1. The Bridge Utility (`src/lib/yandex-sdk.ts`)
+## 1. Modular SDK Bridge (`src/lib/yandex-sdk.ts`)
 
-This file acts as the "Concrete Adapter" that translates internal game requests into platform-specific SDK calls.
+The bridge now uses a clean `switch-case` architecture within each method to route data to the correct platform SDK without leaking implementation details into the UI components.
 
-### A. Platform Identification
-We use environment variables set at build time to determine the target platform.
+### A. Initialization & Script Injection
+Scripts are loaded only once, and initialization is tailored to each platform's handshake requirements.
 ```typescript
-type GamePlatform = 'standalone' | 'yandex' | 'vk' | 'sber';
-const PLATFORM: GamePlatform = (process.env.NEXT_PUBLIC_GAME_PLATFORM as GamePlatform) || 'standalone';
+case 'sber':
+  // Salute Assistant Client integration
+  await loadScript('https://smart-display.sberdevices.ru/assistant-client.js');
+  sdkInstance = (window as any).AssistantClient.createAssistant({
+    getState: () => ({ /* current game data */ })
+  });
+  break;
 ```
 
-### B. Dynamic Script Loading
-To keep the initial bundle small, we inject the platform's heavy SDK only when the game initializes.
+### B. The Sber Salute Implementation
+For Sber Devices, the bridge handles:
+1. **State Sync**: Providing the `getState` callback to the `AssistantClient` so voice commands can access the current score/level.
+2. **Message Bus**: Using `sdkInstance.sendData` to notify the Sber Scenario about achievements (e.g., `action: 'new_high_score'`).
+3. **Event Listening**: Setting up `sdkInstance.on('data', ...)` to react to remote messages from the assistant.
+
+### C. Standardized Stats Management
+`updatePlayerStats` now handles persistence across all targets:
+- **Standalone**: `localStorage`.
+- **Yandex**: `playerInstance.setStats`.
+- **VK**: `VKWebAppStorageSet`.
+- **Sber**: `assistant.sendData({ action: 'update_stats', ... })`.
+
+## 2. Platform-Agnostic UI (`src/app/page.tsx`)
+
+The UI components remain "pure" and interact only with the bridge functions.
+
 ```typescript
-function loadScript(src: string): Promise<void> {
-  // Logic to append <script> to <head> and resolve on 'onload'
-}
-```
-
-### C. The Initialization Logic
-The `initYandexSDK` function handles the "Handshake" for each platform.
-```typescript
-export async function initYandexSDK(): Promise<any> {
-  switch (PLATFORM) {
-    case 'yandex':
-      await loadScript('https://yandex.ru/games/sdk/v2');
-      sdkInstance = await (window as any).YaGames.init();
-      playerInstance = await sdkInstance.getPlayer({ scopes: false });
-      break;
-    case 'vk':
-      await loadScript('https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js');
-      sdkInstance = (window as any).vkBridge;
-      await sdkInstance.send('VKWebAppInit');
-      break;
-    // ... other platforms
-  }
-}
-```
-
-### D. Unified Stats Storage
-The UI calls `updatePlayerStats`, and the bridge decides where to send it.
-```typescript
-export async function updatePlayerStats(newStats: Partial<PlayerStats>) {
-  // 1. Always save to LocalStorage for offline/fallback
-  localStorage.setItem(STATS_KEY, JSON.stringify(updated));
-
-  // 2. Route to the active cloud provider
-  if (PLATFORM === 'yandex' && playerInstance) {
-    playerInstance.setStats(updated); // Yandex Stats API
-  } else if (PLATFORM === 'vk' && sdkInstance) {
-    sdkInstance.send('VKWebAppStorageSet', { ... }); // VK Bridge Storage
-  }
-}
-```
-
-## 2. The Consumer Logic (`src/app/page.tsx`)
-
-The game UI never talks to Yandex or VK directly. It only talks to the bridge.
-
-### A. Initialization on Mount
-```typescript
-useEffect(() => {
-  const init = async () => {
-    await initYandexSDK(); // Handshake and script loading
-    const envLang = getEnvironmentLanguage(); // Auto-detect language
-    setLang(envLang);
-    signalGameReady(); // Tell the platform the loading bar can disappear
-  };
-  init();
-}, []);
-```
-
-### B. Event-Driven Syncing
-When a record is broken, the UI calls two bridge methods without caring which platform is running.
-```typescript
+// Example: The UI doesn't know it's talking to Sber or Yandex
 useEffect(() => {
   if (score > highScore) {
-    setHighScore(score);
-    syncHighScoreToYandex(score); // Saves data to cloud
-    reportScoreToLeaderboard(score); // Submits to rankings
+    syncHighScoreToYandex(score); // Automatically routes to cloud
+    reportScoreToLeaderboard(score); // Automatically shows LB box or sends data
   }
-}, [score, highScore]);
+}, [score]);
 ```
 
-## 3. Benefits Summary
-- **Independence**: The UI components are "clean" and free of platform-specific SDK objects like `YaGames` or `vkBridge`.
-- **Testability**: You can test the entire game loop in `standalone` mode (using `localStorage`) without needing a connection to Yandex or VK servers.
-- **Extensibility**: To add a new platform, you only modify `src/lib/yandex-sdk.ts`.
+## 3. Key Improvements in Version 2.37.0
+- **Resilience**: Added guard clauses to prevent errors if a script fails to load.
+- **Salute Support**: Implemented the `sendData` pattern for Sber Salute scenario synchronization.
+- **Leaderboard V2**: Updated Yandex logic to prefer the `sdk.leaderboards` property over the deprecated `getLeaderboards()` method.
