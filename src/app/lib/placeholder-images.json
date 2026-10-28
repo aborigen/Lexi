@@ -1,0 +1,23 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "game-background",
+      "description": "Abstract fruit textures",
+      "imageUrl": "https://picsum.photos/seed/pulpdrop/1920/1080",
+      "imageHint": "fruit texture"
+    },
+    {
+      "id": "sber-screenshot-portrait",
+      "description": "Sber Devices Portrait Screenshot",
+      "imageUrl": "https://picsum.photos/seed/sber-port/1080/1920",
+      "imageHint": "word game"
+    },
+    {
+      "id": "sber-screenshot-landscape",
+      "description": "Sber Devices Landscape Screenshot",
+      "imageUrl": "https://picsum.photos/seed/sber-land/1920/1080",
+      "imageHint": "puzzle interface"
+    }
+  ]
+}
