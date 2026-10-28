@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [2.36.4] - 2024-08-03
+### Added
+- **Architectural Documentation**: Created `docs/PLATFORM_ADAPTER_PATTERN.md` to explain the multi-platform SDK bridge logic.
+
 ## [2.36.3] - 2024-08-02
 ### Added
 - **Sber Visual Assets**: Generated landscape and portrait SVG screenshots for Sber devices.
