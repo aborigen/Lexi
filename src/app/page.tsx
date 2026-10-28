@@ -252,7 +252,7 @@ export default function WordConnectPage() {
             <div className="hidden sm:flex items-center gap-2 glass px-4 py-2 rounded-2xl border-white/60">
                <Award className="w-4 h-4 text-primary" />
                <span className="text-xs font-black tracking-tight uppercase opacity-60">
-                 {t('level_label', lang)} {playerStats?.levelsCleared || 0}
+                 {t('level_label', lang)} {levelIndex + 1}
                </span>
             </div>
 
