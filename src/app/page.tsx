@@ -24,7 +24,7 @@ import {
 } from '@/lib/yandex-sdk';
 import { t } from '@/lib/translations';
 import { LEVELS, WordLevel } from '@/lib/levels';
-import { cn } from '@/lib/utils';
+import { cn, shuffleArray } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,7 +97,8 @@ export default function WordConnectPage() {
         
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
         const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-        setActiveLevels(base); 
+        // Shuffle levels for variety on every session start
+        setActiveLevels(shuffleArray(base)); 
 
         await updatePlayerStats({ totalSessions: 1 });
         const stats = await fetchPlayerStats();
@@ -114,7 +115,8 @@ export default function WordConnectPage() {
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
     const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    setActiveLevels(base);
+    // Randomize order whenever the language is toggled
+    setActiveLevels(shuffleArray(base));
     setLevelIndex(0);
     setMaxLevelReached(0);
   }, [lang]);
@@ -133,7 +135,6 @@ export default function WordConnectPage() {
     }
   }, [score, highScore]);
 
-  // Set default hint when level changes or words found
   useEffect(() => {
     if (currentLevel && gameState.targetWords.length > 0) {
       const remaining = gameState.targetWords.filter(w => !gameState.foundWords.includes(w));
@@ -200,7 +201,6 @@ export default function WordConnectPage() {
       }
     }
 
-    // Auto-advance after celebration
     setTimeout(() => {
       handleNextLevel();
     }, 2500);
