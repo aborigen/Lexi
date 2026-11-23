@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -14,7 +15,7 @@ interface WordConnectProps {
   level: WordLevel;
   onScoreUpdate: (score: number, length: number, pos: { x: number, y: number }) => void;
   onLevelComplete: () => void;
-  onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[]) => void;
+  onStateUpdate: (letters: string[], foundWords: string[], allValidWords: string[], targetWords: string[]) => void;
   lang?: string;
   activeHint?: string | null;
 }
@@ -29,6 +30,7 @@ export function WordConnect({
 }: WordConnectProps) {
   const [shuffledLetters, setShuffledLetters] = useState<string[]>([]);
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+  const [targetWords, setTargetWords] = useState<string[]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [dragPath, setDragPath] = useState<{x: number, y: number} | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -66,6 +68,11 @@ export function WordConnect({
 
   useEffect(() => {
     if (level) {
+      // Pick 3 random words from validWords (or all if less than 3)
+      const shuffledPool = shuffleArray([...level.validWords]);
+      const selected = shuffledPool.slice(0, 3);
+      
+      setTargetWords(selected);
       setShuffledLetters(shuffleArray(level.letters));
       setFoundWords([]);
       setSelectedIndices([]);
@@ -78,9 +85,9 @@ export function WordConnect({
 
   useEffect(() => {
     if (level && shuffledLetters.length > 0) {
-      onStateUpdate(shuffledLetters, foundWords, level.validWords);
+      onStateUpdate(shuffledLetters, foundWords, level.validWords, targetWords);
     }
-  }, [level, foundWords, onStateUpdate, shuffledLetters]);
+  }, [level, foundWords, onStateUpdate, shuffledLetters, targetWords]);
 
   const completeOnboarding = useCallback(() => {
     if (showOnboarding) {
@@ -149,7 +156,8 @@ export function WordConnect({
     
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
-    if (level.validWords.includes(currentWord)) {
+    // Check if word is one of our targets AND hasn't been found yet
+    if (targetWords.includes(currentWord) && !foundWords.includes(currentWord)) {
       setIsSuccess(true);
       const rect = containerRef.current?.getBoundingClientRect();
       const startPos = rect ? {
@@ -157,11 +165,18 @@ export function WordConnect({
         y: rect.top + rect.height / 2
       } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
+      const newFoundWords = [...foundWords, currentWord];
+      
       setTimeout(() => {
-        setFoundWords([currentWord]);
+        setFoundWords(newFoundWords);
         onScoreUpdate(currentWord.length * 10, currentWord.length, startPos);
-        audioManager.playLevelComplete();
-        onLevelComplete();
+        audioManager.playSuccess();
+        
+        if (newFoundWords.length === targetWords.length) {
+          audioManager.playLevelComplete();
+          onLevelComplete();
+        }
+
         setSelectedIndices([]);
         selectedIndicesRef.current = [];
         setDragPath(null);
@@ -181,7 +196,7 @@ export function WordConnect({
       selectedIndicesRef.current = [];
       setDragPath(null);
     }
-  }, [level, shuffledLetters, foundWords, onScoreUpdate, onLevelComplete, isSuccess, isInvalid, isShuffling]);
+  }, [level, shuffledLetters, foundWords, targetWords, onScoreUpdate, onLevelComplete, isSuccess, isInvalid, isShuffling]);
 
   const handleShuffle = useCallback(() => {
     if (selectedIndices.length > 0 || isSuccess || isInvalid || isShuffling) return;
@@ -210,7 +225,7 @@ export function WordConnect({
       onTouchEnd={handleInteractionEnd}
     >
       <WordGrid 
-        validWords={level.validWords}
+        targetWords={targetWords}
         foundWords={foundWords}
         lang={lang}
         activeHint={activeHint}

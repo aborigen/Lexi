@@ -3,321 +3,69 @@
   {
     "lang": "en",
     "letters": ["S", "T", "A", "R", "E"],
-    "validWords": ["STARE"],
+    "validWords": ["STARE", "TEARS", "RATES", "ASTER", "TARES", "STARE"],
     "hints": {
-      "STARE": "It is impolite to _____ at people for too long. (Пристальный взгляд)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["F", "E", "A", "T", "U", "R", "E"],
-    "validWords": ["FEATURE"],
-    "hints": {
-      "FEATURE": "This software has a unique _____ that distinguishes it from others. (Особенность)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["B", "R", "I", "D", "G", "E"],
-    "validWords": ["BRIDGE"],
-    "hints": {
-      "BRIDGE": "He's going under the _____ just as the police car is going over it. (Мост)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "P", "E", "E", "D"],
-    "validWords": ["SPEED"],
-    "hints": {
-      "SPEED": "You should check your _____ while driving near schools. (Скорость)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["C", "R", "I", "M", "E"],
-    "validWords": ["CRIME"],
-    "hints": {
-      "CRIME": "Fighting _____ is one of the top priorities for the local police. (Преступление)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["H", "E", "A", "R", "T"],
-    "validWords": ["HEART"],
-    "hints": {
-      "HEART": "Listen to your _____ when making important decisions. (Сердце)"
+      "STARE": "It is impolite to _____ at people for too long. (Пристальный взгляд)",
+      "TEARS": "Crocodile _____ are insincere expressions of sorrow.",
+      "RATES": "The interest _____ have been rising lately.",
+      "ASTER": "A beautiful fall-blooming flower.",
+      "TARES": "Weed among the wheat in the biblical parable."
     }
   },
   {
     "lang": "en",
     "letters": ["L", "I", "G", "H", "T"],
-    "validWords": ["LIGHT"],
+    "validWords": ["LIGHT", "EIGHT", "GILT", "HILT", "LIT"],
     "hints": {
-      "LIGHT": "Switch off the _____ when you leave the room to save energy. (Свет)"
+      "LIGHT": "Switch off the _____ when you leave the room to save energy.",
+      "GILT": "Covered thinly with gold leaf or gold paint.",
+      "HILT": "The handle of a weapon or tool, especially a sword.",
+      "LIT": "The room was _____ by several candles."
     }
   },
   {
     "lang": "en",
-    "letters": ["P", "O", "W", "E", "R"],
-    "validWords": ["POWER"],
+    "letters": ["B", "R", "I", "D", "G", "E"],
+    "validWords": ["BRIDGE", "DIRGE", "RIDGE", "BIRD", "GRID", "RIDE"],
     "hints": {
-      "POWER": "The storm caused a major _____ outage in the entire neighborhood. (Сила/Энергия)"
+      "BRIDGE": "He's going under the _____ just as the police car is going over it.",
+      "DIRGE": "A mournful song, piece of music, or poem.",
+      "RIDGE": "The long narrow hilltop was called a _____.",
+      "BIRD": "A symbol of freedom in the sky.",
+      "GRID": "A framework of spaced bars that are parallel to or cross each other."
     }
   },
   {
     "lang": "en",
     "letters": ["B", "R", "A", "I", "N"],
-    "validWords": ["BRAIN"],
+    "validWords": ["BRAIN", "BARN", "RAIN", "BRAN", "BANI"],
     "hints": {
-      "BRAIN": "The human _____ is the most complex organ in the body. (Мозг)"
+      "BRAIN": "The human _____ is the most complex organ in the body.",
+      "BARN": "A large farm building used for storing grain or housing livestock.",
+      "RAIN": "The _____ in Spain stays mainly in the plain.",
+      "BRAN": "Pieces of grain husk separated from flour after milling."
     }
   },
   {
     "lang": "en",
     "letters": ["S", "M", "I", "L", "E"],
-    "validWords": ["SMILE"],
+    "validWords": ["SMILE", "MILE", "LIME", "SLIM", "SEMI"],
     "hints": {
-      "SMILE": "A warm _____ can make a big difference in someone's day. (Улыбка)"
+      "SMILE": "A warm _____ can make a big difference in someone's day.",
+      "MILE": "I would walk a _____ just to see you.",
+      "LIME": "A green citrus fruit used in drinks.",
+      "SLIM": "He has a very _____ and athletic build."
     }
   },
   {
     "lang": "en",
     "letters": ["D", "R", "E", "A", "M"],
-    "validWords": ["DREAM"],
+    "validWords": ["DREAM", "ARMED", "DAME", "DARE", "DEAR", "READ", "MADE"],
     "hints": {
-      "DREAM": "I had a strange _____ last night that I still remember. (Мечта/Сон)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["P", "L", "A", "N", "T"],
-    "validWords": ["PLANT"],
-    "hints": {
-      "PLANT": "Remember to water the _____ every morning. (Растение)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "T", "O", "N", "E"],
-    "validWords": ["STONE"],
-    "hints": {
-      "STONE": "The old house was built using large blocks of _____. (Камень)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["W", "A", "T", "E", "R"],
-    "validWords": ["WATER"],
-    "hints": {
-      "WATER": "Drink plenty of _____ during hot summer days. (Вода)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "O", "U", "N", "D"],
-    "validWords": ["SOUND"],
-    "hints": {
-      "SOUND": "I heard a loud _____ coming from the basement. (Звук)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["B", "R", "E", "A", "D"],
-    "validWords": ["BREAD"],
-    "hints": {
-      "BREAD": "There is nothing like the smell of fresh _____. (Хлеб)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["C", "H", "A", "I", "R"],
-    "validWords": ["CHAIR"],
-    "hints": {
-      "CHAIR": "Please take a _____ and make yourself comfortable. (Стул)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["G", "R", "A", "S", "S"],
-    "validWords": ["GRASS"],
-    "hints": {
-      "GRASS": "The _____ is always greener on the other side. (Трава)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["F", "R", "U", "I", "T"],
-    "validWords": ["FRUIT"],
-    "hints": {
-      "FRUIT": "Apple is a very popular type of _____. (Фрукт)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["C", "L", "O", "U", "D"],
-    "validWords": ["CLOUD"],
-    "hints": {
-      "CLOUD": "A single white _____ floated in the blue sky. (Облако)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["W", "O", "R", "L", "D"],
-    "validWords": ["WORLD"],
-    "hints": {
-      "WORLD": "Traveling allows you to see different parts of the _____. (Мир)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "P", "A", "C", "E"],
-    "validWords": ["SPACE"],
-    "hints": {
-      "SPACE": "Astronauts explore the vastness of outer _____. (Космос)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["P", "L", "A", "N", "E"],
-    "validWords": ["PLANE"],
-    "hints": {
-      "PLANE": "We took a _____ to travel to Japan. (Самолет)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["F", "I", "E", "L", "D"],
-    "validWords": ["FIELD"],
-    "hints": {
-      "FIELD": "The cows were grazing peacefully in the green _____. (Поле)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["M", "O", "U", "N", "T"],
-    "validWords": ["MOUNT"],
-    "hints": {
-      "MOUNT": "They decided to _____ the camera on a tripod. (Гора/Устанавливать)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["O", "C", "E", "A", "N"],
-    "validWords": ["OCEAN"],
-    "hints": {
-      "OCEAN": "The Atlantic _____ is vast and full of mysteries. (Океан)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["F", "L", "A", "M", "E"],
-    "validWords": ["FLAME"],
-    "hints": {
-      "FLAME": "A tiny _____ was enough to start the campfire. (Пламя)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "T", "O", "R", "M"],
-    "validWords": ["STORM"],
-    "hints": {
-      "STORM": "A violent _____ hit the coast during the night. (Шторм/Буря)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["S", "H", "O", "R", "E"],
-    "validWords": ["SHORE"],
-    "hints": {
-      "SHORE": "They walked along the _____ as the sun began to set. (Берег)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["B", "L", "A", "D", "E"],
-    "validWords": ["BLADE"],
-    "hints": {
-      "BLADE": "The _____ of the knife was sharp and shiny. (Лезвие)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["G", "H", "O", "S", "T"],
-    "validWords": ["GHOST"],
-    "hints": {
-      "GHOST": "Some people believe the old mansion is haunted by a _____. (Призрак)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["T", "R", "A", "I", "N"],
-    "validWords": ["TRAIN"],
-    "hints": {
-      "TRAIN": "The _____ to Paris leaves at exactly eight o'clock. (Поезд)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["H", "O", "U", "S", "E"],
-    "validWords": ["HOUSE"],
-    "hints": {
-      "HOUSE": "They are planning to build a new _____ next year. (Дом)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["P", "A", "P", "E", "R"],
-    "validWords": ["PAPER"],
-    "hints": {
-      "PAPER": "Please write your name at the top of the _____. (Бумага)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["P", "H", "O", "N", "E"],
-    "validWords": ["PHONE"],
-    "hints": {
-      "PHONE": "I need to charge my _____ before we leave. (Телефон)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["T", "R", "U", "C", "K"],
-    "validWords": ["TRUCK"],
-    "hints": {
-      "TRUCK": "The delivery _____ arrived with all our new furniture. (Грузовик)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["T", "A", "B", "L", "E"],
-    "validWords": ["TABLE"],
-    "hints": {
-      "TABLE": "Dinner is served on the large wooden _____. (Стол)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["B", "E", "A", "C", "H"],
-    "validWords": ["BEACH"],
-    "hints": {
-      "BEACH": "We spent the whole day relaxing on the sandy _____. (Пляж)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["N", "I", "G", "H", "T"],
-    "validWords": ["NIGHT"],
-    "hints": {
-      "NIGHT": "The stars are much brighter during a clear _____. (Ночь)"
-    }
-  },
-  {
-    "lang": "en",
-    "letters": ["P", "A", "R", "T", "Y"],
-    "validWords": ["PARTY"],
-    "hints": {
-      "PARTY": "Are you coming to the birthday _____ tonight? (Вечеринка)"
+      "DREAM": "I had a strange _____ last night that I still remember.",
+      "ARMED": "The guards were _____ with standard issue rifles.",
+      "DAME": "A title given to a woman equivalent to the rank of knight.",
+      "DARE": "I _____ you to jump over that fence."
     }
   }
 ]

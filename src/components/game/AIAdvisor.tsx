@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -13,6 +14,7 @@ interface AIAdvisorProps {
     letters: string[];
     foundWords: string[];
     allValidWords: string[];
+    targetWords: string[];
   };
   onSuggestionReceived: (hint: string | null) => void;
   lang?: string;
@@ -32,8 +34,10 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level,
       return;
     }
 
-    // Check if level is already complete
-    if (gameState.foundWords.length >= level.validWords.length) {
+    const remaining = gameState.targetWords.filter(w => !gameState.foundWords.includes(w));
+
+    // Check if round is already complete
+    if (remaining.length === 0) {
       onSuggestionReceived(t('hint_all_found', lang));
       return;
     }
@@ -43,7 +47,7 @@ export function AIAdvisor({ gameState, onSuggestionReceived, lang = 'en', level,
     await new Promise(resolve => setTimeout(resolve, 600));
 
     try {
-      const targetWord = level.validWords[0];
+      const targetWord = remaining[0];
       const staticHint = level.hints[targetWord];
 
       if (staticHint) {

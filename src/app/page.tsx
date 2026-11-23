@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -7,7 +8,7 @@ import { LevelWordsDialog } from '@/components/game/LevelWordsDialog';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
-import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Settings, Award, LayoutGrid, Sparkles } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Settings, Award, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -47,10 +48,11 @@ export default function WordConnectPage() {
   const [isLevelListOpen, setIsLevelListOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
   const [activeHint, setActiveHint] = useState<string | null>(null);
-  const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[]}>({
+  const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[], targetWords: string[]}>({
     letters: [],
     foundWords: [],
-    allValidWords: []
+    allValidWords: [],
+    targetWords: []
   });
 
   const scoreBadgeRef = useRef<HTMLDivElement>(null);
@@ -131,16 +133,21 @@ export default function WordConnectPage() {
     }
   }, [score, highScore]);
 
-  // Set default hint when level changes
+  // Set default hint when level changes or words found
   useEffect(() => {
-    if (currentLevel) {
-      const targetWord = currentLevel.validWords[0];
-      const hint = currentLevel.hints[targetWord];
-      setActiveHint(hint || null);
+    if (currentLevel && gameState.targetWords.length > 0) {
+      const remaining = gameState.targetWords.filter(w => !gameState.foundWords.includes(w));
+      if (remaining.length > 0) {
+        const nextTarget = remaining[0];
+        const hint = currentLevel.hints[nextTarget];
+        setActiveHint(hint || null);
+      } else {
+        setActiveHint(null);
+      }
     } else {
       setActiveHint(null);
     }
-  }, [currentLevel]);
+  }, [currentLevel, gameState.targetWords, gameState.foundWords]);
 
   const handleReset = useCallback(() => {
     setScore(0);
@@ -226,8 +233,8 @@ export default function WordConnectPage() {
     }
   }, []);
 
-  const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[]) => {
-    setGameState({ letters, foundWords, allValidWords });
+  const handleStateUpdate = useCallback((letters: string[], foundWords: string[], allValidWords: string[], targetWords: string[]) => {
+    setGameState({ letters, foundWords, allValidWords, targetWords });
   }, []);
 
   const toggleLang = () => setLang(prev => prev === 'en' ? 'ru' : 'en');

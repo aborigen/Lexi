@@ -1,25 +1,24 @@
+
 "use client";
 
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/translations';
-import { Star, Sparkles, Quote } from 'lucide-react';
+import { Star, Sparkles, Quote, Check } from 'lucide-react';
 
 interface WordGridProps {
-  validWords: string[];
+  targetWords: string[];
   foundWords: string[];
   lang?: string;
   activeHint?: string | null;
 }
 
-export function WordGrid({ validWords, foundWords, lang = 'en', activeHint = null }: WordGridProps) {
-  const targetWord = validWords[0] || "";
-  const isFound = foundWords.includes(targetWord);
-  const isLevelComplete = isFound;
+export function WordGrid({ targetWords, foundWords, lang = 'en', activeHint = null }: WordGridProps) {
+  const isLevelComplete = targetWords.length > 0 && targetWords.every(w => foundWords.includes(w));
 
   return (
     <div className={cn(
-      "w-full portrait:min-h-[220px] portrait:max-h-[40vh] landscape:w-[320px] sm:landscape:w-[480px] lg:landscape:w-[520px] landscape:h-full p-4 sm:p-6 glass rounded-[2.5rem] flex flex-col gap-3 sm:gap-6 overflow-hidden shrink-0 animate-slide-in-left z-10 border-white/50 transition-all duration-1000 relative items-center justify-center",
+      "w-full portrait:min-h-[220px] portrait:max-h-[50vh] landscape:w-[320px] sm:landscape:w-[480px] lg:landscape:w-[520px] landscape:h-full p-4 sm:p-6 glass rounded-[2.5rem] flex flex-col gap-4 sm:gap-6 overflow-hidden shrink-0 animate-slide-in-left z-10 border-white/50 transition-all duration-1000 relative items-center justify-center",
       isLevelComplete && "bg-primary/5 border-primary/40 shadow-[0_0_60px_rgba(245,158,11,0.2)]"
     )}>
       
@@ -30,7 +29,7 @@ export function WordGrid({ validWords, foundWords, lang = 'en', activeHint = nul
             <Quote className="w-10 h-10 text-primary rotate-180" />
           </div>
           <div className="relative z-10 flex flex-col justify-center min-h-[60px] sm:min-h-[80px]">
-            <p className="text-xs sm:text-base font-black italic text-foreground leading-snug sm:leading-relaxed tracking-tight text-center whitespace-pre-line line-clamp-4">
+            <p className="text-xs sm:text-sm font-black italic text-foreground leading-snug sm:leading-relaxed tracking-tight text-center whitespace-pre-line line-clamp-4">
               {activeHint}
             </p>
           </div>
@@ -41,33 +40,46 @@ export function WordGrid({ validWords, foundWords, lang = 'en', activeHint = nul
         <div className="flex items-center gap-2">
           <Sparkles className={cn("w-3 h-3 sm:w-4 sm:h-4 text-primary transition-opacity", isLevelComplete ? "opacity-100" : "opacity-0")} />
           <span className={cn(
-            "text-[10px] sm:text-sm font-black uppercase italic tracking-wider transition-colors",
+            "text-[10px] sm:text-xs font-black uppercase italic tracking-wider transition-colors",
             isLevelComplete ? "text-primary" : "text-muted-foreground"
           )}>
-            {lang === 'ru' ? 'ЦЕЛЕВОЕ СЛОВО' : 'TARGET WORD'}
+            {lang === 'ru' ? 'НАЙДИТЕ СЛОВА' : 'FIND THE WORDS'}
           </span>
         </div>
       </div>
       
-      <div className="flex justify-center gap-1 sm:gap-2.5 flex-wrap landscape:flex-nowrap overflow-x-auto no-scrollbar w-full px-1">
-        {targetWord.split('').map((char, i) => (
-          <div 
-            key={i} 
-            className={cn(
-              "w-8 h-8 xs:w-10 xs:h-10 sm:w-14 sm:h-14 flex items-center justify-center border-2 sm:border-4 rounded-xl sm:rounded-2xl font-black text-base sm:text-2xl transition-all duration-700 shrink-0",
-              isFound 
-                ? "sunny-gradient text-white border-white/50 shadow-xl" 
-                : "bg-black/5 border-white/10 text-transparent shadow-inner",
-              isLevelComplete && "animate-success-pop"
-            )}
-          >
-            {isFound ? char : ''}
-          </div>
-        ))}
+      <div className="flex flex-col gap-3 w-full px-1 overflow-y-auto no-scrollbar max-h-full">
+        {targetWords.map((word, wordIdx) => {
+          const isFound = foundWords.includes(word);
+          return (
+            <div key={wordIdx} className="flex flex-col items-center gap-1">
+              <div className="flex justify-center gap-1 sm:gap-1.5 flex-wrap">
+                {word.split('').map((char, i) => (
+                  <div 
+                    key={i} 
+                    className={cn(
+                      "w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 flex items-center justify-center border-2 rounded-lg sm:rounded-xl font-black text-xs sm:text-lg transition-all duration-700 shrink-0",
+                      isFound 
+                        ? "sunny-gradient text-white border-white/50 shadow-md" 
+                        : "bg-black/5 border-white/10 text-transparent shadow-inner"
+                    )}
+                  >
+                    {isFound ? char : ''}
+                  </div>
+                ))}
+                {isFound && (
+                  <div className="ml-1 flex items-center justify-center w-7 h-7 sm:w-10 sm:h-10 success-gradient rounded-full shadow-lg animate-in zoom-in duration-300">
+                    <Check className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
       
       {isLevelComplete && (
-        <div className="animate-bounce flex items-center gap-2 sm:gap-3 bg-primary/10 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-primary/30 shadow-2xl">
+        <div className="mt-2 animate-bounce flex items-center gap-2 sm:gap-3 bg-primary/10 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-primary/30 shadow-2xl">
           <Star className="w-3 h-3 sm:w-4 sm:h-4 text-primary fill-primary" />
           <span className="text-[8px] sm:text-[10px] font-black uppercase text-primary tracking-[0.2em] sm:tracking-[0.3em]">
             {lang === 'ru' ? 'ВЕЛИКОЛЕПНО!' : 'EXCELLENT!'}
