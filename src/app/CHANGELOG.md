@@ -1,5 +1,11 @@
 
+
 # Changelog
+
+## [2.37.1] - 2024-08-06
+### Added
+- **Solved Level Persistence**: Solved levels are now tracked and excluded from the random shuffle pool until all levels are completed.
+- **Progress Reset**: Added a deep reset option in settings to clear high scores and the solved levels list.
 
 ## [2.37.0] - 2024-08-05
 ### Added
@@ -21,3 +27,4 @@
 - **Victory Feedback**: Added a 2-second delay before the Victory Dialog opens to allow celebratory SFX and particle animations to complete.
 - **Landscape Ergonomics**: Widened the Word Discovery sidebar in landscape mode to ensure target word slots always fit on a single line.
 - **UI Persistence**: Game state (level index, high score, unlocked levels) now persists via `localStorage` and platform cloud storage.
+

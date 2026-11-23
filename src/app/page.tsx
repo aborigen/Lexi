@@ -8,7 +8,7 @@ import { LevelWordsDialog } from '@/components/game/LevelWordsDialog';
 import { StatsDialog } from '@/components/game/StatsDialog';
 import { LevelList } from '@/components/game/LevelList';
 import { ScoreParticles, ScoreParticlesHandle } from '@/components/game/ScoreParticles';
-import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Settings, Award, LayoutGrid } from 'lucide-react';
+import { Trophy, RefreshCcw, Gamepad2, Languages, Sun, Moon, BarChart3, SkipForward, Settings, Award, LayoutGrid, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
@@ -48,6 +48,7 @@ export default function WordConnectPage() {
   const [isLevelListOpen, setIsLevelListOpen] = useState(false);
   const [isScoreImpact, setIsScoreImpact] = useState(false);
   const [activeHint, setActiveHint] = useState<string | null>(null);
+  const [solvedLevelKeys, setSolvedLevelKeys] = useState<string[]>([]);
   const [gameState, setGameState] = useState<{letters: string[], foundWords: string[], allValidWords: string[], targetWords: string[]}>({
     letters: [],
     foundWords: [],
@@ -59,6 +60,9 @@ export default function WordConnectPage() {
   const particlesRef = useRef<ScoreParticlesHandle>(null);
 
   const currentLevel = activeLevels.length > 0 ? activeLevels[levelIndex % activeLevels.length] : null;
+
+  // Helper to generate a unique key for a level
+  const getLevelKey = (level: WordLevel) => `${level.lang}-${[...level.letters].sort().join('')}`;
 
   useEffect(() => {
     if (displayScore === score) return;
@@ -91,14 +95,18 @@ export default function WordConnectPage() {
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
 
+        const savedSolved = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('lexi_solved_levels') || '[]') : [];
+        setSolvedLevelKeys(savedSolved);
+
         await initYandexSDK();
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
         
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
-        const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-        // Shuffle levels for variety on every session start
-        setActiveLevels(shuffleArray(base)); 
+        const unsolved = filtered.filter(lvl => !savedSolved.includes(getLevelKey(lvl)));
+        const finalPool = unsolved.length > 0 ? unsolved : filtered;
+        
+        setActiveLevels(shuffleArray(finalPool)); 
 
         await updatePlayerStats({ totalSessions: 1 });
         const stats = await fetchPlayerStats();
@@ -114,12 +122,13 @@ export default function WordConnectPage() {
 
   useEffect(() => {
     const filtered = LEVELS.filter(lvl => lvl.lang === lang);
-    const base = filtered.length > 0 ? filtered : LEVELS.filter(lvl => lvl.lang === 'en');
-    // Randomize order whenever the language is toggled
-    setActiveLevels(shuffleArray(base));
+    const unsolved = filtered.filter(lvl => !solvedLevelKeys.includes(getLevelKey(lvl)));
+    const finalPool = unsolved.length > 0 ? unsolved : filtered;
+
+    setActiveLevels(shuffleArray(finalPool));
     setLevelIndex(0);
     setMaxLevelReached(0);
-  }, [lang]);
+  }, [lang, solvedLevelKeys]);
 
   useEffect(() => {
     if (theme === 'dark') document.documentElement.classList.add('dark');
@@ -155,20 +164,33 @@ export default function WordConnectPage() {
     setDisplayScore(0);
     setLevelIndex(0);
     setMaxLevelReached(0);
+    setSolvedLevelKeys([]);
     if (typeof window !== 'undefined') {
       localStorage.setItem('lexi_level_index', '0');
       localStorage.setItem('lexi_max_level', '0');
+      localStorage.setItem('lexi_solved_levels', JSON.stringify([]));
     }
     toast({ title: t('reset', lang), description: "Progress cleared." });
   }, [lang]);
 
   const handleNextLevel = useCallback(() => {
     const nextIdx = levelIndex + 1;
-    setLevelIndex(nextIdx);
+    
+    // If we've reached the end of our current active pool
+    if (nextIdx >= activeLevels.length) {
+      toast({ 
+        title: lang === 'ru' ? 'Все уровни пройдены!' : 'All levels solved!', 
+        description: lang === 'ru' ? 'Начинаем заново со случайных слов.' : 'Starting fresh with random words.'
+      });
+      setLevelIndex(0);
+    } else {
+      setLevelIndex(nextIdx);
+    }
+    
     if (typeof window !== 'undefined') {
       localStorage.setItem('lexi_level_index', nextIdx.toString());
     }
-  }, [levelIndex]);
+  }, [levelIndex, activeLevels.length, lang]);
 
   const handleSelectLevel = useCallback((index: number) => {
     setLevelIndex(index);
@@ -193,6 +215,15 @@ export default function WordConnectPage() {
       }
     }
 
+    if (currentLevel) {
+      const key = getLevelKey(currentLevel);
+      const newSolved = [...solvedLevelKeys, key];
+      setSolvedLevelKeys(newSolved);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('lexi_solved_levels', JSON.stringify(newSolved));
+      }
+    }
+
     if (levelIndex === maxLevelReached) {
       const newMax = maxLevelReached + 1;
       setMaxLevelReached(newMax);
@@ -208,7 +239,7 @@ export default function WordConnectPage() {
     reportScoreToLeaderboard(score);
     updatePlayerStats({ levelsCleared: 1 });
     fetchPlayerStats().then(s => s && setPlayerStats(s));
-  }, [score, levelIndex, maxLevelReached, handleNextLevel]);
+  }, [score, levelIndex, maxLevelReached, handleNextLevel, currentLevel, solvedLevelKeys]);
 
   const handleScoreUpdate = useCallback((newScore: number, wordLength: number, pos: { x: number, y: number }) => {
     if (particlesRef.current && scoreBadgeRef.current) {
@@ -342,8 +373,14 @@ export default function WordConnectPage() {
               activeHint={activeHint}
             />
           ) : (
-            <div className="flex-1 flex items-center justify-center">
-              <RefreshCcw className="w-12 h-12 animate-spin text-primary opacity-20" />
+            <div className="flex-1 flex items-center justify-center flex-col gap-4">
+               <CheckCircle className="w-16 h-16 text-primary animate-pulse" />
+               <p className="text-sm font-black uppercase tracking-widest text-primary">
+                 {lang === 'ru' ? 'Все уровни пройдены!' : 'All levels solved!'}
+               </p>
+               <Button onClick={handleReset} variant="outline" className="rounded-full glass px-8">
+                 {t('reset_game', lang)}
+               </Button>
             </div>
           )}
         </main>
@@ -379,3 +416,4 @@ export default function WordConnectPage() {
     </div>
   );
 }
+
