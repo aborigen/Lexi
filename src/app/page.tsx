@@ -80,17 +80,27 @@ export default function WordConnectPage() {
     return () => clearTimeout(timeout);
   }, [score, displayScore]);
 
+  // Shuffling logic separated to ensure it only happens when intended
+  const prepareLevels = useCallback((targetLang: string, solvedKeys: string[]) => {
+    const filtered = LEVELS.filter(lvl => lvl.lang === targetLang);
+    const unsolved = filtered.filter(lvl => !solvedKeys.includes(getLevelKey(lvl)));
+    const finalPool = unsolved.length > 0 ? unsolved : filtered;
+    
+    setActiveLevels(shuffleArray(finalPool));
+    setLevelIndex(0);
+    setMaxLevelReached(0);
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lexi_level_index', '0');
+      localStorage.setItem('lexi_max_level', '0');
+    }
+  }, []);
+
   useEffect(() => {
     const init = async () => {
       try {
         const savedScore = typeof window !== 'undefined' ? localStorage.getItem('lexi_high_score') : null;
         if (savedScore) setHighScore(parseInt(savedScore));
-
-        const savedLevel = typeof window !== 'undefined' ? localStorage.getItem('lexi_level_index') : '0';
-        setLevelIndex(parseInt(savedLevel || '0'));
-
-        const savedMaxLevel = typeof window !== 'undefined' ? localStorage.getItem('lexi_max_level') : '0';
-        setMaxLevelReached(parseInt(savedMaxLevel || '0'));
 
         const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('app_theme') : 'light';
         setTheme((savedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark');
@@ -102,11 +112,11 @@ export default function WordConnectPage() {
         const envLang = getEnvironmentLanguage();
         setLang(envLang);
         
+        // Initial shuffle on mount
         const filtered = LEVELS.filter(lvl => lvl.lang === envLang);
         const unsolved = filtered.filter(lvl => !savedSolved.includes(getLevelKey(lvl)));
         const finalPool = unsolved.length > 0 ? unsolved : filtered;
-        
-        setActiveLevels(shuffleArray(finalPool)); 
+        setActiveLevels(shuffleArray(finalPool));
 
         await updatePlayerStats({ totalSessions: 1 });
         const stats = await fetchPlayerStats();
@@ -120,15 +130,11 @@ export default function WordConnectPage() {
     init();
   }, []);
 
+  // Handle language change shuffling
   useEffect(() => {
-    const filtered = LEVELS.filter(lvl => lvl.lang === lang);
-    const unsolved = filtered.filter(lvl => !solvedLevelKeys.includes(getLevelKey(lvl)));
-    const finalPool = unsolved.length > 0 ? unsolved : filtered;
-
-    setActiveLevels(shuffleArray(finalPool));
-    setLevelIndex(0);
-    setMaxLevelReached(0);
-  }, [lang, solvedLevelKeys]);
+    const savedSolved = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('lexi_solved_levels') || '[]') : solvedLevelKeys;
+    prepareLevels(lang, savedSolved);
+  }, [lang, prepareLevels]);
 
   useEffect(() => {
     if (theme === 'dark') document.documentElement.classList.add('dark');
@@ -162,35 +168,32 @@ export default function WordConnectPage() {
   const handleReset = useCallback(() => {
     setScore(0);
     setDisplayScore(0);
-    setLevelIndex(0);
-    setMaxLevelReached(0);
     setSolvedLevelKeys([]);
     if (typeof window !== 'undefined') {
       localStorage.setItem('lexi_level_index', '0');
       localStorage.setItem('lexi_max_level', '0');
       localStorage.setItem('lexi_solved_levels', JSON.stringify([]));
     }
+    prepareLevels(lang, []);
     toast({ title: t('reset', lang), description: "Progress cleared." });
-  }, [lang]);
+  }, [lang, prepareLevels]);
 
   const handleNextLevel = useCallback(() => {
     const nextIdx = levelIndex + 1;
     
-    // If we've reached the end of our current active pool
     if (nextIdx >= activeLevels.length) {
       toast({ 
         title: lang === 'ru' ? 'Все уровни пройдены!' : 'All levels solved!', 
         description: lang === 'ru' ? 'Начинаем заново со случайных слов.' : 'Starting fresh with random words.'
       });
-      setLevelIndex(0);
+      prepareLevels(lang, solvedLevelKeys);
     } else {
       setLevelIndex(nextIdx);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('lexi_level_index', nextIdx.toString());
+      }
     }
-    
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lexi_level_index', nextIdx.toString());
-    }
-  }, [levelIndex, activeLevels.length, lang]);
+  }, [levelIndex, activeLevels.length, lang, prepareLevels, solvedLevelKeys]);
 
   const handleSelectLevel = useCallback((index: number) => {
     setLevelIndex(index);
@@ -416,4 +419,3 @@ export default function WordConnectPage() {
     </div>
   );
 }
-

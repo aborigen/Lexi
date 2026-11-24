@@ -1,6 +1,9 @@
 
-
 # Changelog
+
+## [2.37.2] - 2024-08-07
+### Improved
+- **Session-Start Shuffling**: Refined level randomization logic to ensure a fresh experience on every mount and language change, while preventing mid-session order jumps.
 
 ## [2.37.1] - 2024-08-06
 ### Added
@@ -21,10 +24,3 @@
 - **Auto-Hint Feature**: Literary context hints are now displayed by default at the start of each level to provide immediate educational value.
 - **Pangram Gameplay Rule**: Refactored levels to focus on a "One Word Anagram" mechanic, where the goal is to find the single word using all available letters.
 - **Refined Onboarding**: Added a smooth hand animation to guide new users through their first word connection.
-
-### Improved
-- **Linear Progression**: Implemented sequential level unlocking. Future levels are locked until the current one is mastered.
-- **Victory Feedback**: Added a 2-second delay before the Victory Dialog opens to allow celebratory SFX and particle animations to complete.
-- **Landscape Ergonomics**: Widened the Word Discovery sidebar in landscape mode to ensure target word slots always fit on a single line.
-- **UI Persistence**: Game state (level index, high score, unlocked levels) now persists via `localStorage` and platform cloud storage.
-
