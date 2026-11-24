@@ -14,6 +14,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "zip": "cd out && zip -q -r ../game-bundle.zip . && cd ..",
     "archive": "sh scripts/build-archive.sh",
     "build:yandex": "sh scripts/build-multiplatform.sh yandex",
     "build:vk": "sh scripts/build-multiplatform.sh vk",
