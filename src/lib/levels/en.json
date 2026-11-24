@@ -3,9 +3,9 @@
   {
     "lang": "en",
     "letters": ["S", "T", "A", "R", "E"],
-    "validWords": ["STARE", "TEARS", "RATES", "ASTER", "TARES", "STARE"],
+    "validWords": ["STARE", "TEARS", "RATES", "ASTER", "TARES"],
     "hints": {
-      "STARE": "It is impolite to _____ at people for too long. (Пристальный взгляд)",
+      "STARE": "It is impolite to _____ at people for too long.",
       "TEARS": "Crocodile _____ are insincere expressions of sorrow.",
       "RATES": "The interest _____ have been rising lately.",
       "ASTER": "A beautiful fall-blooming flower.",
@@ -66,6 +66,68 @@
       "ARMED": "The guards were _____ with standard issue rifles.",
       "DAME": "A title given to a woman equivalent to the rank of knight.",
       "DARE": "I _____ you to jump over that fence."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["P", "L", "A", "N", "E", "T"],
+    "validWords": ["PLANET", "PLATE", "PLANE", "PLEAT", "PANEL"],
+    "hints": {
+      "PLANET": "Earth is the third _____ from the Sun.",
+      "PLATE": "Please put the _____ in the dishwasher.",
+      "PLANE": "The _____ landed smoothly on the runway.",
+      "PANEL": "A flat or curved component, typically rectangular."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["G", "A", "R", "D", "E", "N"],
+    "validWords": ["GARDEN", "DANGER", "RANGED", "GEARED", "GRANDE"],
+    "hints": {
+      "GARDEN": "She spent the afternoon planting flowers in the _____.",
+      "DANGER": "The sign warned of the _____ ahead.",
+      "GRANDE": "The highest size at a popular coffee shop chain."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["S", "I", "L", "V", "E", "R"],
+    "validWords": ["SILVER", "SLIVER", "LIVERS", "REVILE"],
+    "hints": {
+      "SILVER": "Every cloud has a _____ lining.",
+      "SLIVER": "A small, thin, narrow piece of something cut or split off.",
+      "REVILE": "To criticize in an abusive or angrily insulting manner."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["F", "L", "O", "W", "E", "R"],
+    "validWords": ["FLOWER", "WOLF", "ROLE", "FLOW", "LORE"],
+    "hints": {
+      "FLOWER": "The rose is a beautiful _____.",
+      "WOLF": "A wild carnivorous mammal of the dog family.",
+      "FLOW": "The steady _____ of the river was peaceful."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["C", "L", "O", "U", "D", "S"],
+    "validWords": ["CLOUDS", "LOUDS", "COULD", "COLDS", "SOUL"],
+    "hints": {
+      "CLOUDS": "Look at the white _____ in the blue sky.",
+      "COULD": "I wish I _____ fly like a bird.",
+      "SOUL": "The spiritual or immaterial part of a human being."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["T", "R", "A", "V", "E", "L"],
+    "validWords": ["TRAVEL", "VALERT", "ALTER", "LATER", "ALERT"],
+    "hints": {
+      "TRAVEL": "I love to _____ and explore new cultures.",
+      "ALTER": "To change or cause to change in character or composition.",
+      "LATER": "I will finish my homework _____ tonight.",
+      "ALERT": "Quick to notice any unusual and potentially dangerous or difficult circumstances."
     }
   }
 ]

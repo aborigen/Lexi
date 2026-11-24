@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [2.38.0] - 2024-08-08
+### Added
+- **Content Expansion**: Added 10+ new levels across English and Russian.
+- **Improved Hints**: Added more contextually relevant literary hints for all new levels.
+
 ## [2.37.2] - 2024-08-07
 ### Improved
 - **Session-Start Shuffling**: Refined level randomization logic to ensure a fresh experience on every mount and language change, while preventing mid-session order jumps.
