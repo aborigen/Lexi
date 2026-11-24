@@ -68,9 +68,10 @@ export function WordConnect({
 
   useEffect(() => {
     if (level) {
-      // Pick 3 random words from validWords (or all if less than 3)
-      const shuffledPool = shuffleArray([...level.validWords]);
-      const selected = shuffledPool.slice(0, 3);
+      // Find the pangram (word that uses all letters)
+      const pangram = level.validWords.find(w => w.length === level.letters.length);
+      // Fallback to the longest word if no exact pangram matches (though by design levels should have one)
+      const selected = pangram ? [pangram] : [[...level.validWords].sort((a,b) => b.length - a.length)[0]];
       
       setTargetWords(selected);
       setShuffledLetters(shuffleArray(level.letters));
@@ -156,7 +157,7 @@ export function WordConnect({
     
     const currentWord = currentIndices.map(i => shuffledLetters[i]).join('');
     
-    // Check if word is one of our targets AND hasn't been found yet
+    // Check if word is the target pangram
     if (targetWords.includes(currentWord) && !foundWords.includes(currentWord)) {
       setIsSuccess(true);
       const rect = containerRef.current?.getBoundingClientRect();
