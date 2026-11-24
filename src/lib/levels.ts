@@ -1,6 +1,8 @@
+
 import { WordLevel } from './levels/types';
 import enLevels from './levels/en.json';
 import ruLevels from './levels/ru.json';
+import poetryLevels from './levels/poetry.json';
 
 export type { WordLevel };
 
@@ -10,5 +12,6 @@ export type { WordLevel };
 
 export const LEVELS: WordLevel[] = [
   ...(enLevels as unknown as WordLevel[]),
-  ...(ruLevels as unknown as WordLevel[])
+  ...(ruLevels as unknown as WordLevel[]),
+  ...(poetryLevels as unknown as WordLevel[])
 ];

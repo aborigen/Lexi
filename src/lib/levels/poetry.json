@@ -1,0 +1,83 @@
+
+[
+  {
+    "lang": "en",
+    "letters": ["F", "I", "R", "E"],
+    "validWords": ["FIRE", "RIFE", "IRE", "FIR", "REF"],
+    "hints": {
+      "FIRE": "Some say the world will end in _____, / Some say in ice."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["T", "I", "G", "E", "R"],
+    "validWords": ["TIGER", "TIRE", "TIER", "GRIT", "GIRT"],
+    "hints": {
+      "TIGER": "_____, _____, burning bright, / In the forests of the night."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["B", "E", "A", "U", "T", "Y"],
+    "validWords": ["BEAUTY", "TUBE", "BEAT", "BUT", "ATE"],
+    "hints": {
+      "BEAUTY": "A thing of _____ is a joy for ever: / Its loveliness increases."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["H", "O", "P", "E"],
+    "validWords": ["HOPE", "HOE", "HEP", "HOP"],
+    "hints": {
+      "HOPE": "\"_____\" is the thing with feathers - / That perches in the soul."
+    }
+  },
+  {
+    "lang": "en",
+    "letters": ["N", "I", "G", "H", "T"],
+    "validWords": ["NIGHT", "THIN", "HINT", "NIGH", "TIN"],
+    "hints": {
+      "NIGHT": "She walks in _____, like the cloudless climes and starry skies."
+    }
+  },
+  {
+    "lang": "ru",
+    "letters": ["М", "О", "Р", "О", "З"],
+    "validWords": ["МОРОЗ", "МОР", "РОМ"],
+    "hints": {
+      "МОРОЗ": "_____ и солнце; день чудесный! / Еще ты дремлешь, друг прелестный..."
+    }
+  },
+  {
+    "lang": "ru",
+    "letters": ["П", "А", "Р", "У", "С"],
+    "validWords": ["ПАРУС", "ПАР", "ПАС", "РУСА"],
+    "hints": {
+      "ПАРУС": "Белеет _____ одинокой / В тумане моря голубом!.."
+    }
+  },
+  {
+    "lang": "ru",
+    "letters": ["Г", "Р", "О", "З", "А"],
+    "validWords": ["ГРОЗА", "ГОРА", "РОЗА", "РОГ", "ГАЗ"],
+    "hints": {
+      "ГРОЗА": "Люблю _____ в начале мая, / Когда весенний, первый гром..."
+    }
+  },
+  {
+    "lang": "ru",
+    "letters": ["Ш", "Е", "П", "О", "Т"],
+    "validWords": ["ШЕПОТ", "ПОТ", "ТОП"],
+    "hints": {
+      "ШЕПОТ": "_____, робкое дыханье, / Трели соловья..."
+    }
+  },
+  {
+    "lang": "ru",
+    "letters": ["А", "П", "Т", "Е", "К", "А"],
+    "validWords": ["АПТЕКА", "ПАКЕТ", "ПАТ", "АКТ"],
+    "hints": {
+      "АПТЕКА": "Ночь, улица, фонарь, _____, / Бессмысленный и тусклый свет."
+    }
+  }
+]
