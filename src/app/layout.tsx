@@ -1,13 +1,5 @@
 import type { Metadata } from 'next';
-import { Nunito } from 'next/font/google';
 import './globals.css';
-
-const nunito = Nunito({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-lexi',
-  display: 'swap',
-  weight: ['400', '700', '900'],
-});
 
 export const metadata: Metadata = {
   title: 'Lexi.AI - Word Connect Puzzle',
@@ -21,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} font-body antialiased selection:bg-primary selection:text-white`}>
+      <body className="font-body antialiased selection:bg-primary selection:text-white">
         {children}
       </body>
     </html>
